@@ -8,8 +8,10 @@
  * @returns {object[]} The dataset with properly capitalized names
  */
 export function cleanNames (data) {
-  // TODO: Clean the player name data
-  return []
+  return data.map((line) => {
+    line.Player = line.Player.slice(0, 1).toUpperCase() + line.Player.slice(1).toLowerCase()
+    return line
+  })
 }
 
 /**
@@ -19,8 +21,20 @@ export function cleanNames (data) {
  * @returns {string[]} The names of the top 5 players with most lines
  */
 export function getTopPlayers (data) {
-  // TODO: Find the five top players with the most lines in the play
-  return []
+  const playerLines = {}
+  data.forEach((line) => {
+    const currentLines = playerLines[line.Player]
+
+    if (currentLines === undefined) {
+      playerLines[line.Player] = 1
+    } else {
+      playerLines[line.Player] = currentLines + 1
+    }
+  })
+
+  const sortedPlayers = Object.entries(playerLines).sort((a, b) => b[1] - a[1]).map((playerLine) => playerLine[0])
+
+  return sortedPlayers.slice(0, 5)
 }
 
 /**
