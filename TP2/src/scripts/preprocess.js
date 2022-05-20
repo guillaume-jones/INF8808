@@ -1,4 +1,3 @@
-
 /**
  * Sanitizes the names from the data in the "Player" column.
  *
@@ -61,8 +60,14 @@ export function getTopPlayers (data) {
  * @returns {object[]} The nested data set grouping the line count by player and by act
  */
 export function summarizeLines (data) {
-  // TODO : Generate the data structure as defined above
-  return []
+  const nestedData = d3.nest()
+    .key(d => d.Act)
+    .key(d => d.Player)
+    .rollup(v => v.length)
+    .entries(data)
+
+  console.log(nestedData)
+  return nestedData
 }
 
 /**
