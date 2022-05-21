@@ -60,13 +60,21 @@ export function getTopPlayers (data) {
  * @returns {object[]} The nested data set grouping the line count by player and by act
  */
 export function summarizeLines (data) {
-  const nestedData = d3.nest()
-    .key(d => d.Act)
-    .key(d => d.Player)
-    .rollup(v => v.length)
-    .entries(data)
+  const nestedData = []
+  const players = []
+  let lineCount = 0
 
-  console.log(nestedData)
+  data.forEach(actInfo => {
+    nestedData.push({ Act: actInfo.Act, Players: players })
+    players.push({ Player: actInfo.Player, Count: lineCount++ })
+  })
+
+  // const nestedData = d3.nest()
+  //   .key(d => d.Act)
+  //   .key(d => d.Player)
+  //   .rollup(v => v.length)
+  //   .entries(data)
+
   return nestedData
 }
 
@@ -83,16 +91,16 @@ export function replaceOthers (data, top) {
   // TODO : For each act, sum the lines uttered by players not in the top 5 for the play
   // and replace these players in the data structure by a player with name 'Other' and
   // a line count corresponding to the sum of lines
-  data.forEach((act) => {
-    let othersLineCount = 0
+  // data.forEach((act) => {
+  //   let othersLineCount = 0
 
-    act.forEach((player) => {
-      if (top.includes(player.key) === false) {
-        othersLineCount += player.value
-        act.remove(player)
-      }
-    })
-    //act.append un nouveau player ayant pour key «Others» et pour value othersLineCount
-  })
+  //   act.forEach((player) => {
+  //     if (top.includes(player.key) === false) {
+  //       othersLineCount += player.value
+  //       act.remove(player)
+  //     }
+  //   })
+  //   //act.append un nouveau player ayant pour key «Others» et pour value othersLineCount
+  // })
   return data
 }
