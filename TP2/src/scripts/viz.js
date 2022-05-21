@@ -1,4 +1,3 @@
-
 /**
  * Sets the domain and range of the X scale.
  *
@@ -32,7 +31,6 @@ export function createGroups (data, x) {
   const act = d3.values(data).map(d => d.Act)
   d3.select('#graph-g').append('svg').append('g').attr('x', x(act))
 }
-
 /**
  * Draws the bars inside the groups
  *
@@ -44,6 +42,14 @@ export function createGroups (data, x) {
  * @param {*} tip The tooltip to show when each bar is hovered and hide when it's not
  */
 export function drawBars (y, xSubgroup, players, height, color, tip) {
-  // TODO : Draw the bars
   d3.select('#graph-g')
+    .join('rect')
+    .append('text')
+    .text(players)
+    .attr('x', xSubgroup)
+    .attr('y', y)
+    .attr('height', height)
+    .attr('fill', color)
+    .on('mouseover', tip.show)
+    .on('mouseout', tip.hide)
 }
