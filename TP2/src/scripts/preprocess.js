@@ -83,5 +83,17 @@ export function replaceOthers (data, top) {
   // TODO : For each act, sum the lines uttered by players not in the top 5 for the play
   // and replace these players in the data structure by a player with name 'Other' and
   // a line count corresponding to the sum of lines
-  return []
+  data.forEach((act) => {
+    const othersLineCount = 0
+
+    act.forEach((player) => {
+
+      if (top.includes(player.key) === false){
+        othersLineCount += player.value
+        act.remove(player)
+      }
+    })
+    //act.append un nouveau player ayant pour key «Others» et pour value othersLineCount
+  })
+  return data
 }
