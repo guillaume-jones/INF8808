@@ -66,7 +66,11 @@ export function summarizeLines (data) {
 
   data.forEach(actInfo => {
     nestedData.push({ Act: actInfo.Act, Players: players })
-    players.push({ Player: actInfo.Player, Count: lineCount++ })
+    const player = players.map(p => p.Player).indexOf(actInfo.Player)
+
+    if (player === -1) {
+      players.push({ Player: actInfo.Player, Count: lineCount++ })
+    }
   })
 
   return nestedData
