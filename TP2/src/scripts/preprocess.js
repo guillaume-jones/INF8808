@@ -69,12 +69,6 @@ export function summarizeLines (data) {
     players.push({ Player: actInfo.Player, Count: lineCount++ })
   })
 
-  // const nestedData = d3.nest()
-  //   .key(d => d.Act)
-  //   .key(d => d.Player)
-  //   .rollup(v => v.length)
-  //   .entries(data)
-
   return nestedData
 }
 
