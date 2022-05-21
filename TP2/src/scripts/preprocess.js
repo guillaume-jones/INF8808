@@ -84,11 +84,10 @@ export function replaceOthers (data, top) {
   // and replace these players in the data structure by a player with name 'Other' and
   // a line count corresponding to the sum of lines
   data.forEach((act) => {
-    const othersLineCount = 0
+    let othersLineCount = 0
 
     act.forEach((player) => {
-
-      if (top.includes(player.key) === false){
+      if (top.includes(player.key) === false) {
         othersLineCount += player.value
         act.remove(player)
       }
