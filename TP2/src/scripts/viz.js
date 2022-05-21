@@ -7,7 +7,7 @@
  * @param {number} width The width of the graph
  */
 export function updateGroupXScale (scale, data, width) {
-  scale.domain([d3.min(data), d3.max(data)]).range([0, width])
+  scale.domain(d3.extent(data, d => d.Act)).range([0, width])
 }
 
 /**
