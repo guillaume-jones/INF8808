@@ -29,8 +29,8 @@ export function updateYScale (scale, data, height) {
  * @param {*} x The graph's x scale
  */
 export function createGroups (data, x) {
-  // TODO : Create the groups
-  d3.select('#graph-g')
+  const act = d3.values(data).map(d => d.Act)
+  d3.select('#graph-g').append('svg').attr('x', x(act))
 }
 
 /**
