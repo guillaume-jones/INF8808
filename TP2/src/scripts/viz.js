@@ -18,7 +18,7 @@ export function updateGroupXScale (scale, data, width) {
  * @param {number} height The height of the graph
  */
 export function updateYScale (scale, data, height) {
-  // TODO : Set the domain and range of the graph's y scale
+  scale.domain([d3.min(data), d3.max(data)]).range([0, height])
 }
 
 /**
