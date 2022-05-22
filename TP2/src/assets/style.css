@@ -105,6 +105,12 @@ button:hover, button:active {
     padding: 10px;
 }
 
+.legend-text {
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 2px;
+}
+
 #tooltip-title {
     font-family: 'Grenze Gotisch';
     font-weight: normal;
