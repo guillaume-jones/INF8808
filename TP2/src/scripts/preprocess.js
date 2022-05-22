@@ -117,7 +117,5 @@ export function replaceOthers (data, top) {
     })
   })
 
-  console.log(data)
-
   return data
 }

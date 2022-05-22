@@ -15,5 +15,13 @@ export function getContents (d) {
       + A bold label for the player's line count
         followed by the number of lines
   */
-  return ''
+  d = {
+    Player: 'Test',
+    Count: 100
+  }
+  return (`<div>
+  <p id="tooltip-title">Act 1</p>
+  <p class="tooltip-value"><b>Player :</b> ${d.Player}</p>
+  <p class="tooltip-value"><b>Count :</b> ${d.Count}</p>
+  </div>`)
 }
