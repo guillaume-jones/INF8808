@@ -29,8 +29,14 @@ export function updateYScale (scale, data, height) {
  * @param {*} x The graph's x scale
  */
 export function createGroups (data, x) {
-  const act = d3.values(data).map(d => d.Act)
-  d3.select('#graph-g').append('svg').append('g').attr('x', x(act))
+  d3.select('#graph-g')
+    .selectAll('.group')
+    .data(data)
+    .enter()
+    .append('g')
+    .attr('class', 'group')
+    .attr('transform', data => 'translate(' + x(data.Act) + ',0)')
+    .attr('x', (data) => x(data.Act))
 }
 /**
  * Draws the bars inside the groups
@@ -44,13 +50,16 @@ export function createGroups (data, x) {
  */
 export function drawBars (y, xSubgroup, players, height, color, tip) {
   d3.select('#graph-g')
-    .join('rect')
-    .append('text')
-    .text(players)
-    .attr('x', xSubgroup)
-    .attr('y', y)
-    .attr('height', height)
-    .attr('fill', color)
+    .selectAll('.group')
+    .selectAll('rect')
+    .data((actData) => actData.Players)
+    .enter()
+    .append('rect')
+    .attr('fill', (playerData) => color(playerData.Player))
+    .attr('x', (playerData) => xSubgroup(playerData.Player))
+    .attr('y', (playerData) => y(playerData.Count))
+    .attr('width', xSubgroup.bandwidth())
+    .attr('height', (playerData) => height - y(playerData.Count))
     .on('mouseover', tip.show)
     .on('mouseout', tip.hide)
 }
