@@ -102,14 +102,13 @@ export function replaceOthers (data, top) {
   data.forEach((actData) => {
     let othersLineCount = 0
 
-    actData.Players.forEach((playerObject) => {
-      if (!top.includes(playerObject.Player)) {
+    actData.Players = actData.Players.filter((playerObject) => {
+      const isTopPlayer = top.includes(playerObject.Player)
+      if (!isTopPlayer) {
         othersLineCount += playerObject.Count
       }
-    })
 
-    actData.Players = actData.Players.filter((playerObject) => {
-      return top.includes(playerObject.Player)
+      return isTopPlayer
     })
 
     actData.Players.push({
@@ -117,6 +116,8 @@ export function replaceOthers (data, top) {
       Count: othersLineCount
     })
   })
+
+  console.log(data)
 
   return data
 }
