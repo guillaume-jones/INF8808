@@ -21,6 +21,8 @@ export function cleanNames (data) {
  */
 export function getTopPlayers (data) {
   const playerLines = {}
+
+  // Count lines across all players
   data.forEach((line) => {
     const currentLines = playerLines[line.Player]
 
@@ -31,7 +33,10 @@ export function getTopPlayers (data) {
     }
   })
 
-  const sortedPlayers = Object.entries(playerLines).sort((a, b) => b[1] - a[1]).map((playerLine) => playerLine[0])
+  // Sort and determine top 5 players
+  const sortedPlayers = Object.entries(playerLines)
+    .sort((a, b) => b[1] - a[1])
+    .map((playerLine) => playerLine[0])
 
   return sortedPlayers.slice(0, 5)
 }
@@ -67,6 +72,8 @@ export function summarizeLines (data) {
     const actLines = data.filter((line) => {
       return parseInt(line.Act) === act
     })
+
+    // Count lines of each player in the Act
     actLines.forEach((line) => {
       if (!players[line.Player]) {
         players[line.Player] = 1
@@ -74,12 +81,16 @@ export function summarizeLines (data) {
         players[line.Player] += 1
       }
     })
+
+    // Convert to final format for D3
     const playersFormatted = Object.entries(players).map(([player, count]) => {
       return {
         Player: player,
         Count: count
       }
     })
+
+    // Add Players and their lines for an entire act
     lineSummary.push({
       Act: act,
       Players: playersFormatted
@@ -102,6 +113,7 @@ export function replaceOthers (data, top) {
   data.forEach((actData) => {
     let othersLineCount = 0
 
+    // Count all lines of non-top players
     actData.Players = actData.Players.filter((playerObject) => {
       const isTopPlayer = top.includes(playerObject.Player)
       if (!isTopPlayer) {
@@ -111,6 +123,7 @@ export function replaceOthers (data, top) {
       return isTopPlayer
     })
 
+    // Save to each Act in correct format
     actData.Players.push({
       Player: 'Other',
       Count: othersLineCount

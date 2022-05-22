@@ -12,6 +12,7 @@ export function draw (data, color) {
     .append('div')
     .attr('class', 'legend-element')
 
+  // Add colored boxes
   legendElement
     .append('svg')
     .attr('width', 15)
@@ -25,6 +26,7 @@ export function draw (data, color) {
     .attr('stroke', '#000000')
     .attr('stroke-width', '1')
 
+  // Add actor names
   legendElement.append('p')
     .attr('class', 'legend-text')
     .text((actor) => {

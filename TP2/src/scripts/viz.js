@@ -53,6 +53,7 @@ export function drawBars (y, xSubgroup, players, height, color, tip) {
     .selectAll('.group')
     .selectAll('rect')
     .data((actData) => {
+      // Allows tooltip to access act data
       return actData.Players.map((playerData) => {
         playerData.Act = actData.Act
         return playerData
