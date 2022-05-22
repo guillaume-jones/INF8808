@@ -67,11 +67,19 @@ export function getTopPlayers (data) {
 export function summarizeLines (data) {
   const lineSummary = []
 
-  for (const act of [1, 2, 3, 4, 5]) {
+  // Split lines up according to their act
+  const linesByAct = {}
+  data.forEach((line) => {
+    if (!linesByAct[line.Act]) {
+      linesByAct[line.Act] = [line]
+    } else {
+      linesByAct[line.Act] = [...linesByAct[line.Act], line]
+    }
+  })
+
+  // Iterate through each act's lines
+  Object.entries(linesByAct).forEach(([act, actLines]) => {
     const players = {}
-    const actLines = data.filter((line) => {
-      return parseInt(line.Act) === act
-    })
 
     // Count lines of each player in the Act
     actLines.forEach((line) => {
@@ -95,7 +103,7 @@ export function summarizeLines (data) {
       Act: act,
       Players: playersFormatted
     })
-  }
+  })
 
   return lineSummary
 }
