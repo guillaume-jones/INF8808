@@ -60,20 +60,33 @@ export function getTopPlayers (data) {
  * @returns {object[]} The nested data set grouping the line count by player and by act
  */
 export function summarizeLines (data) {
-  const nestedData = []
-  const players = []
-  let lineCount = 0
+  const lineSummary = []
 
-  data.forEach(actInfo => {
-    nestedData.push({ Act: actInfo.Act, Players: players })
-    const player = players.map(p => p.Player).indexOf(actInfo.Player)
+  for (const act of [1, 2, 3, 4, 5]) {
+    const players = {}
+    const actLines = data.filter((line) => {
+      return parseInt(line.Act) === act
+    })
+    actLines.forEach((line) => {
+      if (!players[line.Player]) {
+        players[line.Player] = 1
+      } else {
+        players[line.Player] += 1
+      }
+    })
+    const playersFormatted = Object.entries(players).map(([player, count]) => {
+      return {
+        Player: player,
+        Count: count
+      }
+    })
+    lineSummary.push({
+      Act: act,
+      Players: playersFormatted
+    })
+  }
 
-    if (player === -1) {
-      players.push({ Player: actInfo.Player, Count: lineCount++ })
-    }
-  })
-
-  return nestedData
+  return lineSummary
 }
 
 /**
@@ -89,16 +102,27 @@ export function replaceOthers (data, top) {
   // TODO : For each act, sum the lines uttered by players not in the top 5 for the play
   // and replace these players in the data structure by a player with name 'Other' and
   // a line count corresponding to the sum of lines
-  // data.forEach((act) => {
-  //   let othersLineCount = 0
 
-  //   act.forEach((player) => {
-  //     if (top.includes(player.key) === false) {
-  //       othersLineCount += player.value
-  //       act.remove(player)
-  //     }
-  //   })
-  //   //act.append un nouveau player ayant pour key «Others» et pour value othersLineCount
-  // })
+  console.log(data)
+
+  data.forEach((actData) => {
+    let othersLineCount = 0
+
+    actData.Players.forEach((playerObject) => {
+      if (!top.includes(playerObject.Player)) {
+        othersLineCount += playerObject.Count
+      }
+    })
+
+    actData.Players = actData.Players.filter((playerObject) => {
+      return top.includes(playerObject.Player)
+    })
+
+    actData.Players.push({
+      Player: 'Other',
+      Count: othersLineCount
+    })
+  })
+
   return data
 }
