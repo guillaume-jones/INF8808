@@ -5,7 +5,6 @@
  * @returns {string} The tooltip contents
  */
 export function getContents (d) {
-  console.log(d)
   return (`<div>
   <p id="tooltip-title">Act ${d.Act}</p>
   <p class="tooltip-value"><b>Player :</b> ${d.Player}</p>

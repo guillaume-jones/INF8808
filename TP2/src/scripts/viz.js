@@ -52,7 +52,12 @@ export function drawBars (y, xSubgroup, players, height, color, tip) {
   d3.select('#graph-g')
     .selectAll('.group')
     .selectAll('rect')
-    .data((actData) => actData.Players)
+    .data((actData) => {
+      return actData.Players.map((playerData) => {
+        playerData.Act = actData.Act
+        return playerData
+      })
+    })
     .enter()
     .append('rect')
     .attr('fill', (playerData) => color(playerData.Player))
