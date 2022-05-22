@@ -17,9 +17,8 @@ export function updateGroupXScale (scale, data, width) {
  * @param {number} height The height of the graph
  */
 export function updateYScale (scale, data, height) {
-  const min = d3.min(data.map(d => d.Players.map(p => p.Count)), m => d3.min(m))
   const max = d3.max(data.map(d => d.Players.map(p => p.Count)), m => d3.max(m))
-  scale.domain([max, min]).range([0, height])
+  scale.domain([0, max]).range([height, 0])
 }
 
 /**
