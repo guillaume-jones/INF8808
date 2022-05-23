@@ -17,8 +17,8 @@
  * @returns {object[]} The filtered data
  */
 export function filterYears (data, start, end) {
-  // TODO : Filter the data by years
-  return []
+  const filteredYears = data.filter(neighborhoods => (neighborhoods.Date_Plantation.getFullYear() >= start && neighborhoods.Date_Plantation.getFullYear() <= end))
+  return filteredYears
 }
 
 /**
