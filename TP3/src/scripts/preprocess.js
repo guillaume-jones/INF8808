@@ -4,9 +4,8 @@
  * @param {object[]} data The data to analyze
  * @returns {string[]} The names of the neighorhoods in the data set
  */
-export function getNeighborhoodNames (data) {
-  // TODO: Return the neihborhood names
-  return []
+ export function getNeighborhoodNames (data) {
+  return data.map(neighborhoods => neighborhoods.Arrond_Nom)
 }
 
 /**
