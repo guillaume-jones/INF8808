@@ -18,7 +18,13 @@ export function setColorScaleDomain (colorScale, data) {
  * @param {object[]} data The data to use for binding
  */
 export function appendRects (data) {
-  // TODO : Append SVG rect elements
+  d3.select('#graph-g')
+    .selectAll('g')
+    .data(data)
+    .enter()
+    .append('g')
+    .append('rect')
+    .attr('class', 'rect-group')
 }
 
 /**
