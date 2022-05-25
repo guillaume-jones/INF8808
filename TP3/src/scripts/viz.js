@@ -58,7 +58,9 @@ export function updateYScale (yScale, neighborhoodNames, height) {
  *  @param {*} xScale The scale to use to draw the axis
  */
 export function drawXAxis (xScale) {
-  // TODO : Draw X axis
+  d3.select('.x.axis')
+    .call(d3.axisTop(xScale)
+      .tickFormat(year => `${year}`))
 }
 
 /**
@@ -68,7 +70,10 @@ export function drawXAxis (xScale) {
  * @param {number} width The width of the graphic
  */
 export function drawYAxis (yScale, width) {
-  // TODO : Draw Y axis
+  d3.select('.y.axis')
+    .attr('transform', 'translate(' + width + ', 0)')
+    .call(d3.axisRight(yScale)
+      .tickFormat(neighborhood => `${neighborhood}`))
 }
 
 /**
