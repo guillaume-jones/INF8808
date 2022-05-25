@@ -34,19 +34,19 @@ export function filterYears (data, start, end) {
 export function summarizeYearlyCounts (data) {
   const countsObject = {}
   data.forEach((line) => {
-    const arrondNom = line.Arrond_Nom
-    const datePlantation = line.Date_Plantation.getFullYear()
+    const neighborhood = line.Arrond_Nom
+    const year = line.Date_Plantation.getFullYear()
 
-    // Attempts to add to existing count
-    const yearAndArrond = JSON.stringify([arrondNom, datePlantation])
+    // Attempts to add to an existing count
+    const yearAndArrond = JSON.stringify([neighborhood, year])
     if (countsObject[yearAndArrond]) {
       countsObject[yearAndArrond].Comptes += 1
     } 
-    // Otherwise, creates a new object for that arrondissement and year
+    // Otherwise, creates a new object for that neighborhood and year
     else {
       countsObject[yearAndArrond] = {
-        Arrond_Nom: arrondNom,
-        Plantation_Year: datePlantation,
+        Arrond_Nom: neighborhood,
+        Plantation_Year: year,
         Comptes: 1
       }
     }
@@ -68,6 +68,20 @@ export function summarizeYearlyCounts (data) {
  * where the values for 'Counts' is 0
  */
 export function fillMissingData (data, neighborhoods, start, end, range) {
-  // TODO : Find missing data and fill with 0
-  return []
+  const allPossibleData = neighborhoods.flatMap((neighborhood) => {
+    return range(start, end).map((year) => [neighborhood, year])
+  })
+
+  allPossibleData.forEach(([neighborhood, year]) => {
+    // Adds 0 count if it cannot find the item in existing dataset
+    if(!data.find((item) => item.Plantation_Year === year && item.Arrond_Nom === neighborhood)) {
+      data.push({
+        Arrond_Nom: neighborhood,
+        Plantation_Year: year,
+        Comptes: 0
+      })
+    }
+  })
+
+  return data
 }
