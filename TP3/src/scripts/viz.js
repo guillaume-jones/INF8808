@@ -6,7 +6,10 @@
  * @param {object[]} data The data to be displayed
  */
 export function setColorScaleDomain (colorScale, data) {
-  // TODO : Set domain of color scale
+  const min = Math.min(...data.map((item) => item.Comptes))
+  const max = Math.max(...data.map((item) => item.Comptes))
+
+  colorScale.domain([min, max])
 }
 
 /**
