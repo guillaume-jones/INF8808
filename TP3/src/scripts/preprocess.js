@@ -17,8 +17,11 @@
  * @returns {object[]} The filtered data
  */
 export function filterYears (data, start, end) {
-  const filteredYears = data.filter(neighborhoods => (neighborhoods.Date_Plantation.getFullYear() >= start && neighborhoods.Date_Plantation.getFullYear() <= end))
-  return filteredYears
+  return data.filter((neighborhoods) => { 
+    return (
+      neighborhoods.Date_Plantation.getFullYear() >= start && 
+      neighborhoods.Date_Plantation.getFullYear() <= end)
+  })
 }
 
 /**
@@ -29,8 +32,27 @@ export function filterYears (data, start, end) {
  * the name of the neighborhood, the year and the number of trees that were planted
  */
 export function summarizeYearlyCounts (data) {
-  // TODO : Construct the required data table
-  return []
+  const countsObject = {}
+  data.forEach((line) => {
+    const arrondNom = line.Arrond_Nom
+    const datePlantation = line.Date_Plantation.getFullYear()
+
+    // Attempts to add to existing count
+    const yearAndArrond = JSON.stringify([arrondNom, datePlantation])
+    if (countsObject[yearAndArrond]) {
+      countsObject[yearAndArrond].Comptes += 1
+    } 
+    // Otherwise, creates a new object for that arrondissement and year
+    else {
+      countsObject[yearAndArrond] = {
+        Arrond_Nom: arrondNom,
+        Plantation_Year: datePlantation,
+        Comptes: 1
+      }
+    }
+  })
+
+  return Object.values(countsObject)
 }
 
 /**
