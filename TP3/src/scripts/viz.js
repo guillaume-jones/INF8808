@@ -19,12 +19,12 @@ export function setColorScaleDomain (colorScale, data) {
  */
 export function appendRects (data) {
   d3.select('#graph-g')
-    .selectAll('g')
+    .selectAll('.boxes')
     .data(data)
     .enter()
     .append('g')
+    .attr('class', 'boxes')
     .append('rect')
-    .attr('class', 'rect-group')
 }
 
 /**
@@ -94,5 +94,11 @@ export function rotateXTicks () {
  * @param {*} colorScale The color scale used to set the rectangles' colors
  */
 export function updateRects (xScale, yScale, colorScale) {
-  // TODO : Set position, size and fill of rectangles according to bound data
+  d3.selectAll('.boxes')
+    .selectAll('rect')
+    .attr('fill', (data) => colorScale(data.Comptes))
+    .attr('x', (data) => xScale(data.Plantation_Year))
+    .attr('y', (data) => yScale(data.Arrond_Nom))
+    .attr('width', xScale.bandwidth())
+    .attr('height', yScale.bandwidth())
 }
