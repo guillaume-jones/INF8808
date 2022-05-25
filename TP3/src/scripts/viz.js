@@ -36,7 +36,9 @@ export function appendRects (data) {
  * @param {Function} range A utilitary funtion that could be useful to generate a list of numbers in a range
  */
 export function updateXScale (xScale, data, width, range) {
-  // TODO : Update X scale
+  const min = Math.min(...data.map((item) => item.Plantation_Year))
+  const max = Math.max(...data.map((item) => item.Plantation_Year)) 
+  xScale.domain(range(min, max)).range([0, width])
 }
 
 /**
@@ -47,8 +49,7 @@ export function updateXScale (xScale, data, width, range) {
  * @param {number} height The height of the diagram
  */
 export function updateYScale (yScale, neighborhoodNames, height) {
-  // TODO : Update Y scale
-  // Make sure to sort the neighborhood names alphabetically
+  yScale.domain(neighborhoodNames.sort()).range([0, height])
 }
 
 /**
