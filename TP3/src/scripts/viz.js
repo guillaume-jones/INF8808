@@ -80,7 +80,9 @@ export function drawYAxis (yScale, width) {
  * Rotates the ticks on the X axis 45 degrees towards the left.
  */
 export function rotateXTicks () {
-  // TODO : Rotate X axis' ticks
+  d3.select('.x.axis')
+    .selectAll('text')
+    .attr('transform', 'rotate(-45)')
 }
 
 /**
