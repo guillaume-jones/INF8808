@@ -5,7 +5,7 @@
  * @returns {string[]} The names of the neighorhoods in the data set
  */
  export function getNeighborhoodNames (data) {
-  return data.map(neighborhoods => neighborhoods.Arrond_Nom)
+   return Array.from(new Set(data.map((line) => line.Arrond_Nom)))
 }
 
 /**
