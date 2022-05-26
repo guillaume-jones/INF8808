@@ -54,5 +54,11 @@ export function initLegendAxis () {
  * @param {*} colorScale The color scale represented by the legend
  */
 export function draw (x, y, height, width, fill, colorScale) {
-  // TODO : Draw the legend
+  d3.select('.heatmap-svg')
+    .append('rect')
+    .attr('x', x)
+    .attr('y', y)
+    .attr('height', height)
+    .attr('width', width)
+    .attr('fill', fill)
 }
