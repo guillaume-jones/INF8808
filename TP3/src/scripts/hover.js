@@ -13,7 +13,20 @@
  * @param {Function} unselectTicks The function to call to remove "selected" mode from the ticks
  */
 export function setRectHandler (xScale, yScale, rectSelected, rectUnselected, selectTicks, unselectTicks) {
-  // TODO : Select the squares and set their event handlers
+  var mouseover = function (element, x, y) {
+    rectSelected(element, x, y)
+    selectTicks((data) => x(data.Plantation_Year), (data) => y(data.Arrond_Nom))
+  }
+
+  var mouseout = function (element) {
+    rectUnselected(element)
+    unselectTicks()
+  }
+
+  d3.selectAll('.boxes')
+    .selectAll('rect')
+    .on('mouseover', (_, i, n) => mouseover(n[i], xScale, yScale))
+    .on('mouseout', (_, i, n) => mouseout(n[i]))
 }
 
 /**
@@ -31,6 +44,14 @@ export function rectSelected (element, xScale, yScale) {
   // TODO : Display the number of trees on the selected element
   // Make sure the nimber is centered. If there are 1000 or more
   // trees, display the text in white so it contrasts with the background.
+  console.log(element)
+  d3.select(element)
+    .style('opacity', 0.75)
+    .append('text')
+    .style('fill', 'black')
+    .attr('x', (data) => xScale(data.Plantation_Year))
+    .attr('y', (data) => yScale(data.Arrond_Nom))
+    .text((data) => data.Comptes)
 }
 
 /**
@@ -44,6 +65,10 @@ export function rectSelected (element, xScale, yScale) {
  */
 export function rectUnselected (element) {
   // TODO : Unselect the element
+  d3.select(element)
+    .style('opacity', 1)
+    .select('text')
+    .remove()
 }
 
 /**
