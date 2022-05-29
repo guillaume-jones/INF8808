@@ -54,18 +54,22 @@ export function initLegendAxis () {
  * @param {*} colorScale The color scale represented by the legend
  */
 export function draw (x, y, height, width, fill, colorScale) {
-  const linearScale = d3.scaleLinear().domain(colorScale.domain()).range([0, height])
-  const legendAxis = d3.axisLeft(linearScale).tickValues(colorScale.domain())
-
-  d3.select('.heatmap-svg')
-    .append('rect')
+  // Draw the svg rectangle and fill with the linear gradient
+  const legend = d3.select('.heatmap-svg')
+    .select('rect')
     .attr('x', x)
     .attr('y', y)
     .attr('height', height)
     .attr('width', width)
     .attr('fill', fill)
-    .append('g')
-    // .attr('class', 'legend axis')
-    // .attr('transform', 'translate(' + width + ', 0)')
+
+  // Draw the left axis
+  const linearScale = d3.scaleLinear().domain(colorScale.domain()).range([height, 0])
+  const legendAxis = d3.axisLeft(linearScale).tickValues(colorScale.domain()).tickSizeOuter(0)
+
+  legend
+    .select('.heatmap-svg')
+    .select('g')
+    .attr('transform', 'translate(width, 0)')
     .call(legendAxis)
 }
