@@ -55,7 +55,7 @@ export function initLegendAxis () {
  */
 export function draw (x, y, height, width, fill, colorScale) {
   // Draw the svg rectangle and fill with the linear gradient
-  const legend = d3.select('.heatmap-svg')
+  d3.select('.heatmap-svg')
     .select('rect')
     .attr('x', x)
     .attr('y', y)
@@ -67,9 +67,7 @@ export function draw (x, y, height, width, fill, colorScale) {
   const linearScale = d3.scaleLinear().domain(colorScale.domain()).range([height, 0])
   const legendAxis = d3.axisLeft(linearScale).tickValues(colorScale.domain()).tickSizeOuter(0)
 
-  legend
-    .select('.heatmap-svg')
-    .select('.legend.axis')
-    .attr('transform', 'translate(width, 0)')
+  d3.select('.legend.axis')
+    .attr('transform', 'translate(40, 0)')
     .call(legendAxis)
 }
