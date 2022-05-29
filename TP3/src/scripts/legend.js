@@ -69,7 +69,7 @@ export function draw (x, y, height, width, fill, colorScale) {
 
   legend
     .select('.heatmap-svg')
-    .select('g')
+    .select('.legend.axis')
     .attr('transform', 'translate(width, 0)')
     .call(legendAxis)
 }
