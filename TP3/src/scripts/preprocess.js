@@ -4,8 +4,8 @@
  * @param {object[]} data The data to analyze
  * @returns {string[]} The names of the neighorhoods in the data set
  */
- export function getNeighborhoodNames (data) {
-   return Array.from(new Set(data.map((line) => line.Arrond_Nom)))
+export function getNeighborhoodNames (data) {
+  return Array.from(new Set(data.map((line) => line.Arrond_Nom)))
 }
 
 /**
@@ -41,9 +41,8 @@ export function summarizeYearlyCounts (data) {
     const yearAndArrond = JSON.stringify([neighborhood, year])
     if (countsObject[yearAndArrond]) {
       countsObject[yearAndArrond].Comptes += 1
-    } 
+    } else {
     // Otherwise, creates a new object for that neighborhood and year
-    else {
       countsObject[yearAndArrond] = {
         Arrond_Nom: neighborhood,
         Plantation_Year: year,
@@ -74,7 +73,7 @@ export function fillMissingData (data, neighborhoods, start, end, range) {
 
   allPossibleData.forEach(([neighborhood, year]) => {
     // Adds 0 count if it cannot find the item in existing dataset
-    if(!data.find((item) => item.Plantation_Year === year && item.Arrond_Nom === neighborhood)) {
+    if (!data.find((item) => item.Plantation_Year === year && item.Arrond_Nom === neighborhood)) {
       data.push({
         Arrond_Nom: neighborhood,
         Plantation_Year: year,

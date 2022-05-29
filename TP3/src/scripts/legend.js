@@ -61,4 +61,6 @@ export function draw (x, y, height, width, fill, colorScale) {
     .attr('height', height)
     .attr('width', width)
     .attr('fill', fill)
+    .append('g')
+    .call(d3.axisLeft(colorScale))
 }
