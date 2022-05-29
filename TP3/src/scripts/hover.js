@@ -15,7 +15,7 @@
 export function setRectHandler (xScale, yScale, rectSelected, rectUnselected, selectTicks, unselectTicks) {
   var mouseover = function (element, x, y) {
     rectSelected(element, x, y)
-    selectTicks((data) => x(data.Plantation_Year), (data) => y(data.Arrond_Nom))
+    selectTicks((data) => y(data.Arrond_Nom), (data) => x(data.Plantation_Year))
   }
 
   var mouseout = function (element) {
@@ -44,12 +44,11 @@ export function rectSelected (element, xScale, yScale) {
   // TODO : Display the number of trees on the selected element
   // Make sure the nimber is centered. If there are 1000 or more
   // trees, display the text in white so it contrasts with the background.
-  console.log(element)
   d3.select(element)
     .style('opacity', 0.75)
-    .append('text')
+    .append('title')
     .style('fill', 'black')
-    .attr('x', (data) => xScale(data.Plantation_Year))
+    .attr('x', (data) => xScale(data.Plantation_Year) + 100)
     .attr('y', (data) => yScale(data.Arrond_Nom))
     .text((data) => data.Comptes)
 }
@@ -67,7 +66,7 @@ export function rectUnselected (element) {
   // TODO : Unselect the element
   d3.select(element)
     .style('opacity', 1)
-    .select('text')
+    .select('title')
     .remove()
 }
 
@@ -79,11 +78,19 @@ export function rectUnselected (element) {
  */
 export function selectTicks (name, year) {
   // TODO : Make the ticks bold
+  d3.select('#graph-g')
+    .select('text')
+    .select(name)
+    .attr('font-weight', 900)
+    .select(year)
+    .attr('font-weight', 900)
 }
 
 /**
  * Returns the font weight of all ticks to normal.
  */
 export function unselectTicks () {
-  // TODO : Unselect the ticks
+  d3.select('#graph-g')
+    .selectAll('text')
+    .attr('font-weight', 100)
 }

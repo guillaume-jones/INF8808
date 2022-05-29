@@ -37,7 +37,7 @@ export function appendRects (data) {
  */
 export function updateXScale (xScale, data, width, range) {
   const min = Math.min(...data.map((item) => item.Plantation_Year))
-  const max = Math.max(...data.map((item) => item.Plantation_Year)) 
+  const max = Math.max(...data.map((item) => item.Plantation_Year))
   xScale.domain(range(min, max)).range([0, width])
 }
 
