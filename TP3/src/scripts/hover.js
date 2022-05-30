@@ -13,19 +13,18 @@
  * @param {Function} unselectTicks The function to call to remove "selected" mode from the ticks
  */
 export function setRectHandler (xScale, yScale, rectSelected, rectUnselected, selectTicks, unselectTicks) {
-  var mouseover = function (element, x, y) {
-    rectSelected(element, x, y)
-    selectTicks(d3.select(element).datum().Arrond_Nom, d3.select(element).datum().Plantation_Year)
-  }
-
-  var mouseout = function (element) {
-    rectUnselected(element)
-    unselectTicks()
-  }
-
   d3.selectAll('.boxes')
-    .on('mouseover', (_, i, n) => mouseover(n[i], xScale, yScale))
-    .on('mouseout', (_, i, n) => mouseout(n[i]))
+    .on('mouseover', (_, i, n) => {
+      const element = n[i]
+      rectSelected(element, xScale, yScale)
+      selectTicks(
+        d3.select(element).datum().Arrond_Nom,
+        d3.select(element).datum().Plantation_Year)
+    })
+    .on('mouseout', (_, i, n) => {
+      rectUnselected(n[i])
+      unselectTicks()
+    })
 }
 
 /**
@@ -77,9 +76,8 @@ export function rectUnselected (element) {
 export function selectTicks (name, year) {
   d3.select('#graph-g')
     .selectAll('.tick')
-    .filter(function () {
-      const tickText = d3.select(this).text()
-      return parseInt(tickText) === year || tickText === name
+    .filter((text) => {
+      return parseInt(text) === year || text === name
     })
     .attr('font-weight', 'bold')
 }
