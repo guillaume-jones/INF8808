@@ -24,7 +24,6 @@ export function setRectHandler (xScale, yScale, rectSelected, rectUnselected, se
   }
 
   d3.selectAll('.boxes')
-    .selectAll('rect')
     .on('mouseover', (_, i, n) => mouseover(n[i], xScale, yScale))
     .on('mouseout', (_, i, n) => mouseout(n[i]))
 }
@@ -46,11 +45,13 @@ export function rectSelected (element, xScale, yScale) {
   // trees, display the text in white so it contrasts with the background.
   d3.select(element)
     .style('opacity', 0.75)
-    .append('title')
-    .style('fill', 'black')
-    .attr('x', (data) => xScale(data.Plantation_Year) + 100)
-    .attr('y', (data) => yScale(data.Arrond_Nom))
+    .append('text')
     .text((data) => data.Comptes)
+    .attr('x', (data) => xScale(data.Plantation_Year) + xScale.bandwidth() / 2)
+    .attr('y', (data) => yScale(data.Arrond_Nom) + yScale.bandwidth() / 2)
+    .style('text-anchor', 'middle')
+    .style('dominant-baseline', 'middle')
+    .style('fill', (data) => data.Comptes > 1000 ? 'white' : 'black')
 }
 
 /**
@@ -66,7 +67,7 @@ export function rectUnselected (element) {
   // TODO : Unselect the element
   d3.select(element)
     .style('opacity', 1)
-    .select('title')
+    .select('text')
     .remove()
 }
 

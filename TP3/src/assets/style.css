@@ -79,18 +79,24 @@ button:hover, button:active {
     visibility: hidden;
   }
 
-  .info {
-      pointer-events: none;
-      font-family: 'Roboto';
-  }
+.info {
+    pointer-events: none;
+    font-family: 'Roboto';
+}
 
-  .axis text {
-      font-family: 'Roboto';
-      cursor: default;
-      transform-box: fill-box;
-      transform-origin: center;
-  }
+.axis text {
+    font-family: 'Roboto';
+    cursor: default;
+    transform-box: fill-box;
+    transform-origin: center;
+}
 
-  .axis path {
-      opacity: 0;
-  }
+.boxes text {
+    font-family: 'Roboto';
+    cursor: default;
+    font-size: 12px;
+}
+
+.axis path {
+    opacity: 0;
+}
