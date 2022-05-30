@@ -49,6 +49,7 @@ export function rectSelected (element, xScale, yScale) {
     .style('text-anchor', 'middle')
     .style('dominant-baseline', 'middle')
     .style('fill', (data) => data.Comptes > 1000 ? 'white' : 'black')
+    .style('pointer-events', 'none') // prevent flicker
 }
 
 /**
