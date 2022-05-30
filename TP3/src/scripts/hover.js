@@ -15,7 +15,7 @@
 export function setRectHandler (xScale, yScale, rectSelected, rectUnselected, selectTicks, unselectTicks) {
   var mouseover = function (element, x, y) {
     rectSelected(element, x, y)
-    selectTicks((data) => y(data.Arrond_Nom), (data) => x(data.Plantation_Year))
+    selectTicks(d3.select(element).datum().Arrond_Nom, d3.select(element).datum().Plantation_Year)
   }
 
   var mouseout = function (element) {
@@ -40,9 +40,6 @@ export function setRectHandler (xScale, yScale, rectSelected, rectUnselected, se
  * @param {*} yScale The yScale to be used when placing the text in the square
  */
 export function rectSelected (element, xScale, yScale) {
-  // TODO : Display the number of trees on the selected element
-  // Make sure the nimber is centered. If there are 1000 or more
-  // trees, display the text in white so it contrasts with the background.
   d3.select(element)
     .style('opacity', 0.75)
     .append('text')
@@ -64,7 +61,6 @@ export function rectSelected (element, xScale, yScale) {
  * @param {*} element The selection of rectangles in "selected" state
  */
 export function rectUnselected (element) {
-  // TODO : Unselect the element
   d3.select(element)
     .style('opacity', 1)
     .select('text')
@@ -78,13 +74,13 @@ export function rectUnselected (element) {
  * @param {number} year The year associated with the tick text to make bold
  */
 export function selectTicks (name, year) {
-  // TODO : Make the ticks bold
   d3.select('#graph-g')
-    .select('text')
-    .select(name)
-    .attr('font-weight', 900)
-    .select(year)
-    .attr('font-weight', 900)
+    .selectAll('.tick')
+    .filter(function () {
+      const tickText = d3.select(this).text()
+      return parseInt(tickText) === year || tickText === name
+    })
+    .attr('font-weight', 'bold')
 }
 
 /**
@@ -92,6 +88,6 @@ export function selectTicks (name, year) {
  */
 export function unselectTicks () {
   d3.select('#graph-g')
-    .selectAll('text')
-    .attr('font-weight', 100)
+    .selectAll('.tick')
+    .attr('font-weight', 'normal')
 }
