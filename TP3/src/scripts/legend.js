@@ -64,10 +64,11 @@ export function draw (x, y, height, width, fill, colorScale) {
     .attr('fill', fill)
 
   // Draw the left axis
-  const linearScale = d3.scaleLinear().domain(colorScale.domain()).range([height, 0])
-  const legendAxis = d3.axisLeft(linearScale).tickValues(colorScale.domain()).tickSizeOuter(0)
+  const linearScale = d3.scaleLinear().domain(colorScale.domain()).range([height, width])
+  const legendAxis = d3.axisLeft(linearScale).tickValues([0, 1200]).tickSizeOuter(0)
 
   d3.select('.legend.axis')
-    .attr('transform', 'translate(40, 0)')
+    .append('g')
+    .attr('transform', 'translate(' + x + ',' + y + ')')
     .call(legendAxis)
 }
