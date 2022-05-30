@@ -65,7 +65,7 @@ export function draw (x, y, height, width, fill, colorScale) {
 
   // Draw the left axis
   const linearScale = d3.scaleLinear().domain(colorScale.domain()).range([height, width])
-  const legendAxis = d3.axisLeft(linearScale).tickValues([0, 1200]).tickSizeOuter(0)
+  const legendAxis = d3.axisLeft(linearScale).ticks(6)
 
   d3.select('.legend.axis')
     .append('g')
