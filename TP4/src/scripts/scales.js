@@ -34,8 +34,16 @@ export function setColorScale (data) {
  * @returns {*} The linear scale in X
  */
 export function setXScale (width, data) {
-  // TODO : Set scale
-  return {}
+  const firstYearMinGDP = d3.min(data['2000'].map(d => d.GDP))
+  const firstYearMaxGDP = d3.max(data['2000'].map(d => d.GDP))
+
+  const secondYearMinGDP = d3.min(data['2015'].map(d => d.GDP))
+  const secondYearMaxGDP = d3.max(data['2015'].map(d => d.GDP))
+
+  const minGDP = d3.min([firstYearMinGDP, secondYearMinGDP])
+  const maxGDP = d3.max([firstYearMaxGDP, secondYearMaxGDP])
+
+  return d3.scaleLog().domain([minGDP, maxGDP]).range(0, width)
 }
 
 /**
