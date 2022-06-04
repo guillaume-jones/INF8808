@@ -66,5 +66,9 @@ export function moveCircles (xScale, yScale, transitionDuration) {
  * @param {number} year The currently displayed year
  */
 export function setTitleText (year) {
-  // TODO : Set the title
+  d3.select('#graph-g')
+    .append('text')
+    .attr('class', 'title')
+    .style('text-anchor', 'middle')
+    .text('Data for year : ' + year)
 }
