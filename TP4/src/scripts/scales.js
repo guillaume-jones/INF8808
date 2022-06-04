@@ -54,6 +54,15 @@ export function setXScale (width, data) {
  * @returns {*} The linear scale in Y
  */
 export function setYScale (height, data) {
-  // TODO : Set scale
-  return {}
+  const firstYearMinCO2 = d3.min(data['2000'].map(d => d.CO2))
+  const firstYearMaxCO2 = d3.max(data['2000'].map(d => d.CO2))
+
+  const secondYearMinCO2 = d3.min(data['2015'].map(d => d.CO2))
+
+  const secondYearMaxCO2 = d3.max(data['2015'].map(d => d.CO2))
+
+  const maxCO2 = d3.max([firstYearMaxCO2, secondYearMaxCO2])
+  const minCO2 = d3.min([firstYearMinCO2, secondYearMinCO2])
+
+  return d3.scaleLog().domain([minCO2, maxCO2]).range(height, 0)
 }
