@@ -6,7 +6,20 @@
  * @param {number} height The height of the graph
  */
 export function positionLabels (g, width, height) {
-  // TODO : Position axis labels
+  // Position x axis label
+  g.select('.x.axis-text')
+    .attr('x', width)
+    .attr('y', height)
+    .style('text-anchor', 'middle')
+    .text('GDP per Capita ($ USD)')
+
+  // Position y axis label
+  g.select('.y.axis-text')
+    .attr('transform', 'rotate(-90)')
+    .attr('x', width)
+    .attr('y', height)
+    .style('text-anchor', 'middle')
+    .text('CO2 emissions per capita (metric tons)')
 }
 
 /**
