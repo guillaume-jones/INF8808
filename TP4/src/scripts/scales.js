@@ -23,8 +23,7 @@ export function setRadiusScale (data) {
  * @returns {*} The ordinal scale used to determine the color
  */
 export function setColorScale (data) {
-  // TODO : Set scale
-  return {}
+  return d3.scaleOrdinal(d3.schemeCategory10).domain(data['2000'].map(d => d.Continent))
 }
 
 /**
