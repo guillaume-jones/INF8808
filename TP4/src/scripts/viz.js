@@ -33,6 +33,8 @@ export function drawCircles (data, rScale, colorScale) {
     .attr('class', 'circles')
     .attr('fill', (data) => colorScale(data.Continent))
     .attr('r', (data) => rScale(data.Population))
+    .attr('stroke', 'white')
+    .attr('stroke-width', 1)
     .style('opacity', 0.7)
 }
 
