@@ -34,8 +34,6 @@ export function drawCircles (data, rScale, colorScale) {
     .append('circle')
     .attr('class', 'circles')
     .attr('fill', (data) => colorScale(data.Continent))
-    .attr('cx', (data) => data.CO2 * 10)
-    .attr('cy', (data) => data.CO2 * 10)
     .attr('r', (data) => rScale(data.Population))
     .style('opacity', 0.7)
 }
@@ -64,8 +62,11 @@ export function setCircleHoverHandler (tip) {
  * @param {number} transitionDuration The duration of the transition
  */
 export function moveCircles (xScale, yScale, transitionDuration) {
-  // TODO : Set up the transition and place the circle centers
-  // in x and y according to their GDP and CO2 respectively
+  d3.selectAll('.circles')
+    .transition()
+    .duration(transitionDuration).ease(d3.easePoly)
+    .attr('cx', (data) => xScale(data.GDP))
+    .attr('cy', (data) => yScale(data.CO2))
 }
 
 /**
