@@ -9,7 +9,9 @@
  * @returns {*} The linear scale used to determine the radius
  */
 export function setRadiusScale (data) {
-  return d3.scaleLinear().domain(data['2000'].map(d => d.Population)).range([5, 20])
+  return d3.scaleLinear()
+    .domain([...data['2000'].map(d => d.Population), ...data['2015'].map(d => d.Population)].sort())
+    .range([5, 20])
 }
 
 /**
