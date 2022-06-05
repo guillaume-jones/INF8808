@@ -32,6 +32,16 @@ export function drawCircles (data, rScale, colorScale) {
   // and each circle's color depends on its continent.
   // The fill opacity of each circle is 70%
   // The outline of the circles is white
+  d3.select('#graph-g')
+    .selectAll('.circles')
+    .data(data)
+    .enter()
+    .append('circle')
+    .attr('class', 'circles')
+    .attr('fill', (data) => colorScale(data.Continent))
+    .attr('cx', 100)
+    .attr('cy', 100)
+    .attr('r', (data) => rScale(data.Population))
 }
 
 /**
