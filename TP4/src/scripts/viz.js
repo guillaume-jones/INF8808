@@ -9,14 +9,12 @@ export function positionLabels (g, width, height) {
   // Position x axis label
   g.select('.x.axis-text')
     .attr('x', width / 2)
-    .attr('y', height)
-    .style('text-anchor', 'middle')
+    .attr('y', height + 30)
 
   // Position y axis label
   g.select('.y.axis-text')
-    .attr('x', 0)
+    .attr('x', -30)
     .attr('y', height / 2)
-    .style('text-anchor', 'middle')
 }
 
 /**
