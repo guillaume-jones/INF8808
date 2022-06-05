@@ -8,18 +8,15 @@
 export function positionLabels (g, width, height) {
   // Position x axis label
   g.select('.x.axis-text')
-    .attr('x', width)
+    .attr('x', width / 2)
     .attr('y', height)
     .style('text-anchor', 'middle')
-    .text('GDP per Capita ($ USD)')
 
   // Position y axis label
   g.select('.y.axis-text')
-    .attr('transform', 'rotate(-90)')
-    .attr('x', width)
-    .attr('y', height)
+    .attr('x', 0)
+    .attr('y', height / 2)
     .style('text-anchor', 'middle')
-    .text('CO2 emissions per capita (metric tons)')
 }
 
 /**
