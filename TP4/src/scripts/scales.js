@@ -44,7 +44,7 @@ export function setXScale (width, data) {
   const maxGDP = d3.max(
     [...data['2000'].map(d => d.GDP), ...data['2015'].map(d => d.GDP)])
 
-  return d3.scaleLog().domain([minGDP, maxGDP]).range(0, width)
+  return d3.scaleLog().domain([minGDP, maxGDP]).range([0, width])
 }
 
 /**
@@ -60,5 +60,5 @@ export function setYScale (height, data) {
   const maxCO2 = d3.max(
     [...data['2000'].map(d => d.CO2), ...data['2015'].map(d => d.CO2)])
 
-  return d3.scaleLog().domain([minCO2, maxCO2]).range(height, 0)
+  return d3.scaleLog().domain([minCO2, maxCO2]).range([height, 0])
 }
