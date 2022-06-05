@@ -7,6 +7,15 @@
  * @returns {string} The tooltip contents
  */
 export function getContents (d) {
-  // TODO : Generate tooltip contents
-  return ''
+  const gdp = d.GDP.toFixed(2) + ' $ (USD)'
+  const CO2 = d.CO2.toFixed(2) + ' metric tonnes'
+
+  return (
+    `<div>
+    <p class="tooltip-value"><b>Country :</b> ${d['Country Name']}</p>
+    <p class="tooltip-value"><b>Population :</b> ${d.Population}</p>
+    <p class="tooltip-value"><b>GDP :</b> ${gdp}</p>
+    <p class="tooltip-value"><b>CO2 emissions :</b> ${CO2}</p>
+    </div>`
+  )
 }

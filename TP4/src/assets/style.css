@@ -70,6 +70,8 @@ h2 {
 
 .tooltip-value {
     font-weight: normal;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 .axis path, .axis line {
