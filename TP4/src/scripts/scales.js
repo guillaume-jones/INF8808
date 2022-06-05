@@ -9,9 +9,12 @@
  * @returns {*} The linear scale used to determine the radius
  */
 export function setRadiusScale (data) {
-  return d3.scaleLinear()
-    .domain([...data['2000'].map(d => d.Population), ...data['2015'].map(d => d.Population)].sort())
-    .range([5, 20])
+  const minPopulation = d3.min(
+    [...data['2000'].map(d => d.Population), ...data['2015'].map(d => d.Population)])
+  const maxPopulation = d3.max(
+    [...data['2000'].map(d => d.Population), ...data['2015'].map(d => d.Population)])
+
+  return d3.scaleLinear().domain([minPopulation, maxPopulation]).range([5, 20])
 }
 
 /**
@@ -25,7 +28,7 @@ export function setRadiusScale (data) {
  * @returns {*} The ordinal scale used to determine the color
  */
 export function setColorScale (data) {
-  return d3.scaleOrdinal(d3.schemeCategory10).domain(data['2000'].map(d => d.Continent))
+  return d3.scaleOrdinal(d3.schemeCategory10).domain(data['2000'].map(d => d.Continent).sort())
 }
 
 /**
