@@ -75,8 +75,6 @@ export function moveCircles (xScale, yScale, transitionDuration) {
  */
 export function setTitleText (year) {
   d3.select('#graph-g')
-    .append('text')
-    .attr('class', 'title')
-    .style('text-anchor', 'middle')
+    .select('.title')
     .text('Data for year : ' + year)
 }
