@@ -8,6 +8,12 @@ import d3Legend from 'd3-svg-legend'
  * @param {number} width The width of the graph, used to place the legend
  */
 export function drawLegend (colorScale, g, width) {
-  // TODO : Draw the legend using d3Legend
-  // For help, see : https://d3-legend.susielu.com/
+  const legend = d3Legend.legendColor()
+    .scale(colorScale)
+    .shape('circle')
+    .title('Legend')
+
+  g.append('g')
+    .attr('transform', 'translate(' + width + ', -20)')
+    .call(legend)
 }
