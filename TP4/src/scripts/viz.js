@@ -27,11 +27,6 @@ export function positionLabels (g, width, height) {
  * @param {*} colorScale The scale for the circles' color
  */
 export function drawCircles (data, rScale, colorScale) {
-  // TODO : Draw the bubble chart's circles
-  // Each circle's size depends on its population
-  // and each circle's color depends on its continent.
-  // The fill opacity of each circle is 70%
-  // The outline of the circles is white
   d3.select('#graph-g')
     .selectAll('.circles')
     .data(data)
@@ -39,9 +34,10 @@ export function drawCircles (data, rScale, colorScale) {
     .append('circle')
     .attr('class', 'circles')
     .attr('fill', (data) => colorScale(data.Continent))
-    .attr('cx', 100)
-    .attr('cy', 100)
+    .attr('cx', (data) => data.CO2 * 10)
+    .attr('cy', (data) => data.CO2 * 10)
     .attr('r', (data) => rScale(data.Population))
+    .style('opacity', 0.7)
 }
 
 /**
@@ -50,8 +46,13 @@ export function drawCircles (data, rScale, colorScale) {
  * @param {*} tip The tooltip
  */
 export function setCircleHoverHandler (tip) {
-  // TODO : Set hover handler. The tooltip shows on
-  // hover and the opacity goes up to 100% (from 70%)
+  d3.selectAll('.circles')
+    .on('mouseover', function () {
+      d3.select(this).style('opacity', 1).each(tip.show)
+    })
+    .on('mouseout', function () {
+      d3.select(this).style('opacity', 0.7).each(tip.hide)
+    })
 }
 
 /**
