@@ -9,7 +9,7 @@
  * @returns {*} The linear scale used to determine the radius
  */
 export function setRadiusScale (data) {
-  return d3.scaleLinear().domain(data['2000'].map(d => d.Continent)).range([5, 20])
+  return d3.scaleLinear().domain(data['2000'].map(d => d.Population)).range([5, 20])
 }
 
 /**
@@ -34,14 +34,10 @@ export function setColorScale (data) {
  * @returns {*} The linear scale in X
  */
 export function setXScale (width, data) {
-  const firstYearMinGDP = d3.min(data['2000'].map(d => d.GDP))
-  const firstYearMaxGDP = d3.max(data['2000'].map(d => d.GDP))
-
-  const secondYearMinGDP = d3.min(data['2015'].map(d => d.GDP))
-  const secondYearMaxGDP = d3.max(data['2015'].map(d => d.GDP))
-
-  const minGDP = d3.min([firstYearMinGDP, secondYearMinGDP])
-  const maxGDP = d3.max([firstYearMaxGDP, secondYearMaxGDP])
+  const minGDP = d3.min(
+    [...data['2000'].map(d => d.GDP), ...data['2015'].map(d => d.GDP)])
+  const maxGDP = d3.max(
+    [...data['2000'].map(d => d.GDP), ...data['2015'].map(d => d.GDP)])
 
   return d3.scaleLog().domain([minGDP, maxGDP]).range(0, width)
 }
@@ -54,15 +50,10 @@ export function setXScale (width, data) {
  * @returns {*} The linear scale in Y
  */
 export function setYScale (height, data) {
-  const firstYearMinCO2 = d3.min(data['2000'].map(d => d.CO2))
-  const firstYearMaxCO2 = d3.max(data['2000'].map(d => d.CO2))
-
-  const secondYearMinCO2 = d3.min(data['2015'].map(d => d.CO2))
-
-  const secondYearMaxCO2 = d3.max(data['2015'].map(d => d.CO2))
-
-  const maxCO2 = d3.max([firstYearMaxCO2, secondYearMaxCO2])
-  const minCO2 = d3.min([firstYearMinCO2, secondYearMinCO2])
+  const minCO2 = d3.min(
+    [...data['2000'].map(d => d.CO2), ...data['2015'].map(d => d.CO2)])
+  const maxCO2 = d3.max(
+    [...data['2000'].map(d => d.CO2), ...data['2015'].map(d => d.CO2)])
 
   return d3.scaleLog().domain([minCO2, maxCO2]).range(height, 0)
 }
