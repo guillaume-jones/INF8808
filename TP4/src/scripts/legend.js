@@ -14,6 +14,6 @@ export function drawLegend (colorScale, g, width) {
     .title('Legend')
 
   g.append('g')
-    .attr('transform', 'translate(' + width + ', -20)')
+    .attr('transform', 'translate(' + (width + 10) + ', -20)')
     .call(legend)
 }
