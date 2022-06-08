@@ -64,7 +64,17 @@ button:hover, button:active {
 }
 
 .hover {
-    font-family: 'Oswald';
+    font-family: 'Open Sans Condensed';
     font-size: 12px;
     text-align: center;
+}
+
+.label {
+    font-family: 'Open Sans Condensed';
+    font-weight: 'normal'
+}
+
+.legendTitle {
+    font-family: 'Open Sans Condensed';
+    font-weight: 'normal'
 }
