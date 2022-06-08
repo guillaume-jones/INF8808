@@ -31,5 +31,7 @@ export function convertCoordinates (data, projection) {
  * @param {*} data The data to be displayed
  */
 export function simplifyDisplayTitles (data) {
-  // TODO : Simplify the titles as required
+  data.features.forEach((feature) => {
+    feature.properties.TYPE_SITE_INTERVENTION = TITLES[feature.properties.TYPE_SITE_INTERVENTION]
+  })
 }
