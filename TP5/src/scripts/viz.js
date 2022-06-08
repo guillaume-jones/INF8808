@@ -5,7 +5,8 @@
  * @param {object[]} data The data to be displayed
  */
 export function colorDomain (color, data) {
-  // Set the color domain
+  color.domain(data.features.map(
+    (feature) => feature.properties.TYPE_SITE_INTERVENTION).sort())
 }
 
 /**
