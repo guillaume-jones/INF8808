@@ -17,7 +17,17 @@ export function colorDomain (color, data) {
  * @param {Function} showMapLabel The function to call when a neighborhood is hovered
  */
 export function mapBackground (data, path, showMapLabel) {
-  // TODO : Generate the map background and set the hover handlers
+  d3.select('#map-g')
+    .selectAll('path')
+    .data(data.features)
+    .enter()
+    .append('path')
+    .attr('d', path)
+    .attr('fill', '#ced1c5')
+    .attr('stroke', '#ffffff')
+    .attr('stroke-width', 1.5)
+    .on('mouseover', (d) => showMapLabel(d, path))
+    .on('mouseout', () => d3.select('.hover').remove())
 }
 
 /**
@@ -29,8 +39,15 @@ export function mapBackground (data, path, showMapLabel) {
  * @param {*} path The path used to draw the map elements
  */
 export function showMapLabel (d, path) {
-  // TODO : Show the map label at the center of the neighborhood
-  // by calculating the centroid for its polygon
+  const centroid = path.centroid(d)
+  d3.select('.main-svg')
+    .append('text')
+    .attr('class', 'hover')
+    .text(d.properties.NOM)
+    .attr('x', centroid[0])
+    .attr('y', centroid[1])
+    .style('text-anchor', 'middle')
+    .style('dominant-baseline', 'middle')
 }
 
 /**

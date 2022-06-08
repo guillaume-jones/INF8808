@@ -62,3 +62,9 @@ button:hover, button:active {
 #marker-g circle {
     cursor: pointer;
 }
+
+.hover {
+    font-family: 'Oswald';
+    font-size: 12px;
+    text-align: center;
+}
