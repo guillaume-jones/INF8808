@@ -18,6 +18,13 @@ main {
     margin: 10px 50px;
 }
 
+h1 {
+    font-size: xx-large;
+    text-align: center;
+    margin-top: 1.5rem;
+    font-weight: normal;
+}
+
 .main-svg text {
     pointer-events: none;
 }
