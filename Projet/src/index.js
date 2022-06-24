@@ -52,22 +52,20 @@ import * as lineChart from './scripts/lineChart';
   drawMapBackground(montreal, path);
   drawBikePaths(bikePaths, path);
 
-  // Render line chart
-  const g = lineChart.generateG(svgSize.width, svgSize.height);
-  const xScale = lineChart.updateXScale(svgSize.width);
-  const yScale = lineChart.updateYScale(svgSize.height);
-
-  lineChart.drawXAxis(xScale, svgSize.height);
-  lineChart.drawYAxis(yScale);
-
-  lineChart.positionLabels(g, svgSize.width, svgSize.height);
-
   // Get all processed data
   const dataset = createDataset(locationData, counterData, years);
   const mapData = createMapData(dataset, montreal, projection);
   const lineChartData = createLineChartData(dataset, montreal);
   const areaChartData = createAreaChartData(dataset);
   const barChartData = createBarChartData(dataset);
+
+  // Render line chart
+  const g = lineChart.generateG(svgSize.width, svgSize.height);
+  const xScale = lineChart.updateXScale(lineChartData, svgSize.width);
+  const yScale = lineChart.updateYScale(lineChartData, svgSize.height);
+  lineChart.drawXAxis(xScale, svgSize.height);
+  lineChart.drawYAxis(yScale);
+  lineChart.positionLabels(g, svgSize.width, svgSize.height);
 
   // Interactivity and re-drawing
   function redrawVizForCounter(year, counter) {
@@ -77,6 +75,7 @@ import * as lineChart from './scripts/lineChart';
   function redrawVizForYear(year) {
     // Add all viz here, with defaults (ex. averages for areachar and linechart)
     // Called on dropdown change
+    lineChart.drawLineChart(g, lineChartData[year], xScale, yScale);
     drawCircles(mapData[year], circleClickHandler(redrawVizForCounter));
   }
 
@@ -85,5 +84,4 @@ import * as lineChart from './scripts/lineChart';
 
   // Call draw graphs
   redrawVizForYear(year);
-  lineChart.drawLineChart(g, lineChartData, year, xScale, yScale);
 })(d3);

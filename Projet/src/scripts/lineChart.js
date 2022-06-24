@@ -7,11 +7,10 @@
  */
 export function generateG(width, height) {
   return d3
-    .select('#map-svg')
-    .append('g')
-    .attr('id', 'line-svg')
+    .select('#line-svg')
     .attr('width', width)
-    .attr('height', height);
+    .attr('height', height)
+    .attr('transform', 'translate(10, 50)');
 }
 
 /**
@@ -51,8 +50,11 @@ export function appendGraphLabels(g) {
  * @param {number} width The width of the graph
  * @returns {*} The x scale
  */
-export function updateXScale(width) {
-  return d3.scaleLinear().domain([0, 100]).range([0, width]);
+export function updateXScale(data, width) {
+  return d3
+    .scaleLinear()
+    .domain(d3.extent(data.map((d) => d)))
+    .range([0, width]);
 }
 
 /**
@@ -61,8 +63,11 @@ export function updateXScale(width) {
  * @param {number} height The height of the graph
  * @returns {*} The y scale
  */
-export function updateYScale(height) {
-  return d3.scaleLinear().domain([0, 100]).range([height, 0]);
+export function updateYScale(data, height) {
+  return d3
+    .scaleLinear()
+    .domain(d3.extent(data.map((d) => d.counts)))
+    .range([height, 0]);
 }
 
 /**
@@ -113,9 +118,10 @@ export function positionLabels(g, width, height) {
  * @param {*} g  The d3 Selection of the graph's g SVG element
  * @param {object[]} data The data to use to generate the scatter plot
  */
-export function drawLineChart(g, data, year, xScale, yScale) {
+export function drawLineChart(g, data, xScale, yScale) {
   g.append('path')
-    .datum(data)
+    .data(data)
+    .enter()
     .attr('fill', 'none')
     .attr('stroke', 'steelblue')
     .attr('stroke-width', 1.5)
@@ -123,11 +129,11 @@ export function drawLineChart(g, data, year, xScale, yScale) {
       'd',
       d3
         .line()
-        .x(function (d) {
-          return xScale(d[year]);
+        .x((d) => {
+          xScale(d);
         })
-        .y(function (d) {
-          return yScale(d[year].counts);
+        .y((d) => {
+          yScale(d.counts);
         }),
     );
 }
