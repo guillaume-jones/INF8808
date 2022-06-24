@@ -8,11 +8,11 @@
 - Fonction qui donne l'arrondissement pour des coords et montreal.json
 
 #### Comptes
-- Joindre données de tous les CSV des années et filtrer compteurs morts
+- Joindre données de tous les CSV des années, changer IDs pour names, mettre longitude/latitude, filtrer compteurs avec trous
 ```
 {
-    NAME: 
-        '2009':
+    '2009':
+        NAME: 
         [
             {
                 name: 
@@ -22,9 +22,9 @@
             }
             ... X tous les timestamps
         ],
-        '2010':  ...
+        NAME2:  ...
     }
-    NAME2: ...
+    '2010': ...
 }
 ```
 - Somme comptes par compteur et par année (bar chart)
@@ -60,35 +60,35 @@
 - Somme comptes par compteur par jour par année  (line chart)
 ```
 {
-    NAME: {
-        '2009':
+    '2009': {
+        NAME:
             [
                 50,
                 250,
                 300,
                 ... x 365
             ],
-        '2010': ...
+        NAME2: ...
+        AVERAGE: (divisé par # compteurs)
     }
-    NAME2: ...
-    AVERAGE: (divisé par # compteurs)
+    '2010': ...
 }
 ```
 - Somme comptes par compteur par année par 15 minutes (area chart)
 ```
 {
-    NAME: {
-        '2009':
+    '2009': {
+        NAME:
             [
                 0,
                 15,
                 10,
                 ... x 96
             ],
-        '2010': ...
+        NAME2: ...
+        AVERAGE: (divisé par # compteurs)
     }
-    NAME2: ...
-    AVERAGE: (divisé par # compteurs)
+     '2010': ...
 }
 ```
 
