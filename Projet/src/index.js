@@ -15,7 +15,7 @@ import {
   drawBikePaths,
   drawCircles,
 } from './scripts/mapViz';
-import * as year_button from './scripts/year_button.js';
+import { drawDropdown } from './scripts/yearButton.js';
 import {
   dropDownClickHandler,
   circleClickHandler,
@@ -79,7 +79,7 @@ import * as lineChart from './scripts/lineChart';
     drawCircles(mapData[year], circleClickHandler(redrawVizForCounter));
   }
 
-  const year = year_button.drawDropdown(years, svgSize.width);
+  const year = drawDropdown(years, svgSize.width);
   dropDownClickHandler(redrawVizForYear);
 
   // Call draw graphs

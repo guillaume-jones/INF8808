@@ -18,7 +18,7 @@ export function dropDownClickHandler(callback) {
  */
 export function circleClickHandler(callback) {
   return (d) => {
-    const year = d3.select('#dropdownButton').property('value');
+    const year = d3.select('#dropdown').property('value');
     const name = d.name;
     console.log(name);
     callback(year, name);
