@@ -22,8 +22,9 @@ import { getMontrealData, getProjection, getPath } from './scripts/geography';
 
   // Get all raw data
   const years = [
-    2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020,
-    2021,
+    // 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020,2021,
+    2009,
+    2010,
   ];
   const montreal = await getMontrealData();
   const locationData = await getLocationData();
@@ -48,9 +49,16 @@ import { getMontrealData, getProjection, getPath } from './scripts/geography';
 
   function menuClickHandler() {
     d3.select('#dropdownButton').on('change', () => {
-      chosenYear = d3.select('#dropdownButton').property('value');
-      console.log(chosenYear);
-      // update tous les charts
+      const year = d3.select('#dropdownButton').property('value');
+      // Pass year to drawBarChart and drawAreaChart to redraw
+      // Rerun drawLineChart with no name specified (default data)
+    });
+  }
+
+  function pointClickHandler() {
+    d3.selectAll('.circles').on('click', (d) => {
+      const year = d3.select('#dropdownButton').property('value');
+      // Pass d.name, d.neighborhood and lineChartData[year][name] to LineChart
     });
   }
 
