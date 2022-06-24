@@ -39,5 +39,16 @@ import { getMontrealData, getProjection, getPath } from './scripts/geography';
   mapViz.mapBackground(montreal, path);
 
   year_button.drawDropdown('#dropdownButton', years, svgSize.width);
-  var chosenYear = d3.select('#dropdownButton'.properties('value'))
+  var chosenYear = d3.select('#dropdownButton').property('value')
+
+  function menuClickHandler () {
+    d3.select('#dropdownButton')
+      .on('click', () => {
+        chosenYear = d3.select('#dropdownButton').property('value')
+        console.log(chosenYear)
+        // update tous les charts
+      })
+  }
+
+  menuClickHandler()
 })(d3);
