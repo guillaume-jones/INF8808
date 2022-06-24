@@ -1,24 +1,52 @@
 /**
  * Load the CSVs and filters unecessary IDs and empty counters
  *
- * Inputs : All the data CSVs
- *
- * Process :
- * - Filters unecessaty IDs
- * - Removes empty or incomplete counters
- * - Combines the CSVs in one Dataset
- *
- * Outputs : The filtered and combined Dataset
- *
- * @param {object[]} bikeData The dataset with the bicycle count
- * @param {object[]} counterData The dataset with the counter info
  * @returns {object[]} The filtered and combined dataset
  */
-export function filterData (bikeData, counterData) {
-  bikeData.map(rows => {
-    rows = rows.filter(row => row.length !== 0)
-  })
-  return {}
+export async function createDataset() {
+  // bikeData.map(rows => {
+  //   rows = rows.filter(row => row.length !== 0)
+  // })
+
+  const years = [
+    2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020,
+    2021,
+  ];
+
+  const dataset = {};
+
+  const locations = await d3.csv('localisation_des_compteurs_velo.csv');
+
+  console.log(locations);
+
+  years.forEach(async (year) => {
+    dataset[year] = {};
+    const countData = await d3.csv('comptage_velo_' + year + '.csv');
+    // console.log(countData);
+
+    Object.keys(countData[0])
+      // Removes non-counter columns
+      .filter((name) => name !== 'Date' && name !== '')
+      .forEach((name) => {
+        const counter = locations.find((t) => {
+          if (name.includes('compteur')) {
+            // Finds via ID, for 2019-2021 datasets
+            return name.includes(t.ID);
+          } else {
+            // Finds via name, for 2009-2018 datasets
+            return t.Nom === name;
+          }
+        });
+
+        dataset[year][counter.Nom] = {
+          name: counter.Nom,
+          longitude: counter.Longitude,
+          latitude: counter.Latitude,
+        };
+      });
+  });
+
+  return dataset;
 }
 
 /**
