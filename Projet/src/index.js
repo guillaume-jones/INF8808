@@ -15,7 +15,7 @@ import {
   drawBikePaths,
   drawCircles,
 } from './scripts/mapViz';
-import * as year_button from './scripts/year_button.js';
+import * as year_button from './scripts/yearButton.js';
 
 import {
   getMontrealData,

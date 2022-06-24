@@ -64,6 +64,11 @@ export function drawBikePaths(data, path) {
     .attr('stroke-width', 1.5);
 }
 
+function radiusScale(data) {
+  const maxCounts = d3.max(data.map((data) => data.counts));
+  return d3.scaleLinear().domain([0, maxCounts]).range([4, 10]);
+}
+
 /**
  * Draws the counter
  *
@@ -71,6 +76,8 @@ export function drawBikePaths(data, path) {
  * @param callback The callback to call on circle click
  */
 export function drawCircles(data, callback) {
+  const scale = radiusScale(data);
+
   d3.select('#map-circles-g').selectAll('circle').remove();
 
   d3.select('#map-circles-g')
@@ -79,10 +86,10 @@ export function drawCircles(data, callback) {
     .enter()
     .append('circle')
     .attr('class', 'circle')
-    .attr('r', 5)
+    .attr('r', (d) => scale(d.counts))
     .attr('cx', (d) => d.x)
     .attr('cy', (d) => d.y)
-    .attr('fill', '#FF00FF')
+    .attr('fill', '#113bd4')
     .attr('stroke', '#ffffff')
     .attr('stroke-width', 1)
     .on('click', callback);
