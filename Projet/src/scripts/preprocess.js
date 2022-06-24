@@ -14,8 +14,8 @@
  * @param {object[]} counterData The dataset with the counter info
  * @returns {object[]} The filtered and combined dataset
  */
-export function filterData (bikeData, counterData) {
-  return {}
+export function filterData(bikeData, counterData) {
+  return {};
 }
 
 /**

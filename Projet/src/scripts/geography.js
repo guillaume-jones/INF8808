@@ -1,11 +1,11 @@
-const pointInPolygon = require('point-in-polygon');
+import pointInPolygon from 'point-in-polygon';
 
 /** Gets the Montreal geographical data
  *
  * @returns {object[]} Montreal GEOJSON
  */
-export async function getMontrealData () {
-    return await d3.json('montreal.json')
+export async function getMontrealData() {
+  return await d3.json('montreal.json');
 }
 
 /**
@@ -17,26 +17,24 @@ export async function getMontrealData () {
  *
  * @returns {string} Neighborhood of point or empty if not found
  */
-export function determineNeighborhood (x, y, montreal) {
-    let returnName = ''
+export function determineNeighborhood(x, y, montreal) {
+  let returnName = '';
 
-    montreal.forEach((feature) => {
-        if (pointInPolygon([x, y], feature.geometry.coordinates[0][0])) {
-            returnName = feature.properties.NOM
-        } 
-    })
+  montreal.forEach((feature) => {
+    if (pointInPolygon([x, y], feature.geometry.coordinates[0][0])) {
+      returnName = feature.properties.NOM;
+    }
+  });
 
-    return returnName
+  return returnName;
 }
 
 /** Gets the map projection function
  *
  * @returns Projection function in Mercator for Montreal
  */
-export function getProjection () {
-    return d3.geoMercator()
-      .center([-73.708879, 45.579611])
-      .scale(70000)
+export function getProjection() {
+  return d3.geoMercator().center([-73.708879, 45.579611]).scale(70000);
 }
 
 /** Gets the path function
@@ -45,9 +43,8 @@ export function getProjection () {
  *
  * @returns Path function for Montreal
  */
- export function getPath (projection) {
-    return d3.geoPath()
-    .projection(projection)
+export function getPath(projection) {
+  return d3.geoPath().projection(projection);
 }
 
 /** Gets the XY positions on the map viz for a given set of coordinates
@@ -57,10 +54,10 @@ export function getProjection () {
  *
  * @returns {x: number, y: number}
  */
- export function convertCoordinatesToXY (longitude, latitude, projection) {
-    const projected = projection([longitude, latitude])
-    return {
-        x: projected[0],
-        y: projected[1]
-    }
+export function convertCoordinatesToXY(longitude, latitude, projection) {
+  const projected = projection([longitude, latitude]);
+  return {
+    x: projected[0],
+    y: projected[1],
+  };
 }
