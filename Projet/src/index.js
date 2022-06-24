@@ -43,7 +43,7 @@ import { getMontrealData, getProjection, getPath } from './scripts/geography';
 
   function menuClickHandler () {
     d3.select('#dropdownButton')
-      .on('click', () => {
+      .on('change', () => {
         chosenYear = d3.select('#dropdownButton').property('value')
         console.log(chosenYear)
         // update tous les charts
