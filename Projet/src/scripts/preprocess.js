@@ -1,24 +1,60 @@
-/**
- * Load the CSVs and filters unecessary IDs and empty counters
+/** Load the CSV data and augments with location data
  *
- * Inputs : All the data CSVs
+ * Filters out partial data
+ * Organizes into a reusable object
  *
- * Process :
- * - Filters unecessaty IDs
- * - Removes empty or incomplete counters
- * - Combines the CSVs in one Dataset
- *
- * Outputs : The filtered and combined Dataset
- *
- * @param {object[]} bikeData The dataset with the bicycle count
- * @param {object[]} counterData The dataset with the counter info
  * @returns {object[]} The filtered and combined dataset
  */
-export function filterData (bikeData, counterData) {
-  bikeData.map(rows => {
-    rows = rows.filter(row => row.length !== 0)
-  })
-  return {}
+export async function createDataset() {
+  const years = [
+    2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020,
+    2021,
+  ];
+
+  const dataset = {};
+
+  const locations = await d3.csv('localisation_des_compteurs_velo.csv');
+
+  years.forEach(async (year) => {
+    dataset[year] = {};
+    const countData = await d3.csv('comptage_velo_' + year + '.csv');
+
+    // Removes non-counter columns and columns with missing data
+    const acceptedCounters = Object.keys(countData[0]).filter((name) => {
+      return name !== 'Date' && name !== '' && countData[0][name] !== '';
+    });
+
+    // Creates counter objects per-year
+    acceptedCounters.forEach((name) => {
+      const counter = locations.find((t) => {
+        if (name.includes('compteur')) {
+          // Finds via ID, for 2019-2021 datasets
+          return name.includes(t.ID);
+        } else {
+          // Finds via name, for 2009-2018 datasets
+          return t.Nom === name;
+        }
+      });
+
+      dataset[year][name] = {
+        name: counter.Nom,
+        longitude: counter.Longitude,
+        latitude: counter.Latitude,
+        count: [],
+      };
+    });
+
+    // Iterates through year's dataset to add counts to each counter
+    countData.forEach((timestep) => {
+      Object.entries(timestep)
+        .filter(([name]) => acceptedCounters.includes(name))
+        .forEach(([name, count]) => {
+          dataset[year][name].count.push(count);
+        });
+    });
+  });
+
+  return dataset;
 }
 
 /**
