@@ -45,22 +45,23 @@ import { getMontrealData, getProjection, getPath } from './scripts/geography';
   const barChartData = createBarChartData(dataset);
 
   year_button.drawDropdown('#dropdownButton', years, svgSize.width);
-  var chosenYear = d3.select('#dropdownButton').property('value');
+  var year = d3.select('#dropdownButton').property('value');
+  // Call draw graphs
 
   function menuClickHandler() {
     d3.select('#dropdownButton').on('change', () => {
       const year = d3.select('#dropdownButton').property('value');
-      // Pass year to drawBarChart and drawAreaChart to redraw
+      // Pass year to drawBarChart, drawMapCircles and drawAreaChart to redraw
       // Rerun drawLineChart with no name specified (default data)
     });
   }
+  menuClickHandler();
 
   function pointClickHandler() {
     d3.selectAll('.circles').on('click', (d) => {
       const year = d3.select('#dropdownButton').property('value');
-      // Pass d.name, d.neighborhood and lineChartData[year][name] to LineChart
+      // Pass d.name, d.neighborhood and lineChartData[year][name] to drawLinechart
     });
   }
-
-  menuClickHandler();
+  pointClickHandler();
 })(d3);
