@@ -35,11 +35,12 @@
 {
     NAME: 
         [
-            14500,
-            19000,
-            ... x nombre d'années
+            {
+                year: 2009
+                counts: 14500
+            }
+            ... x nombre d'années du compteur
         ],
-    }
     NAME2: ...
     AVERAGE: ... (divisé par # compteurs)
 }
@@ -65,12 +66,17 @@
 {
     '2009': {
         NAME:
-            [
-                50,
-                250,
-                300,
-                ... x 365
-            ],
+            {
+                name:
+                neighborhood:
+                counts:
+                [
+                    50,
+                    250,
+                    300,
+                    ... x 365
+                ]
+            }
         NAME2: ...
         AVERAGE: (divisé par # compteurs)
     }
