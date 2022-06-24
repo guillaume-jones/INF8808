@@ -38,5 +38,6 @@ import { getMontrealData, getProjection, getPath } from './scripts/geography';
   mapViz.generateMapG(svgSize.width, svgSize.height);
   mapViz.mapBackground(montreal, path);
 
-  year_button.drawDropdown('dropdownButton', years[0], svgSize.width);
+  year_button.drawDropdown('#dropdownButton', years, svgSize.width);
+  var chosenYear = d3.select('#dropdownButton'.properties('value'))
 })(d3);
