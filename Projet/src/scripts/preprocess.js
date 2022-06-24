@@ -4,86 +4,106 @@ function sum(a) {
   return a.reduce((b, c) => b + (isNaN(c) ? 0 : c));
 }
 
-/** Load the CSV data and augments with location data
+/** Load counter CSVs
+ *
+ * @param {number[]} years Array of years to load
+ *
+ * @returns {object[]} Array of data by year
+ */
+export async function getCounterData(years) {
+  const counterData = {};
+  // Required due to asynchronous loop
+  await Promise.all(
+    years.map(async (year) => {
+      counterData[year] = await d3.csv('comptage_velo_' + year + '.csv');
+    }),
+  );
+
+  return counterData;
+}
+
+/** Load location CSV
+ *
+ * @returns {object} Location data
+ */
+export async function getLocationData() {
+  return await d3.csv('localisation_des_compteurs_velo.csv');
+}
+
+/** Convert location and counter data into usable dataset
  *
  * Filters out partial data
- * Organizes into a reusable object
+ * Harmonizes IDs and names
+ * Organizes by year, counter name, date and time
+ *
+ * @param {object} locations Location data from CSV
+ * @param {object[]} counters Counter data from CSV
+ * @param {object} years Years of data loaded into counters
  *
  * @returns {object[]} The filtered and combined dataset
  */
-export async function createDataset() {
-  const years = [
-    2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020,
-    2021,
-  ];
-
+export function createDataset(locations, counters, years) {
   const dataset = {};
 
-  const locations = await d3.csv('localisation_des_compteurs_velo.csv');
+  years.forEach((year) => {
+    const counterData = counters[year];
+    dataset[year] = {};
 
-  // Required to load all the data before returning
-  await Promise.all(
-    years.map(async (year) => {
-      dataset[year] = {};
-      const countData = await d3.csv('comptage_velo_' + year + '.csv');
+    // Keeps only data columns
+    const acceptedCounters = Object.keys(counterData[0]).filter((name) => {
+      return name !== 'Date' && name !== '';
+    });
 
-      // Removes non-counter columns and columns with missing data
-      const acceptedCounters = Object.keys(countData[0]).filter((name) => {
-        return name !== 'Date' && name !== '' && countData[0][name] !== '';
+    // Gets relevant data for each counter from location dataset
+    acceptedCounters.forEach((name) => {
+      const counter = locations.find((t) => {
+        if (name.includes('compteur')) {
+          // Finds via ID, for 2019-2021 datasets
+          return name.includes(t.ID);
+        } else {
+          // Finds via name, for 2009-2018 datasets
+          return t.Nom === name;
+        }
       });
 
-      // Creates counter objects per-year
-      acceptedCounters.forEach((name) => {
-        const counter = locations.find((t) => {
-          if (name.includes('compteur')) {
-            // Finds via ID, for 2019-2021 datasets
-            return name.includes(t.ID);
-          } else {
-            // Finds via name, for 2009-2018 datasets
-            return t.Nom === name;
+      dataset[year][counter.Nom] = {
+        name: counter.Nom,
+        longitude: counter.Longitude,
+        latitude: counter.Latitude,
+        counts: [],
+      };
+    });
+
+    // Iterates through counterData to add counts to each counter
+    counterData.forEach((timestep) => {
+      let date = undefined;
+      let time = '00:00';
+
+      Object.entries(timestep)
+        .map(([key, value]) => {
+          if (key === 'Date') {
+            const dateTime = value.split(' ');
+            date = dateTime[0];
+            // Gets time as well for datasets after 2018
+            if (dateTime.length > 1) {
+              time = dateTime[1];
+            }
           }
-        });
-
-        console.log(counter.Nom);
-        dataset[year][counter.Nom] = {
-          name: counter.Nom,
-          longitude: counter.Longitude,
-          latitude: counter.Latitude,
-          counts: [],
-        };
-      });
-
-      // Iterates through year's dataset to add counts to each counter
-      countData.forEach((timestep) => {
-        let date = undefined;
-        let time = '00:00';
-
-        Object.entries(timestep)
-          .map(([key, value]) => {
-            if (key === 'Date') {
-              const dateTime = value.split(' ');
-              date = dateTime[0];
-              // Gets time as well for datasets after 2018
-              if (dateTime.length > 1) {
-                time = dateTime[1];
-              }
-            }
-            return [key, value];
-          })
-          .filter(([name]) => acceptedCounters.includes(name))
-          .forEach(([name, count]) => {
-            if (year > 2018) {
-              name = locations.find((t) => name.includes(t.ID)).Nom;
-            }
-            dataset[year][name].counts.push({
-              date: date,
-              time: time,
-              count: parseInt(count),
-            });
+          return [key, value];
+        })
+        .filter(([name]) => acceptedCounters.includes(name))
+        .forEach(([name, count]) => {
+          if (parseInt(year) > 2018) {
+            name = locations.find((t) => name.includes(t.ID)).Nom;
+          }
+          dataset[year][name].counts.push({
+            date: date,
+            time: time,
+            count: parseInt(count),
           });
-      });
-    }),
-  );
+        });
+    });
+  });
 
   return dataset;
 }

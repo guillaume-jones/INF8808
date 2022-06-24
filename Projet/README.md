@@ -111,3 +111,6 @@
 - Line chart
 - Area chart
 - Bar chart
+
+### Left for final release
+- Deal with inactive counters properly
