@@ -5,6 +5,7 @@ import {
   createDataset,
   getLocationData,
   getCounterData,
+  group,
 } from './scripts/preprocess';
 import * as mapViz from './scripts/mapViz';
 import * as year_button from './scripts/year_button.js';
@@ -19,7 +20,7 @@ import { getMontrealData, getProjection, getPath } from './scripts/geography';
 
   // Get all raw data
   const years = [
-    2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020,
+    // 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020,
     2021,
   ];
   const montreal = await getMontrealData();
@@ -28,8 +29,10 @@ import { getMontrealData, getProjection, getPath } from './scripts/geography';
 
   // Get all processed data
   const dataset = createDataset(locationData, counterData, years);
-  // const barChartData = createBarChartData(dataset);
-  // const lineChartData = createLineChartData(dataset, montreal);
+  const barChartData = createBarChartData(dataset);
+  const lineChartData = createLineChartData(dataset, montreal);
+  console.log(dataset);
+  console.log(lineChartData);
 
   // Render map
   const projection = getProjection();

@@ -1,7 +1,17 @@
 import { determineNeighborhood } from './geography';
 
-function sum(a) {
-  return a.reduce((b, c) => b + (isNaN(c) ? 0 : c));
+function sum(a, key = '') {
+  if (key) {
+    a = a.map((a) => a[key]);
+  }
+  return a.reduce((b, c) => b + (isNaN(c) ? 0 : c), 0);
+}
+
+function groupSum(a, key, key2) {
+  return a.reduce((b, c) => {
+    b[c[key]] = (b[c[key]] || 0) + c[key2];
+    return b;
+  }, {});
 }
 
 /** Load counter CSVs
@@ -122,8 +132,9 @@ export function createBarChartData(dataset) {
     Object.entries(yearData).forEach(([counter, counterData]) => {
       const counterSum = {
         year: year,
-        counts: sum(counterData.counts),
+        counts: sum(counterData.counts, 'count'),
       };
+
       allCounts += counterSum.counts;
 
       barChartData[counter]
@@ -159,14 +170,11 @@ export function createLineChartData(dataset, montreal) {
     // Sums counts across each day for each counter
     // Also adds neighborhood
     Object.entries(yearData).forEach(([counter, counterData]) => {
-      let newCounts = [];
+      let newCounts = counterData.counts;
 
-      const countsLength = counterData.counts.length;
-      if (countsLength > 366) {
-        // TODO : Combine counts
-        // For some reason, there are more than 365 * 24 * 4 rows in 2019 and 2020 (???)
-      } else {
-        newCounts = counterData.counts;
+      // Years 2019-2021 need to group the data by day
+      if (counterData.counts.length > 366) {
+        newCounts = groupSum(counterData.counts, 'date', 'count');
       }
 
       lineChartData[year][counter] = {
