@@ -33,16 +33,3 @@
       .attr('font-size', '10px')
       .attr('fill', '#362023')
   }
-
-  /**
-   * Handles the selection of the year by the user by clicking
-   */
-  export function yearSelection (currentYear) {
-    d3.select('.button')
-      .on('click', () => {
-        const previousYear = currentYear
-        currentYear = (currentYear === 2009 ? 2022 : 2009)
-        // build() // Update quand on va avoir la carte
-        d3.select('.button').select('.button-text').text('Data for year ' + previousYear)
-      })
-  }
