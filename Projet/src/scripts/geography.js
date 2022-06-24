@@ -1,23 +1,26 @@
 const pointInPolygon = require('point-in-polygon');
 
-/**
- * Determines the Neighborhood of a specific counter based on its coordinates
+/** Gets the Montreal geographical data
  * 
- * Inputs : x and y coordinates
- *          montreal.json
- * 
- * Process :
- *  - 
- *  - Transforms the coordinates in pixels
- * 
- * Output : The Neighborhood in which the counter is located (string)
- *          The transformed coordinates
+ * @returns {object[]} Montreal GEOJSON
  */
-export async function determineNeighborhood(x, y)  {
-    const raw_montreal = await d3.json('montreal.json')
-    let return_name
-    
-    raw_montreal.features.forEach((feature) => {
+ export async function getMontrealData() {
+    return await d3.json('montreal.json')
+}
+
+/**
+ * Determines the neighborhood based on coordinates
+ * 
+ * @param x Longitude of point (float)
+ * @param y Latitude of point (float)
+ * @param montreal Pre-loaded JSON of Montreal data
+ * 
+ * @returns {string} Neighborhood of point or empty if not found 
+ */
+export function determineNeighborhood(x, y, montreal)  {
+    let return_name = ''
+
+    montreal.forEach((feature) => {
         if (pointInPolygon([x, y], feature.geometry.coordinates[0][0])) {
             return_name = feature.properties.NOM
         } 
@@ -26,15 +29,38 @@ export async function determineNeighborhood(x, y)  {
     return return_name
 }
 
-/**
- * Transforms the coordinates of the bicycle lanes network in pixels
+/** Gets the map projection function
  * 
- * Inputs : reseau_cyclable.geojson
- * 
- * Process :
- *  - For each bicyle lane : Get the coordinates
- *                           Convert in pixels
- *  - Generate a map of the network
- * 
- * Output : The bicyle lanes network converted in pixels
+ * @returns Projection function in Mercator for Montreal
  */
+export function getProjection () {
+    return d3.geoMercator()
+      .center([-73.708879, 45.579611])
+      .scale(70000)
+}
+
+/** Gets the path function
+ * 
+ * @param projection Projection in Mercator for Montreal
+ * 
+ * @returns Path function for Montreal
+ */
+ export function getPath (projection) {
+    return d3.geoPath()
+    .projection(projection)
+}
+
+/** Gets the XY positions on the map viz for a given set of coordinates
+ * @param {number} longitude Longitude to convert
+ * @param {number} latitude Latitude to convert
+ * @param projection Projection in Mercator for Montreal
+ * 
+ * @returns {x: number, y: number}
+ */
+ export function convertCoordinatesToXY (longitude, latitude, projection) {
+    const projected = projection([longitude, latitude])
+    return {
+        x: projected[0],
+        y: projected[1],
+    }
+}
