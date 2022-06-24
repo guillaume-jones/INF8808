@@ -8,6 +8,14 @@ export async function getMontrealData() {
   return await d3.json('montreal.json');
 }
 
+/** Gets the Montreal geographical data
+ *
+ * @returns {object[]} Montreal's cycling network GEOJSON
+ */
+export async function getcyclingNetwork() {
+  return await d3.json('reseau_cyclable.geojson');
+}
+
 /**
  * Determines the neighborhood based on coordinates
  *
