@@ -18,7 +18,7 @@
  *          montreal.json
  * 
  * Process :
- *  - Je sais pas comment on va faire ca lol
+ *  - 
  *  - Transforms the coordinates in pixels
  * 
  * Output : The Neighborhood in which the counter is located (string)
@@ -27,13 +27,22 @@
 
 
 /**
- * Transforms the coordinates 
+ * Transforms the coordinates of the bicycle lanes network in pixels
+ * 
+ * Inputs : reseau_cyclable.geojson
+ * 
+ * Process :
+ *  - For each bicyle lane : Get the coordinates
+ *                           Convert in pixels
+ *  - Generate a map of the network
+ * 
+ * Output : The bicyle lanes network converted in pixels
  */
 
 /**
  * Generates the data for the map
  * 
- * Inputs : Dataset
+ * Inputs : Filtered Dataset
  * 
  * Process :
  *  - Filters data for the selected year
