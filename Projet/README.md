@@ -88,12 +88,16 @@
 {
     '2009': {
         NAME:
-            [
-                0,
-                15,
-                10,
-                ... x 96
-            ],
+            {
+                name:
+                counts:
+                [
+                    0,
+                    15,
+                    10,
+                    ... x 96
+                ],
+            }
         NAME2: ...
         AVERAGE: (divisé par # compteurs)
     }
@@ -114,3 +118,4 @@
 
 ### Left for final release
 - Deal with inactive counters properly
+- Add loading animation before showing data

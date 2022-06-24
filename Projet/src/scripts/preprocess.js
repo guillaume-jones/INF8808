@@ -1,4 +1,4 @@
-import { determineNeighborhood } from './geography';
+import { convertCoordinatesToXY, determineNeighborhood } from './geography';
 
 function sum(a, key = '') {
   if (key) {
@@ -118,42 +118,37 @@ export function createDataset(locations, counters, years) {
   return dataset;
 }
 
-/** Generates data in format for bar chart
+/** Generates data in format for map
  *
  * @param {object} dataset Dataset created by createDataset
+ * @param montreal Pre-loaded JSON of Montreal data
+ * @param projection Projection used for the map
+ *
+ * @returns {object} Data for Area chart
  */
-export function createBarChartData(dataset) {
-  const barChartData = {};
+export function createMapData(dataset, montreal, projection) {
+  const mapData = {};
 
   Object.entries(dataset).forEach(([year, yearData]) => {
-    let allCounts = 0;
-
-    // Sums counts across entire year for each counter
-    Object.entries(yearData).forEach(([counter, counterData]) => {
-      const counterSum = {
-        year: year,
+    mapData[year] = Object.entries(yearData).map(([counter, counterData]) => {
+      return {
+        name: counter,
+        neighborhood: determineNeighborhood(
+          counterData.longitude,
+          counterData.latitude,
+          montreal,
+        ),
         counts: sum(counterData.counts, 'count'),
+        ...convertCoordinatesToXY(
+          counterData.longitude,
+          counterData.latitude,
+          projection,
+        ),
       };
-
-      allCounts += counterSum.counts;
-
-      barChartData[counter]
-        ? barChartData[counter].push(counterSum)
-        : (barChartData[counter] = [counterSum]);
     });
-
-    // Adds average of all sensors for year for default view
-    const average = {
-      year: year,
-      counts: Math.round(allCounts / Object.keys(yearData).length),
-    };
-
-    barChartData['Average']
-      ? barChartData['Average'].push(average)
-      : (barChartData['Average'] = [average]);
   });
 
-  return barChartData;
+  return mapData;
 }
 
 /** Generates data in format for line chart
@@ -219,6 +214,8 @@ export function createLineChartData(dataset, montreal) {
 /** Generates data in format for area chart
  *
  * @param {object} dataset Dataset created by createDataset
+ *
+ * @returns {object} Data for Area chart
  */
 export function createAreaChartData(dataset) {
   const areaChartData = {};
@@ -267,17 +264,40 @@ export function createAreaChartData(dataset) {
   return areaChartData;
 }
 
-/**
- * Generates the data for the map
+/** Generates data in format for bar chart
  *
- * Inputs : Filtered Dataset
- *
- * Process :
- *  - Filters data for the selected year
- *  - Computes the sum of each counter for the given year
- *  - Extracts the x and y position of each counter
- *  - Determines the Neighborhood of each counter based on coordinates (calls determine neighborhood)
- *  - Extracts the name of the counter
- *
- * Output : Returns a list containing all the information for each counter on the given year
+ * @param {object} dataset Dataset created by createDataset
  */
+export function createBarChartData(dataset) {
+  const barChartData = {};
+
+  Object.entries(dataset).forEach(([year, yearData]) => {
+    let allCounts = 0;
+
+    // Sums counts across entire year for each counter
+    Object.entries(yearData).forEach(([counter, counterData]) => {
+      const counterSum = {
+        year: year,
+        counts: sum(counterData.counts, 'count'),
+      };
+
+      allCounts += counterSum.counts;
+
+      barChartData[counter]
+        ? barChartData[counter].push(counterSum)
+        : (barChartData[counter] = [counterSum]);
+    });
+
+    // Adds average of all sensors for year for default view
+    const average = {
+      year: year,
+      counts: Math.round(allCounts / Object.keys(yearData).length),
+    };
+
+    barChartData['Average']
+      ? barChartData['Average'].push(average)
+      : (barChartData['Average'] = [average]);
+  });
+
+  return barChartData;
+}

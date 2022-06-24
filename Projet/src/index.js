@@ -7,6 +7,7 @@ import {
   getCounterData,
   group,
   createAreaChartData,
+  createMapData,
 } from './scripts/preprocess';
 import * as mapViz from './scripts/mapViz';
 import * as year_button from './scripts/year_button.js';
@@ -28,20 +29,19 @@ import { getMontrealData, getProjection, getPath } from './scripts/geography';
   const locationData = await getLocationData();
   const counterData = await getCounterData(years);
 
-  // Get all processed data
-  const dataset = createDataset(locationData, counterData, years);
-  const barChartData = createBarChartData(dataset);
-  const lineChartData = createLineChartData(dataset, montreal);
-  const areaChartData = createAreaChartData(dataset);
-  console.log(dataset);
-  console.log(areaChartData);
-
   // Render map
   const projection = getProjection();
   const path = getPath(projection);
   mapViz.setCanvasSize(svgSize.width, svgSize.height);
   mapViz.generateMapG(svgSize.width, svgSize.height);
   mapViz.mapBackground(montreal, path);
+
+  // Get all processed data
+  const dataset = createDataset(locationData, counterData, years);
+  const mapData = createMapData(dataset, montreal, projection);
+  const lineChartData = createLineChartData(dataset, montreal);
+  const areaChartData = createAreaChartData(dataset);
+  const barChartData = createBarChartData(dataset);
 
   year_button.drawDropdown('#dropdownButton', years, svgSize.width);
   var chosenYear = d3.select('#dropdownButton').property('value');
