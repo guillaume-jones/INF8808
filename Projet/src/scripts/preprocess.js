@@ -1,13 +1,11 @@
-/**
- * Load the CSVs and filters unecessary IDs and empty counters
+/** Load the CSV data and augments with location data
+ *
+ * Filters out partial data
+ * Organizes into a reusable object
  *
  * @returns {object[]} The filtered and combined dataset
  */
 export async function createDataset() {
-  // bikeData.map(rows => {
-  //   rows = rows.filter(row => row.length !== 0)
-  // })
-
   const years = [
     2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020,
     2021,
@@ -17,33 +15,43 @@ export async function createDataset() {
 
   const locations = await d3.csv('localisation_des_compteurs_velo.csv');
 
-  console.log(locations);
-
   years.forEach(async (year) => {
     dataset[year] = {};
     const countData = await d3.csv('comptage_velo_' + year + '.csv');
-    // console.log(countData);
 
-    Object.keys(countData[0])
-      // Removes non-counter columns
-      .filter((name) => name !== 'Date' && name !== '')
-      .forEach((name) => {
-        const counter = locations.find((t) => {
-          if (name.includes('compteur')) {
-            // Finds via ID, for 2019-2021 datasets
-            return name.includes(t.ID);
-          } else {
-            // Finds via name, for 2009-2018 datasets
-            return t.Nom === name;
-          }
-        });
+    // Removes non-counter columns and columns with missing data
+    const acceptedCounters = Object.keys(countData[0]).filter((name) => {
+      return name !== 'Date' && name !== '' && countData[0][name] !== '';
+    });
 
-        dataset[year][counter.Nom] = {
-          name: counter.Nom,
-          longitude: counter.Longitude,
-          latitude: counter.Latitude,
-        };
+    // Creates counter objects per-year
+    acceptedCounters.forEach((name) => {
+      const counter = locations.find((t) => {
+        if (name.includes('compteur')) {
+          // Finds via ID, for 2019-2021 datasets
+          return name.includes(t.ID);
+        } else {
+          // Finds via name, for 2009-2018 datasets
+          return t.Nom === name;
+        }
       });
+
+      dataset[year][name] = {
+        name: counter.Nom,
+        longitude: counter.Longitude,
+        latitude: counter.Latitude,
+        count: [],
+      };
+    });
+
+    // Iterates through year's dataset to add counts to each counter
+    countData.forEach((timestep) => {
+      Object.entries(timestep)
+        .filter(([name]) => acceptedCounters.includes(name))
+        .forEach(([name, count]) => {
+          dataset[year][name].count.push(count);
+        });
+    });
   });
 
   return dataset;
