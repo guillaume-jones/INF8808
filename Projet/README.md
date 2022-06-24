@@ -120,3 +120,4 @@
 - Deal with inactive counters properly
 - Add loading animation before showing data
 - Spruce up the map colors
+- Style dropdown

@@ -9,10 +9,19 @@ import {
   createAreaChartData,
   createMapData,
 } from './scripts/preprocess';
-import * as mapViz from './scripts/mapViz';
+import {
+  generateMapGroups,
+  drawMapBackground,
+  drawBikePaths,
+} from './scripts/mapViz';
 import * as year_button from './scripts/year_button.js';
 
-import { getMontrealData, getProjection, getPath } from './scripts/geography';
+import {
+  getMontrealData,
+  getProjection,
+  getPath,
+  getBikePaths,
+} from './scripts/geography';
 import {
   dropDownClickHandler,
   circleClickHandler,
@@ -31,15 +40,16 @@ import {
     2010,
   ];
   const montreal = await getMontrealData();
+  const bikePaths = await getBikePaths();
   const locationData = await getLocationData();
   const counterData = await getCounterData(years);
 
   // Render map
   const projection = getProjection();
   const path = getPath(projection);
-  mapViz.setCanvasSize(svgSize.width, svgSize.height);
-  mapViz.generateMapG(svgSize.width, svgSize.height);
-  mapViz.mapBackground(montreal, path);
+  generateMapGroups(svgSize.width, svgSize.height);
+  drawMapBackground(montreal, path);
+  drawBikePaths(bikePaths, path);
 
   // Get all processed data
   const dataset = createDataset(locationData, counterData, years);
