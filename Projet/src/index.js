@@ -13,6 +13,10 @@ import * as mapViz from './scripts/mapViz';
 import * as year_button from './scripts/year_button.js';
 
 import { getMontrealData, getProjection, getPath } from './scripts/geography';
+import {
+  dropDownClickHandler,
+  circleClickHandler,
+} from './scripts/clickHandlers';
 
 (async function (d3) {
   const svgSize = {
@@ -44,24 +48,12 @@ import { getMontrealData, getProjection, getPath } from './scripts/geography';
   const areaChartData = createAreaChartData(dataset);
   const barChartData = createBarChartData(dataset);
 
+  // Interactivity
   year_button.drawDropdown('#dropdownButton', years, svgSize.width);
+  dropDownClickHandler();
+  circleClickHandler();
+
+  // Draw visualizations
   var year = d3.select('#dropdownButton').property('value');
   // Call draw graphs
-
-  function menuClickHandler() {
-    d3.select('#dropdownButton').on('change', () => {
-      const year = d3.select('#dropdownButton').property('value');
-      // Pass year to drawBarChart, drawMapCircles and drawAreaChart to redraw
-      // Rerun drawLineChart with no name specified (default data)
-    });
-  }
-  menuClickHandler();
-
-  function pointClickHandler() {
-    d3.selectAll('.circles').on('click', (d) => {
-      const year = d3.select('#dropdownButton').property('value');
-      // Pass d.name, d.neighborhood and lineChartData[year][name] to drawLinechart
-    });
-  }
-  pointClickHandler();
 })(d3);
