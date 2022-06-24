@@ -27,6 +27,7 @@ import {
   getBikePaths,
 } from './scripts/geography';
 import * as lineChart from './scripts/lineChart';
+import * as barChartViz from './scripts/barChartViz.js';
 
 (async function (d3) {
   const svgSize = {
@@ -69,6 +70,7 @@ import * as lineChart from './scripts/lineChart';
 
   // Interactivity and re-drawing
   function redrawVizForCounter(year, counter) {
+    barChartViz.buildBarChart(barChartData, '#bar-svg')
     // Add barchart, areachart and linechart here
     // Called on counter click
   }
