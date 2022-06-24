@@ -15,17 +15,17 @@ import {
   drawBikePaths,
 } from './scripts/mapViz';
 import * as year_button from './scripts/year_button.js';
-
+import {
+  dropDownClickHandler,
+  circleClickHandler,
+} from './scripts/clickHandlers';
 import {
   getMontrealData,
   getProjection,
   getPath,
   getBikePaths,
 } from './scripts/geography';
-import {
-  dropDownClickHandler,
-  circleClickHandler,
-} from './scripts/clickHandlers';
+import * as lineChart from './scripts/lineChart';
 
 (async function (d3) {
   const svgSize = {
@@ -51,6 +51,16 @@ import {
   drawMapBackground(montreal, path);
   drawBikePaths(bikePaths, path);
 
+  // Render line chart
+  const g = lineChart.generateG(svgSize.width, svgSize.height);
+  const xScale = lineChart.updateXScale(svgSize.width);
+  const yScale = lineChart.updateYScale(svgSize.height);
+
+  lineChart.drawXAxis(xScale, svgSize.height);
+  lineChart.drawYAxis(yScale);
+
+  lineChart.positionLabels(g, svgSize.width, svgSize.height);
+
   // Get all processed data
   const dataset = createDataset(locationData, counterData, years);
   const mapData = createMapData(dataset, montreal, projection);
@@ -66,4 +76,5 @@ import {
   // Draw visualizations
   var year = d3.select('#dropdownButton').property('value');
   // Call draw graphs
+  lineChart.drawLineChart(g, lineChartData, year, xScale, yScale);
 })(d3);

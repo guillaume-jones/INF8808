@@ -10,7 +10,7 @@ export async function getMontrealData() {
 
 /** Gets the Montreal geographical data
  *
- * @returns {object[]} Montreal's cycling network GEOJSON
+ * @returns {object[]} Montreal's bike path GEOJSON
  */
 export async function getBikePaths() {
   return await d3.json('reseau_cyclable.geojson');
