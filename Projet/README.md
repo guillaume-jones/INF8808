@@ -13,15 +13,17 @@
 {
     '2009':
         NAME: 
-        [
-            {
-                name: 
-                counts: 
-                latitude:
-                longitude:
-            }
-            ... X tous les timestamps
-        ],
+        {
+            name: 
+            longitude:
+            latitude: 
+            counts: 
+            [
+                1,
+                2,
+                ... X tous les timestamps
+            ],
+        }
         NAME2:  ...
     }
     '2010': ...
