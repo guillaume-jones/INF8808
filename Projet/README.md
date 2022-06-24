@@ -9,43 +9,52 @@
 
 #### Comptes
 - Joindre données de tous les CSV des années et filtrer compteurs morts
+```
+{
+    NAME: 
+        '2009':
+        [
+            {
+                name: 
+                counts: 
+                latitude:
+                longitude:
+            }
+            ... X tous les timestamps
+        ],
+        '2010':  ...
+    }
+    NAME2: ...
+}
+```
 - Somme comptes par compteur et par année (bar chart)
 ```
 {
     NAME: 
         [
-            {
-                name: 
-                counts: 
-                neighborhood: 
-                x:
-                y:
-            }
-            ...
+            14500,
+            19000,
+            ... x nombre d'années
         ],
     }
     NAME2: ...
-    DEFAULT: ... (divisé par # compteurs)
+    AVERAGE: ... (divisé par # compteurs)
 }
 ```
 - Somme comptes par compteur et par année (map)
 ```
 {
-    NAME: {
-        '2009': 
-            [
-                {
-                    name: 
-                    counts: 
-                    neighborhood: 
-                    x:
-                    y:
-                }
-                ...
-            ],
-        '2010': ...
-    }
-    NAME2: ...
+    '2009': [
+        {
+            name: 
+            counts: 
+            neighborhood: 
+            x:
+            y:
+        }
+        ... x nombre de compteurs
+    ],
+    '2010': ...
 }
 ```
 - Somme comptes par compteur par jour par année  (line chart)
@@ -54,36 +63,32 @@
     NAME: {
         '2009':
             [
-                {
-                    name:   
-                    counts: 
-                    day: (0-365)
-                }
-                ...
+                50,
+                250,
+                300,
+                ... x 365
             ],
         '2010': ...
     }
     NAME2: ...
-    DEFAULT: (divisé par # compteurs)
+    AVERAGE: (divisé par # compteurs)
 }
 ```
-- Somme comptes par compteur par 15 minutes par année (area chart)
+- Somme comptes par compteur par année par 15 minutes (area chart)
 ```
 {
     NAME: {
         '2009':
             [
-                {
-                    name: 
-                    counts: 
-                    15_min_period:  (0-95)
-                }
-                ...
+                0,
+                15,
+                10,
+                ... x 96
             ],
-        2010: ...
+        '2010': ...
     }
     NAME2: ...
-    DEFAULT: (divisé par # compteurs)
+    AVERAGE: (divisé par # compteurs)
 }
 ```
 
