@@ -19,9 +19,9 @@ import { getMontrealData, getProjection, getPath } from './scripts/geography';
   const projection = getProjection();
   const path = getPath(projection);
 
-  // mapViz.mapBackground(montreal, path);
-  // mapViz.setCanvasSize(svgSize.width, svgSize.height);
-  // mapViz.generateMapG(svgSize.width, svgSize.height);
+  mapViz.mapBackground(montreal, path);
+  mapViz.setCanvasSize(svgSize.width, svgSize.height);
+  mapViz.generateMapG(svgSize.width, svgSize.height);
 
   const dataset = createDataset();
   console.log(dataset);
