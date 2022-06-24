@@ -13,6 +13,7 @@ import {
   generateMapGroups,
   drawMapBackground,
   drawBikePaths,
+  drawCircles,
 } from './scripts/mapViz';
 import * as year_button from './scripts/year_button.js';
 
@@ -58,12 +59,20 @@ import {
   const areaChartData = createAreaChartData(dataset);
   const barChartData = createBarChartData(dataset);
 
-  // Interactivity
-  year_button.drawDropdown('#dropdownButton', years, svgSize.width);
-  dropDownClickHandler();
-  circleClickHandler();
+  // Interactivity and re-drawing
+  function redrawVizForCounter(year, counter) {
+    // Add barchart, areachart and linechart here
+    // Called on counter click
+  }
+  function redrawVizForYear(year) {
+    // Add all viz here, with defaults (ex. averages for areachar and linechart)
+    // Called on dropdown change
+    drawCircles(mapData[year], circleClickHandler(redrawVizForCounter));
+  }
+
+  const year = year_button.drawDropdown(years, svgSize.width);
+  dropDownClickHandler(redrawVizForYear);
 
   // Draw visualizations
-  var year = d3.select('#dropdownButton').property('value');
-  // Call draw graphs
+  redrawVizForYear(year);
 })(d3);
