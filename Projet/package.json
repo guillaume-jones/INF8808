@@ -12,7 +12,10 @@
     "d3-geo": "^1.12.1",
     "d3-svg-legend": "^2.25.6",
     "parcel-bundler": "^1.12.4",
-    "parcel-plugin-static-files-copy": "^2.4.3"
+    "parcel-plugin-static-files-copy": "^2.4.3",
+    "point-in-polygon": "^1.1.0",
+    "regenerator-runtime": "^0.13.9",
+    "scripts": "^0.1.0"
   },
   "devDependencies": {
     "eslint": "^7.4.0",
