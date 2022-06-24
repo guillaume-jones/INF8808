@@ -1,3 +1,9 @@
+import { determineNeighborhood } from './geography';
+
+function sum(a) {
+  return a.reduce((b, c) => b + (isNaN(c) ? 0 : c));
+}
+
 /** Load the CSV data and augments with location data
  *
  * Filters out partial data
@@ -15,74 +21,131 @@ export async function createDataset() {
 
   const locations = await d3.csv('localisation_des_compteurs_velo.csv');
 
-  years.forEach(async (year) => {
-    dataset[year] = {};
-    const countData = await d3.csv('comptage_velo_' + year + '.csv');
+  // Required to load all the data before returning
+  await Promise.all(
+    years.map(async (year) => {
+      dataset[year] = {};
+      const countData = await d3.csv('comptage_velo_' + year + '.csv');
 
-    // Removes non-counter columns and columns with missing data
-    const acceptedCounters = Object.keys(countData[0]).filter((name) => {
-      return name !== 'Date' && name !== '' && countData[0][name] !== '';
-    });
-
-    // Creates counter objects per-year
-    acceptedCounters.forEach((name) => {
-      const counter = locations.find((t) => {
-        if (name.includes('compteur')) {
-          // Finds via ID, for 2019-2021 datasets
-          return name.includes(t.ID);
-        } else {
-          // Finds via name, for 2009-2018 datasets
-          return t.Nom === name;
-        }
+      // Removes non-counter columns and columns with missing data
+      const acceptedCounters = Object.keys(countData[0]).filter((name) => {
+        return name !== 'Date' && name !== '' && countData[0][name] !== '';
       });
 
-      dataset[year][name] = {
-        name: counter.Nom,
-        longitude: counter.Longitude,
-        latitude: counter.Latitude,
-        count: [],
-      };
-    });
-
-    // Iterates through year's dataset to add counts to each counter
-    countData.forEach((timestep) => {
-      Object.entries(timestep)
-        .filter(([name]) => acceptedCounters.includes(name))
-        .forEach(([name, count]) => {
-          dataset[year][name].count.push(count);
+      // Creates counter objects per-year
+      acceptedCounters.forEach((name) => {
+        const counter = locations.find((t) => {
+          if (name.includes('compteur')) {
+            // Finds via ID, for 2019-2021 datasets
+            return name.includes(t.ID);
+          } else {
+            // Finds via name, for 2009-2018 datasets
+            return t.Nom === name;
+          }
         });
-    });
-  });
+
+        dataset[year][counter.Nom] = {
+          name: counter.Nom,
+          longitude: counter.Longitude,
+          latitude: counter.Latitude,
+          counts: [],
+        };
+      });
+
+      // Iterates through year's dataset to add counts to each counter
+      countData.forEach((timestep) => {
+        Object.entries(timestep)
+          .filter(([name]) => acceptedCounters.includes(name))
+          .forEach(([name, count]) => {
+            if (year > 2018) {
+              name = locations.find((t) => name.includes(t.ID)).Nom;
+            }
+            dataset[year][name].counts.push(parseInt(count));
+          });
+      });
+    }),
+  );
 
   return dataset;
 }
 
-/**
- * Determines the Neighborhood of a specific counter based on its coordinates
+/** Generates data in format for bar chart
  *
- * Inputs : x and y coordinates
- *          montreal.json
- *
- * Process :
- *  -
- *  - Transforms the coordinates in pixels
- *
- * Output : The Neighborhood in which the counter is located (string)
- *          The transformed coordinates
+ * @param {object} dataset Dataset created by createDataset
  */
+export function createBarChartData(dataset) {
+  const barChartData = {};
 
-/**
- * Transforms the coordinates of the bicycle lanes network in pixels
+  Object.entries(dataset).forEach(([year, yearData]) => {
+    let allCounts = 0;
+
+    // Sums counts across entire year for each counter
+    Object.entries(yearData).forEach(([counter, counterData]) => {
+      const counterSum = {
+        year: year,
+        counts: sum(counterData.counts),
+      };
+      allCounts += counterSum.counts;
+
+      barChartData[counter]
+        ? barChartData[counter].push(counterSum)
+        : (barChartData[counter] = [counterSum]);
+    });
+
+    // Adds average of all sensors for year for default view
+    const average = {
+      year: year,
+      counts: Math.round(allCounts / Object.keys(yearData).length),
+    };
+
+    barChartData['Average']
+      ? barChartData['Average'].push(average)
+      : (barChartData['Average'] = [average]);
+  });
+
+  return barChartData;
+}
+
+/** Generates data in format for line chart
  *
- * Inputs : reseau_cyclable.geojson
- *
- * Process :
- *  - For each bicyle lane : Get the coordinates
- *                           Convert in pixels
- *  - Generate a map of the network
- *
- * Output : The bicyle lanes network converted in pixels
+ * @param {object} dataset Dataset created by createDataset
+ * @param montreal Pre-loaded JSON of Montreal data
  */
+export function createLineChartData(dataset, montreal) {
+  const lineChartData = {};
+
+  Object.entries(dataset).forEach(([year, yearData]) => {
+    lineChartData[year] = {};
+
+    // Sums counts across each day for each counter
+    // Also adds neighborhood
+    Object.entries(yearData).forEach(([counter, counterData]) => {
+      let newCounts = [];
+
+      const countsLength = counterData.counts.length;
+      if (countsLength > 366) {
+        // TODO : Combine counts
+        // For some reason, there are more than 365 * 24 * 4 rows in 2019 and 2020 (???)
+      } else {
+        newCounts = counterData.counts;
+      }
+
+      lineChartData[year][counter] = {
+        name: counter,
+        neighborhood: determineNeighborhood(
+          counterData.longitude,
+          counterData.latitude,
+          montreal,
+        ),
+        counts: newCounts,
+      };
+    });
+
+    // TODO : Adds average of all sensors for year for default view
+  });
+
+  return lineChartData;
+}
 
 /**
  * Generates the data for the map

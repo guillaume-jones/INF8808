@@ -1,7 +1,11 @@
-import { createDataset } from './scripts/preprocess';
+import {
+  createBarChartData,
+  createLineChartData,
+  createDataset,
+} from './scripts/preprocess';
 import 'regenerator-runtime/runtime.js';
 import * as mapViz from './scripts/mapViz';
-import * as year_button from './scripts/year_button.js'
+import * as year_button from './scripts/year_button.js';
 
 import { getMontrealData, getProjection, getPath } from './scripts/geography';
 
@@ -21,23 +25,10 @@ import { getMontrealData, getProjection, getPath } from './scripts/geography';
 
   const dataset = createDataset();
   console.log(dataset);
+  const barChartData = createBarChartData(dataset);
+  const lineChartData = createLineChartData(dataset, montreal);
+  console.log(lineChartData);
 
-  let currentYear = 2009
-  year_button.drawButton('main-svg', 2009, svgSize.width)
-
-  /**
-   * Handles the selection of the year by the user by clicking
-   */
-   function yearSelection () {
-    d3.select('.button')
-      .on('click', () => {
-        const previousYear = currentYear
-        currentYear = (currentYear === 2009 ? 2022 : 2009)
-        // build() // Update quand on va avoir la carte
-        d3.select('.button').select('.button-text').text('Data for year ' + previousYear)
-      })
-  }
-
-  yearSelection()
-
+  year_button.drawButton('#graph-g', 2009, svgSize.width);
+  year_button.yearSelection(2009);
 })(d3);

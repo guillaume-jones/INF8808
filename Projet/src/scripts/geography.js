@@ -19,17 +19,17 @@ export async function getcyclingNetwork() {
 /**
  * Determines the neighborhood based on coordinates
  *
- * @param x Longitude of point (float)
- * @param y Latitude of point (float)
+ * @param lon Longitude of point (float)
+ * @param lat Latitude of point (float)
  * @param montreal Pre-loaded JSON of Montreal data
  *
  * @returns {string} Neighborhood of point or empty if not found
  */
-export function determineNeighborhood(x, y, montreal) {
+export function determineNeighborhood(lon, lat, montreal) {
   let returnName = '';
 
   montreal.forEach((feature) => {
-    if (pointInPolygon([x, y], feature.geometry.coordinates[0][0])) {
+    if (pointInPolygon([lon, lat], feature.geometry.coordinates[0][0])) {
       returnName = feature.properties.NOM;
     }
   });
