@@ -9,7 +9,7 @@ function sum(a, key = '') {
 
 function groupSum(a, key, key2) {
   return a.reduce((b, c) => {
-    b[c[key]] = (b[c[key]] || 0) + c[key2];
+    b[c[key]] = (b[c[key]] || 0) + (isNaN(c[key2]) ? 0 : c[key2]);
     return b;
   }, {});
 }
@@ -170,11 +170,15 @@ export function createLineChartData(dataset, montreal) {
     // Sums counts across each day for each counter
     // Also adds neighborhood
     Object.entries(yearData).forEach(([counter, counterData]) => {
-      let newCounts = counterData.counts;
+      let newCounts = [];
 
       // Years 2019-2021 need to group the data by day
       if (counterData.counts.length > 366) {
-        newCounts = groupSum(counterData.counts, 'date', 'count');
+        newCounts = Object.values(
+          groupSum(counterData.counts, 'date', 'count'),
+        );
+      } else {
+        newCounts = counterData.counts.map((data) => data.count);
       }
 
       lineChartData[year][counter] = {
