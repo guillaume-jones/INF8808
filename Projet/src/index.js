@@ -31,6 +31,7 @@ import { getMontrealData, getProjection, getPath } from './scripts/geography';
   const lineChartData = createLineChartData(dataset, montreal);
   console.log(lineChartData);
 
-  // year_button.drawButton('#graph-g', 2009, svgSize.width);
-  // year_button.yearSelection(2009);
+  let startYear = 2009
+  year_button.drawDropdown('dropdownButton', startYear, svgSize.width)
+  
 })(d3);
