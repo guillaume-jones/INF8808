@@ -20,6 +20,6 @@ import { getMontrealData, getProjection, getPath } from './scripts/geography';
   const dataset = await createDataset();
   console.log(dataset);
   // const barChartData = createBarChartData(dataset);
-  const lineChartData = createLineChartData(dataset);
+  const lineChartData = createLineChartData(dataset, montreal);
   console.log(lineChartData);
 })(d3);

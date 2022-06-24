@@ -106,6 +106,47 @@ export function createBarChartData(dataset) {
   return barChartData;
 }
 
+/** Generates data in format for line chart
+ *
+ * @param {object} dataset Dataset created by createDataset
+ * @param montreal Pre-loaded JSON of Montreal data
+ */
+export function createLineChartData(dataset, montreal) {
+  const lineChartData = {};
+
+  Object.entries(dataset).forEach(([year, yearData]) => {
+    lineChartData[year] = {};
+
+    // Sums counts across each day for each counter
+    // Also adds neighborhood
+    Object.entries(yearData).forEach(([counter, counterData]) => {
+      let newCounts = [];
+
+      const countsLength = counterData.counts.length;
+      if (countsLength > 366) {
+        // TODO : Combine counts
+        // For some reason, there are more than 365 * 24 * 4 rows in 2019 and 2020 (???)
+      } else {
+        newCounts = counterData.counts;
+      }
+
+      lineChartData[year][counter] = {
+        name: counter,
+        neighborhood: determineNeighborhood(
+          counterData.longitude,
+          counterData.latitude,
+          montreal,
+        ),
+        counts: newCounts,
+      };
+    });
+
+    // TODO : Adds average of all sensors for year for default view
+  });
+
+  return lineChartData;
+}
+
 /**
  * Generates the data for the map
  *
