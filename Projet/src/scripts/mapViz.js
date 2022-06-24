@@ -34,7 +34,7 @@ export function generateMapG(width, height) {
 export function mapBackground(data, path) {
   d3.select('#map-g')
     .selectAll('path')
-    .data(data.features)
+    .data(data)
     .enter()
     .append('path')
     .attr('d', path)

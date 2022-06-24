@@ -1,5 +1,4 @@
 import 'regenerator-runtime/runtime.js';
-
 import {
   createBarChartData,
   createLineChartData,
@@ -20,9 +19,12 @@ import { getMontrealData, getProjection, getPath } from './scripts/geography';
   const projection = getProjection();
   const path = getPath(projection);
 
-  // mapViz.mapBackground(montreal, path);
-  // mapViz.setCanvasSize(svgSize.width, svgSize.height);
-  // mapViz.generateMapG(svgSize.width, svgSize.height);
+  mapViz.setCanvasSize(svgSize.width, svgSize.height);
+  mapViz.generateMapG(svgSize.width, svgSize.height);
+
+  d3.json('./montreal.json').then(function (data) {
+    mapViz.mapBackground(data, path);
+  });
 
   const dataset = await createDataset();
   const barChartData = createBarChartData(dataset);
