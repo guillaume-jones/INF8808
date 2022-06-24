@@ -15,18 +15,18 @@ import {
   drawBikePaths,
   drawCircles,
 } from './scripts/mapViz';
-import * as year_button from './scripts/yearButton.js';
-
+import { drawDropdown } from './scripts/yearButton.js';
+import {
+  dropDownClickHandler,
+  circleClickHandler,
+} from './scripts/clickHandlers';
 import {
   getMontrealData,
   getProjection,
   getPath,
   getBikePaths,
 } from './scripts/geography';
-import {
-  dropDownClickHandler,
-  circleClickHandler,
-} from './scripts/clickHandlers';
+import * as lineChart from './scripts/lineChart';
 
 (async function (d3) {
   const svgSize = {
@@ -52,6 +52,16 @@ import {
   drawMapBackground(montreal, path);
   drawBikePaths(bikePaths, path);
 
+  // Render line chart
+  const g = lineChart.generateG(svgSize.width, svgSize.height);
+  const xScale = lineChart.updateXScale(svgSize.width);
+  const yScale = lineChart.updateYScale(svgSize.height);
+
+  lineChart.drawXAxis(xScale, svgSize.height);
+  lineChart.drawYAxis(yScale);
+
+  lineChart.positionLabels(g, svgSize.width, svgSize.height);
+
   // Get all processed data
   const dataset = createDataset(locationData, counterData, years);
   const mapData = createMapData(dataset, montreal, projection);
@@ -70,9 +80,10 @@ import {
     drawCircles(mapData[year], circleClickHandler(redrawVizForCounter));
   }
 
-  const year = year_button.drawDropdown(years, svgSize.width);
+  const year = drawDropdown(years, svgSize.width);
   dropDownClickHandler(redrawVizForYear);
 
-  // Draw visualizations
+  // Call draw graphs
   redrawVizForYear(year);
+  lineChart.drawLineChart(g, lineChartData, year, xScale, yScale);
 })(d3);

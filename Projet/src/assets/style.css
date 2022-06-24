@@ -31,6 +31,7 @@ h1 {
 
 .viz-container {
   height: 100%;
+  overflow-y: auto;
 }
 
 .graph {
@@ -39,4 +40,18 @@ h1 {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.title, .axis-text {
+  transform-origin: center;
+  transform-box: fill-box;
+  text-anchor: middle;
+}
+
+.axis-text {
+  font-size: 14px;
+}
+
+.title {
+  font-size: 17px;
 }
