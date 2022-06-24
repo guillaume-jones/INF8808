@@ -1,9 +1,9 @@
+import 'regenerator-runtime/runtime.js';
 import {
   createBarChartData,
   createLineChartData,
   createDataset,
 } from './scripts/preprocess';
-import 'regenerator-runtime/runtime.js';
 import * as mapViz from './scripts/mapViz';
 import * as year_button from './scripts/year_button.js';
 
@@ -26,12 +26,11 @@ import { getMontrealData, getProjection, getPath } from './scripts/geography';
     mapViz.mapBackground(data, path);
   });
 
-  const dataset = createDataset();
-  console.log(dataset);
+  const dataset = await createDataset();
   const barChartData = createBarChartData(dataset);
   const lineChartData = createLineChartData(dataset, montreal);
   console.log(lineChartData);
 
   // year_button.drawButton('#graph-g', 2009, svgSize.width);
-  year_button.yearSelection(2009);
+  // year_button.yearSelection(2009);
 })(d3);
