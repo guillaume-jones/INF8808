@@ -15,6 +15,9 @@
  * @returns {object[]} The filtered and combined dataset
  */
 export function filterData (bikeData, counterData) {
+  bikeData.map(rows => {
+    rows = rows.filter(row => row.length !== 0)
+  })
   return {}
 }
 
