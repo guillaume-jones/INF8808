@@ -9,6 +9,7 @@
  * - Combines the CSVs in one Dataset
  *
  * Outputs : The filtered and combined Dataset
+ *
  * @param {object[]} bikeData The dataset with the bicycle count
  * @param {object[]} counterData The dataset with the counter info
  * @returns {object[]} The filtered and combined dataset
