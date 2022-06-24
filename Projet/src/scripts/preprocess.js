@@ -182,7 +182,7 @@ export function createLineChartData(dataset, montreal) {
         newCounts = counterData.counts.map((data) => data.count);
       }
 
-      // Initialize averageDayCounts with correct length (leap years)
+      // Save this counter's data to averageDayCounts
       if (!averageDayCounts) {
         averageDayCounts = newCounts;
       } else {
@@ -214,6 +214,57 @@ export function createLineChartData(dataset, montreal) {
   });
 
   return lineChartData;
+}
+
+/** Generates data in format for area chart
+ *
+ * @param {object} dataset Dataset created by createDataset
+ */
+export function createAreaChartData(dataset) {
+  const areaChartData = {};
+
+  Object.entries(dataset).forEach(([year, yearData]) => {
+    // Time data not available for years before 2019
+    if (parseInt(year) < 2019) {
+      return;
+    }
+
+    areaChartData[year] = {};
+    let averageTimeCounts;
+
+    // Sums counts across each day for each counter
+    // Also adds neighborhood
+    Object.entries(yearData).forEach(([counter, counterData]) => {
+      let newCounts = Object.values(
+        groupSum(counterData.counts, 'time', 'count'),
+      );
+
+      // Save this counter's data to averageTimeCounts
+      if (!averageTimeCounts) {
+        averageTimeCounts = newCounts;
+      } else {
+        newCounts.map((count, i) => {
+          averageTimeCounts[i] += count;
+        });
+      }
+
+      areaChartData[year][counter] = {
+        name: counter,
+        counts: newCounts,
+      };
+    });
+
+    const totalCounters = Object.keys(yearData).length;
+
+    areaChartData[year]['Average'] = {
+      name: 'All',
+      counts: averageTimeCounts.map((counts) =>
+        Math.round(counts / totalCounters),
+      ),
+    };
+  });
+
+  return areaChartData;
 }
 
 /**
