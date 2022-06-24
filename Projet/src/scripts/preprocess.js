@@ -44,6 +44,7 @@ export async function createDataset() {
           }
         });
 
+        console.log(counter.Nom);
         dataset[year][counter.Nom] = {
           name: counter.Nom,
           longitude: counter.Longitude,
@@ -54,13 +55,31 @@ export async function createDataset() {
 
       // Iterates through year's dataset to add counts to each counter
       countData.forEach((timestep) => {
+        let date = undefined;
+        let time = '00:00';
+
         Object.entries(timestep)
+          .map(([key, value]) => {
+            if (key === 'Date') {
+              const dateTime = value.split(' ');
+              date = dateTime[0];
+              // Gets time as well for datasets after 2018
+              if (dateTime.length > 1) {
+                time = dateTime[1];
+              }
+            }
+            return [key, value];
+          })
           .filter(([name]) => acceptedCounters.includes(name))
           .forEach(([name, count]) => {
             if (year > 2018) {
               name = locations.find((t) => name.includes(t.ID)).Nom;
             }
-            dataset[year][name].counts.push(parseInt(count));
+            dataset[year][name].counts.push({
+              date: date,
+              time: time,
+              count: parseInt(count),
+            });
           });
       });
     }),
