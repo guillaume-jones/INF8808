@@ -63,3 +63,27 @@ export function drawBikePaths(data, path) {
     .attr('stroke', '#0bb52d')
     .attr('stroke-width', 1.5);
 }
+
+/**
+ * Draws the counter
+ *
+ * @param {object[]} data The data for the map
+ * @param callback The callback to call on circle click
+ */
+export function drawCircles(data, callback) {
+  d3.select('#map-circles-g').selectAll('circle').remove();
+
+  d3.select('#map-circles-g')
+    .selectAll('circle')
+    .data(data)
+    .enter()
+    .append('circle')
+    .attr('class', 'circle')
+    .attr('r', 5)
+    .attr('cx', (d) => d.x)
+    .attr('cy', (d) => d.y)
+    .attr('fill', '#FF00FF')
+    .attr('stroke', '#ffffff')
+    .attr('stroke-width', 1)
+    .on('click', callback);
+}
