@@ -59,6 +59,7 @@ export function drawBikePaths(data, path) {
     .enter()
     .append('path')
     .attr('d', path)
-    .attr('stroke', '#111111')
-    .attr('stroke-width', 2);
+    .attr('fill', 'rgba(0,0,0,0)')
+    .attr('stroke', '#0bb52d')
+    .attr('stroke-width', 1.5);
 }
