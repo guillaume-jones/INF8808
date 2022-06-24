@@ -166,6 +166,7 @@ export function createLineChartData(dataset, montreal) {
 
   Object.entries(dataset).forEach(([year, yearData]) => {
     lineChartData[year] = {};
+    let averageDayCounts;
 
     // Sums counts across each day for each counter
     // Also adds neighborhood
@@ -181,6 +182,15 @@ export function createLineChartData(dataset, montreal) {
         newCounts = counterData.counts.map((data) => data.count);
       }
 
+      // Initialize averageDayCounts with correct length (leap years)
+      if (!averageDayCounts) {
+        averageDayCounts = newCounts;
+      } else {
+        newCounts.map((count, i) => {
+          averageDayCounts[i] += count;
+        });
+      }
+
       lineChartData[year][counter] = {
         name: counter,
         neighborhood: determineNeighborhood(
@@ -192,7 +202,15 @@ export function createLineChartData(dataset, montreal) {
       };
     });
 
-    // TODO : Adds average of all sensors for year for default view
+    const totalCounters = Object.keys(yearData).length;
+
+    lineChartData[year]['Average'] = {
+      name: 'All',
+      neighborhood: '',
+      counts: averageDayCounts.map((counts) =>
+        Math.round(counts / totalCounters),
+      ),
+    };
   });
 
   return lineChartData;
