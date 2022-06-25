@@ -26,8 +26,9 @@ import {
   getPath,
   getBikePaths,
 } from './scripts/geography';
-import * as lineChart from './scripts/lineChart';
 import { drawAreaChart, generateAreaGroup } from './scripts/areaChart';
+import * as lineChart from './scripts/lineChart';
+import * as barChartViz from './scripts/barChartViz.js';
 
 (async function (d3) {
   const svgSize = {
@@ -60,16 +61,6 @@ import { drawAreaChart, generateAreaGroup } from './scripts/areaChart';
   drawMapBackground(montreal, path);
   drawBikePaths(bikePaths, path);
 
-  // Render line chart
-  const g = lineChart.generateG(svgSize.width, svgSize.height);
-  const xScale = lineChart.updateXScale(svgSize.width);
-  const yScale = lineChart.updateYScale(svgSize.height);
-
-  lineChart.drawXAxis(xScale, svgSize.height);
-  lineChart.drawYAxis(yScale);
-
-  lineChart.positionLabels(g, svgSize.width, svgSize.height);
-
   // Get all processed data
   const dataset = createDataset(locationData, counterData, years);
   const mapData = createMapData(dataset, montreal, projection);
@@ -77,8 +68,17 @@ import { drawAreaChart, generateAreaGroup } from './scripts/areaChart';
   const areaChartData = createAreaChartData(dataset);
   const barChartData = createBarChartData(dataset);
 
+  // Render line chart
+  const g = lineChart.generateG(svgSize.width, svgSize.height);
+  const xScale = lineChart.updateXScale(lineChartData, svgSize.width);
+  const yScale = lineChart.updateYScale(lineChartData, svgSize.height);
+  lineChart.drawXAxis(xScale, svgSize.height);
+  lineChart.drawYAxis(yScale);
+  lineChart.positionLabels(g, svgSize.width, svgSize.height);
+
   // Interactivity and re-drawing
   function redrawVizForCounter(year, counter) {
+    barChartViz.buildBarChart(barChartData, '#bar-svg');
     // Add barchart, areachart and linechart here
     // Called on counter click
     drawAreaChart(
@@ -91,6 +91,7 @@ import { drawAreaChart, generateAreaGroup } from './scripts/areaChart';
   function redrawVizForYear(year) {
     // Add all viz here, with defaults (ex. averages for areachar and linechart)
     // Called on dropdown change
+    lineChart.drawLineChart(g, lineChartData[year], xScale, yScale);
     drawCircles(mapData[year], circleClickHandler(redrawVizForCounter));
     drawAreaChart(
       areaSize.width,
@@ -104,5 +105,4 @@ import { drawAreaChart, generateAreaGroup } from './scripts/areaChart';
 
   // Call draw graphs
   redrawVizForYear(year);
-  lineChart.drawLineChart(g, lineChartData, year, xScale, yScale);
 })(d3);
