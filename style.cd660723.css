@@ -1,0 +1,57 @@
+body {
+  font-family: 'Helvetica', 'sans-serif';
+  font-size: 16px;
+  background-color: #ffffff;
+  color: #000000;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  margin: 10px 50px;
+}
+
+main {
+  height: 100%;
+  margin: 10px 50px;
+}
+
+h1 {
+  font-size: xx-large;
+  text-align: center;
+  margin-top: 1.5rem;
+  font-weight: normal;
+}
+
+.main-svg text {
+  pointer-events: none;
+}
+
+.viz-container {
+  height: 100%;
+}
+
+.graph {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.title, .axis-text {
+  transform-origin: center;
+  transform-box: fill-box;
+  text-anchor: middle;
+}
+
+.axis-text {
+  font-size: 14px;
+}
+
+.title {
+  font-size: 17px;
+}
+
+
+/*# sourceMappingURL=/style.cd660723.css.map */

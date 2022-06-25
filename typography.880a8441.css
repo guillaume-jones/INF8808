@@ -1,0 +1,24 @@
+@font-face {
+  font-family: 'Open Sans Condensed';
+  font-style: normal;
+  font-weight: 300;
+  src: url('/open-sans-condensed-v14-latin-300.586c7bb4.eot'); /* IE9 Compat Modes */
+  src: local('Open Sans Condensed Light'), local('OpenSansCondensed-Light'),
+    url('/open-sans-condensed-v14-latin-300.586c7bb4.eot?#iefix')
+      format('embedded-opentype'),
+    
+      url('/open-sans-condensed-v14-latin-300.476fc70c.woff2')
+      format('woff2'),
+    
+      url('/open-sans-condensed-v14-latin-300.77bc1b3c.woff')
+      format('woff'),
+    
+      url('/open-sans-condensed-v14-latin-300.389caacf.ttf')
+      format('truetype'),
+    
+      url('/open-sans-condensed-v14-latin-300.facc7e23.svg#OpenSansCondensed')
+      format('svg'); /* Legacy iOS */
+}
+
+
+/*# sourceMappingURL=/typography.880a8441.css.map */
