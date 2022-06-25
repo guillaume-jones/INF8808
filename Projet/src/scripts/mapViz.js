@@ -41,7 +41,7 @@ export function drawMapBackground(data, path) {
     .enter()
     .append('path')
     .attr('d', path)
-    .attr('fill', '#ced1c5')
+    .attr('fill', '#d8dbe3')
     .attr('stroke', '#ffffff')
     .attr('stroke-width', 1);
 }
@@ -89,7 +89,7 @@ export function drawCircles(data, callback) {
     .attr('r', (d) => scale(d.counts))
     .attr('cx', (d) => d.x)
     .attr('cy', (d) => d.y)
-    .attr('fill', '#113bd4')
+    .attr('fill', '#0461cc')
     .attr('stroke', '#ffffff')
     .attr('stroke-width', 1)
     .on('click', callback);

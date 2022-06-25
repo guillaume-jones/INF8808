@@ -247,7 +247,12 @@ export function createAreaChartData(dataset) {
 
       areaChartData[year][counter] = {
         name: counter,
-        counts: newCounts,
+        counts: newCounts.map((v, i) => {
+          return {
+            index: i,
+            value: v,
+          };
+        }),
       };
     });
 
@@ -255,9 +260,9 @@ export function createAreaChartData(dataset) {
 
     areaChartData[year]['Average'] = {
       name: 'All',
-      counts: averageTimeCounts.map((counts) =>
-        Math.round(counts / totalCounters),
-      ),
+      counts: averageTimeCounts.map((counts, i) => {
+        return { index: i, value: Math.round(counts / totalCounters) };
+      }),
     };
   });
 

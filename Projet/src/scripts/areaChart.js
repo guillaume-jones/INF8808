@@ -1,0 +1,109 @@
+/**
+ * Creates area chart groups
+ *
+ * @param {number} width The width of the chart
+ * @param {number} height The height of the chart
+ */
+export function generateAreaGroup(width, height) {
+  d3.select('#area-svg')
+    .attr('width', width)
+    .attr('height', height)
+    .append('g')
+    .attr('id', 'area-g')
+    .attr('width', width)
+    .attr('height', height);
+}
+
+function generateXScale(width) {
+  return d3.scaleLinear().domain([0, 96]).range([0, width]);
+}
+
+function generateXTimescale(width) {
+  return d3
+    .scaleTime()
+    .domain([new Date(2020, 1, 1, 0, 0), new Date(2020, 1, 2, 0, 0)])
+    .range([0, width])
+    .nice();
+}
+
+function generateYScale(height, counts) {
+  return d3
+    .scaleLinear()
+    .domain([0, d3.max(counts)])
+    .range([height, 0]);
+}
+
+/**
+ * Draws the area chart
+ *
+ * @param {object[]} data The data for the map
+ * @param callback The callback to call on circle click
+ */
+export function drawAreaChart(width, height, averageData, counterData) {
+  // Reset area chart svg
+  d3.select('#area-g').remove();
+
+  const group = d3
+    .select('#area-svg')
+    .attr('width', width + 40)
+    .attr('height', height + 20)
+    .append('g')
+    .attr('id', 'area-g')
+    .attr('width', width)
+    .attr('height', height)
+    .attr('transform', 'translate(40, 0)');
+
+  // Generate scales
+  const xScale = generateXScale(width);
+  const yScale = generateYScale(height, [
+    ...averageData.counts.map((v) => v.value),
+    ...(counterData ? counterData.counts.map((v) => v.value) : []),
+  ]);
+
+  // Add axes, including special time axis on X
+  group
+    .append('g')
+    .attr('transform', 'translate(0,' + height + ')')
+    .call(d3.axisBottom(generateXTimescale(width)));
+  group.append('g').call(d3.axisLeft(yScale));
+
+  group
+    .append('path')
+    .datum(averageData.counts)
+    .attr('fill', '#c9c9c9')
+    .attr('stroke', '#9a9a9a')
+    .attr('stroke-width', 1.5)
+    .attr(
+      'd',
+      d3
+        .area()
+        .x(function (d) {
+          return xScale(d.index);
+        })
+        .y0(height)
+        .y1(function (d) {
+          return yScale(d.value);
+        }),
+    );
+
+  if (counterData) {
+    group
+      .append('path')
+      .datum(counterData.counts)
+      .attr('fill', 'rgba(77, 149, 232, 0.5)')
+      .attr('stroke', 'rgba(18, 81, 153, 0.5)')
+      .attr('stroke-width', 1.5)
+      .attr(
+        'd',
+        d3
+          .area()
+          .x(function (d) {
+            return xScale(d.index);
+          })
+          .y0(height)
+          .y1(function (d) {
+            return yScale(d.value);
+          }),
+      );
+  }
+}

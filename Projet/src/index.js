@@ -27,28 +27,36 @@ import {
   getBikePaths,
 } from './scripts/geography';
 import * as lineChart from './scripts/lineChart';
+import { drawAreaChart, generateAreaGroup } from './scripts/areaChart';
 
 (async function (d3) {
   const svgSize = {
     width: 800,
     height: 625,
   };
+  const areaSize = {
+    width: 800,
+    height: 350,
+  };
 
   // Get all raw data
   const years = [
-    // 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020,2021,
-    2009,
-    2010,
+    // 2009, 2010,
+    // 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020,
+    2019,
   ];
   const montreal = await getMontrealData();
   const bikePaths = await getBikePaths();
   const locationData = await getLocationData();
   const counterData = await getCounterData(years);
 
+  // Generate SVG groups
+  generateMapGroups(svgSize.width, svgSize.height);
+  generateAreaGroup(areaSize.width, areaSize.height);
+
   // Render map
   const projection = getProjection();
   const path = getPath(projection);
-  generateMapGroups(svgSize.width, svgSize.height);
   drawMapBackground(montreal, path);
   drawBikePaths(bikePaths, path);
 
@@ -73,11 +81,22 @@ import * as lineChart from './scripts/lineChart';
   function redrawVizForCounter(year, counter) {
     // Add barchart, areachart and linechart here
     // Called on counter click
+    drawAreaChart(
+      areaSize.width,
+      areaSize.height,
+      areaChartData[year]['Average'],
+      areaChartData[year][counter],
+    );
   }
   function redrawVizForYear(year) {
     // Add all viz here, with defaults (ex. averages for areachar and linechart)
     // Called on dropdown change
     drawCircles(mapData[year], circleClickHandler(redrawVizForCounter));
+    drawAreaChart(
+      areaSize.width,
+      areaSize.height,
+      areaChartData[year]['Average'],
+    );
   }
 
   const year = drawDropdown(years, svgSize.width);
