@@ -5,7 +5,6 @@ import {
   createDataset,
   getLocationData,
   getCounterData,
-  group,
   createAreaChartData,
   createMapData,
 } from './scripts/preprocess';

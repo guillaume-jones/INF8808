@@ -3,3 +3,4 @@ node_modules
 dist
 .cache
 subject_tp3_js_eng.pdf
+.parcel-cache
