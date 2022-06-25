@@ -193,7 +193,12 @@ export function createLineChartData(dataset, montreal) {
           counterData.latitude,
           montreal,
         ),
-        counts: newCounts,
+        counts: newCounts.map((v, i) => {
+          return {
+            index: i,
+            value: v,
+          };
+        }),
       };
     });
 
@@ -202,9 +207,9 @@ export function createLineChartData(dataset, montreal) {
     lineChartData[year]['Average'] = {
       name: 'All',
       neighborhood: '',
-      counts: averageDayCounts.map((counts) =>
-        Math.round(counts / totalCounters),
-      ),
+      counts: averageDayCounts.map((counts, i) => {
+        return { index: i, value: Math.round(counts / totalCounters) };
+      }),
     };
   });
 

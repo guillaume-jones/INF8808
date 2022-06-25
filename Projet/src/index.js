@@ -26,18 +26,22 @@ import {
   getPath,
   getBikePaths,
 } from './scripts/geography';
-import { drawAreaChart, generateAreaGroup } from './scripts/areaChart';
-import * as lineChart from './scripts/lineChart';
-import * as barChartViz from './scripts/barChartViz.js';
+import { drawLineChart } from './scripts/lineChart';
+import { drawAreaChart } from './scripts/areaChart';
+import { buildBarChart } from './scripts/barChartViz.js';
 
 (async function (d3) {
-  const svgSize = {
+  const mapsize = {
     width: 800,
     height: 625,
   };
   const areaSize = {
     width: 800,
     height: 350,
+  };
+  const lineSize = {
+    width: 400,
+    height: 250,
   };
 
   // Get all raw data
@@ -52,8 +56,7 @@ import * as barChartViz from './scripts/barChartViz.js';
   const counterData = await getCounterData(years);
 
   // Generate SVG groups
-  generateMapGroups(svgSize.width, svgSize.height);
-  generateAreaGroup(areaSize.width, areaSize.height);
+  generateMapGroups(mapsize.width, mapsize.height);
 
   // Render map
   const projection = getProjection();
@@ -68,17 +71,8 @@ import * as barChartViz from './scripts/barChartViz.js';
   const areaChartData = createAreaChartData(dataset);
   const barChartData = createBarChartData(dataset);
 
-  // Render line chart
-  const g = lineChart.generateG(svgSize.width, svgSize.height);
-  const xScale = lineChart.updateXScale(lineChartData, svgSize.width);
-  const yScale = lineChart.updateYScale(lineChartData, svgSize.height);
-  lineChart.drawXAxis(xScale, svgSize.height);
-  lineChart.drawYAxis(yScale);
-  lineChart.positionLabels(g, svgSize.width, svgSize.height);
-
   // Interactivity and re-drawing
   function redrawVizForCounter(year, counter) {
-    barChartViz.buildBarChart(barChartData, '#bar-svg');
     // Add barchart, areachart and linechart here
     // Called on counter click
     drawAreaChart(
@@ -87,20 +81,30 @@ import * as barChartViz from './scripts/barChartViz.js';
       areaChartData[year]['Average'],
       areaChartData[year][counter],
     );
+    drawLineChart(
+      lineSize.width,
+      lineSize.height,
+      lineChartData[year]['Average'],
+      lineChartData[year][counter],
+    );
+    // buildBarChart(barChartData, '#bar-svg'); WITH COUNTER
   }
   function redrawVizForYear(year) {
-    // Add all viz here, with defaults (ex. averages for areachar and linechart)
-    // Called on dropdown change
-    lineChart.drawLineChart(g, lineChartData[year], xScale, yScale);
     drawCircles(mapData[year], circleClickHandler(redrawVizForCounter));
     drawAreaChart(
       areaSize.width,
       areaSize.height,
       areaChartData[year]['Average'],
     );
+    drawLineChart(
+      lineSize.width,
+      lineSize.height,
+      lineChartData[year]['Average'],
+    );
+    // buildBarChart(barChartData, '#bar-svg'); WITH NO COUNTER
   }
 
-  const year = drawDropdown(years, svgSize.width);
+  const year = drawDropdown(years, mapsize.width);
   dropDownClickHandler(redrawVizForYear);
 
   // Call draw graphs

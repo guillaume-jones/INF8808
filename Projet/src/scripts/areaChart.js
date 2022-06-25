@@ -1,19 +1,3 @@
-/**
- * Creates area chart groups
- *
- * @param {number} width The width of the chart
- * @param {number} height The height of the chart
- */
-export function generateAreaGroup(width, height) {
-  d3.select('#area-svg')
-    .attr('width', width)
-    .attr('height', height)
-    .append('g')
-    .attr('id', 'area-g')
-    .attr('width', width)
-    .attr('height', height);
-}
-
 function generateXScale(width) {
   return d3.scaleLinear().domain([0, 96]).range([0, width]);
 }
