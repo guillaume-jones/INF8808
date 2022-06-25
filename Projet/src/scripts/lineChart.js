@@ -21,25 +21,25 @@ function addLabels(g, width, height, name, neighborhood) {
   // X label
   g.append('text')
     .text("Jours de l'année")
-    .attr('x', width / 2)
-    .attr('y', height);
+    .attr('x', width / 3)
+    .attr('y', height + 30);
   // Y label
   g.append('text')
     .text('Comptes')
-    .attr('x', 100)
+    .attr('x', 10)
     .attr('y', height / 2)
     .attr('transform', 'rotate(-90)');
   // Title
   if (name) {
     g.append('text')
       .text(name + ' - ' + neighborhood)
-      .attr('x', width / 2)
-      .attr('y', 35);
+      .attr('x', width / 4)
+      .attr('y', 10);
   } else {
     g.append('text')
       .text('Moyenne de tous les compteurs')
-      .attr('x', width / 2)
-      .attr('y', 35);
+      .attr('x', width / 4)
+      .attr('y', 10);
   }
 }
 

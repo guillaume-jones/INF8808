@@ -17,6 +17,32 @@ function generateYScale(height, counts) {
     .range([height, 0]);
 }
 
+function addLabels(g, width, height, name, neighborhood) {
+  // X label
+  g.append('text')
+    .text("Heures de la journée")
+    .attr('x', width / 3)
+    .attr('y', height + 20);
+  // Y label
+  g.append('text')
+    .text('Comptes')
+    .attr('x', 10)
+    .attr('y', height / 2)
+    .attr('transform', 'rotate(-90)');
+  // Title
+  if (name) {
+    g.append('text')
+      .text(name + ' - ' + neighborhood)
+      .attr('x', width / 3)
+      .attr('y', 10);
+  } else {
+    g.append('text')
+      .text('Moyenne de tous les compteurs')
+      .attr('x', width / 3)
+      .attr('y', 10);
+  }
+}
+
 /**
  * Draws the area chart
  *
@@ -51,6 +77,14 @@ export function drawAreaChart(width, height, averageData, counterData) {
     .call(d3.axisBottom(generateXTimescale(width)));
   group.append('g').call(d3.axisLeft(yScale));
 
+  // Add labels
+  addLabels(
+    group,
+    width,
+    height,
+    counterData && counterData.name,
+    counterData && counterData.neighborhood,
+  );
   group
     .append('path')
     .datum(averageData.counts)
