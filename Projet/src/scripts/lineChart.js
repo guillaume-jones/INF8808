@@ -22,13 +22,14 @@ function addLabels(g, width, height, name, neighborhood) {
   g.append('text')
     .text("Jours de l'année")
     .attr('x', width / 2)
-    .attr('y', height);
+    .attr('y', height)
+    .attr('transform', 'translate(-50, 50)');
   // Y label
   g.append('text')
     .text('Comptes')
     .attr('x', 100)
     .attr('y', height / 2)
-    .attr('transform', 'rotate(-90)');
+    .attr('transform', 'translate(-140, -10)');
   // Title
   if (name) {
     g.append('text')
@@ -39,7 +40,8 @@ function addLabels(g, width, height, name, neighborhood) {
     g.append('text')
       .text('Moyenne de tous les compteurs')
       .attr('x', width / 2)
-      .attr('y', 35);
+      .attr('y', 35)
+      .attr('transform', 'translate(-100, -20)');
   }
 }
 
