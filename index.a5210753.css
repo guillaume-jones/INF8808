@@ -9,10 +9,6 @@ body {
   display: flex;
 }
 
-header {
-  margin: 10px 50px;
-}
-
 main {
   height: 100%;
 }
@@ -20,8 +16,27 @@ main {
 h1 {
   text-align: center;
   margin-top: 1.5rem;
-  font-size: xx-large;
+  font-size: 30px;
   font-weight: normal;
+}
+
+h3 {
+  text-align: center;
+  font-size: 18px;
+  font-weight: normal;
+}
+
+#dropdown-container {
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+#dropdown {
+  flex: 0;
+  margin-left: 8px;
+  font-size: 17px;
 }
 
 .graph {
@@ -45,10 +60,6 @@ h1 {
   transform-box: fill-box;
   text-anchor: middle;
   font-size: 12px;
-}
-
-#dropdown {
-  position: absolute;
 }
 
 /*# sourceMappingURL=index.a5210753.css.map */

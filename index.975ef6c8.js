@@ -540,7 +540,9 @@ var _geography = require("./scripts/geography");
 var _lineChart = require("./scripts/lineChart");
 var _areaChart = require("./scripts/areaChart");
 var _barChartVizJs = require("./scripts/barChartViz.js");
-(async function(d3) {
+var _changeLocale = require("./scripts/changeLocale");
+(async function() {
+    (0, _changeLocale.changeLocale)();
     const mapsize = {
         width: 800,
         height: 625
@@ -597,7 +599,7 @@ var _barChartVizJs = require("./scripts/barChartViz.js");
     redrawVizForYear(year1);
 })(d3);
 
-},{"./scripts/preprocess":"ko2Fr","./scripts/mapViz":"cyjxE","./scripts/dropdown.js":"47aYr","./scripts/clickHandlers":"blWZ6","./scripts/geography":"iRz4J","./scripts/lineChart":"kHSI7","./scripts/areaChart":"apy0w","./scripts/barChartViz.js":"lsnFW"}],"ko2Fr":[function(require,module,exports) {
+},{"./scripts/preprocess":"ko2Fr","./scripts/mapViz":"cyjxE","./scripts/dropdown.js":"47aYr","./scripts/clickHandlers":"blWZ6","./scripts/geography":"iRz4J","./scripts/lineChart":"kHSI7","./scripts/areaChart":"apy0w","./scripts/barChartViz.js":"lsnFW","./scripts/changeLocale":"dVjTq"}],"ko2Fr":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 /** Load counter CSVs
@@ -1057,7 +1059,7 @@ parcelHelpers.defineInteropFlag(exports);
  * @returns Initial year in dropdown
  */ parcelHelpers.export(exports, "drawDropdown", ()=>drawDropdown);
 function drawDropdown(years) {
-    d3.select("#map-div").append("select").attr("id", "dropdown").attr("width", 130).attr("height", 25).selectAll("myOptions").data(years).enter().append("option").text(function(d) {
+    d3.select("#dropdown").selectAll("myOptions").data(years).enter().append("option").text(function(d) {
         return d;
     }).attr("value", function(d) {
         return d;
@@ -1139,12 +1141,12 @@ function generateYScale(height, counts) {
 function addAxes(g, width, height, yScale) {
     // Create X axis with 24 hr time
     const xAxis = d3.axisBottom(d3.scaleTime().domain([
-        new Date(2000, 0, 0),
-        new Date(2000, 12, 31)
+        new Date(2000, 1, 0),
+        new Date(2000, 12, 1)
     ]).range([
         0,
         width
-    ]).nice()).ticks(6).tickFormat(d3.timeFormat("%B"));
+    ]).nice()).ticks(12).tickFormat(d3.timeFormat("%b"));
     // Add axes, pixel-perfect positioning
     g.append("g").attr("class", "axis").attr("transform", "translate(59," + height + ")").call(xAxis);
     g.attr("class", "axis").append("g").attr("transform", "translate(59,0)").call(d3.axisLeft(yScale));
@@ -1423,6 +1425,17 @@ function buildBarChart(data, g) {
     drawYAxis(yScale);
     createGroups(data, xScale);
     drawBars(yScale, xSubgroupScale, subGroupBars, graphSize.height);
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dVjTq":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+/** Change D3 locale, used in time labels */ parcelHelpers.export(exports, "changeLocale", ()=>changeLocale);
+async function changeLocale() {
+    const locale = await d3.json("https://cdn.jsdelivr.net/npm/d3-time-format@3/locale/fr-CA.json");
+    locale.shortMonths = locale.shortMonths.map((month)=>month.slice(0, 1).toUpperCase() + month.slice(1));
+    locale.months = locale.months.map((month)=>month.slice(0, 1).toUpperCase() + month.slice(1));
+    d3.timeFormatDefaultLocale(locale);
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["ShInH","8lqZg"], "8lqZg", "parcelRequire5ccb")
