@@ -29,7 +29,7 @@ import { addLineGroup, drawLineChart } from './scripts/lineChart';
 import { drawAreaChart } from './scripts/areaChart';
 import { buildBarChart } from './scripts/barChartViz.js';
 
-(async function (d3) {
+(async function () {
   const mapsize = {
     width: 800,
     height: 625,

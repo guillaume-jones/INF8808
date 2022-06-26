@@ -18,10 +18,29 @@ main {
 }
 
 h1 {
-  font-size: xx-large;
+  font-size: 30px;
   text-align: center;
   margin-top: 1.5rem;
   font-weight: normal;
+}
+
+h3 {
+  font-size: 18px;
+  text-align: center;
+  font-weight: normal;
+}
+
+#dropdown-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+#dropdown {
+  flex: 0;
+  margin-left: 8;
+  font-size: 17px;
 }
 
 .graph {
@@ -45,8 +64,4 @@ h1 {
   transform-origin: center;
   transform-box: fill-box;
   text-anchor: middle;
-}
-
-#dropdown {
-  position: absolute
 }
