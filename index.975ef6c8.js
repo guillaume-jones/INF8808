@@ -565,6 +565,7 @@ var _barChartVizJs = require("./scripts/barChartViz.js");
     const counterData = await (0, _preprocess.getCounterData)(years);
     // Generate SVG groups
     (0, _mapViz.generateMapGroups)(mapsize.width, mapsize.height);
+    (0, _lineChart.addLineGroup)();
     // Render map
     const projection = (0, _geography.getProjection)();
     const path = (0, _geography.getPath)(projection);
@@ -596,7 +597,7 @@ var _barChartVizJs = require("./scripts/barChartViz.js");
     redrawVizForYear(year1);
 })(d3);
 
-},{"./scripts/preprocess":"ko2Fr","./scripts/mapViz":"cyjxE","./scripts/clickHandlers":"blWZ6","./scripts/geography":"iRz4J","./scripts/lineChart":"kHSI7","./scripts/areaChart":"apy0w","./scripts/barChartViz.js":"lsnFW","./scripts/dropdown.js":"47aYr"}],"ko2Fr":[function(require,module,exports) {
+},{"./scripts/preprocess":"ko2Fr","./scripts/mapViz":"cyjxE","./scripts/dropdown.js":"47aYr","./scripts/clickHandlers":"blWZ6","./scripts/geography":"iRz4J","./scripts/lineChart":"kHSI7","./scripts/areaChart":"apy0w","./scripts/barChartViz.js":"lsnFW"}],"ko2Fr":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 /** Load counter CSVs
@@ -1044,6 +1045,26 @@ function drawCircles(data, callback) {
     d3.select("#map-circles-g").selectAll("circle").data(data).enter().append("circle").attr("class", "circle").attr("r", (d)=>scale(d.counts)).attr("cx", (d)=>d.x).attr("cy", (d)=>d.y).attr("fill", "#0461cc").attr("stroke", "#ffffff").attr("stroke-width", 1).on("click", callback);
 }
 
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"47aYr":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+/**
+ * Draws the dropdown menu to select the desired year
+ *
+ * @param {number} years The years to display
+ * @param {number} width The width of the graph, used to place the button
+ *
+ * @returns Initial year in dropdown
+ */ parcelHelpers.export(exports, "drawDropdown", ()=>drawDropdown);
+function drawDropdown(years) {
+    d3.select("#map-div").append("select").attr("id", "dropdown").attr("width", 130).attr("height", 25).selectAll("myOptions").data(years).enter().append("option").text(function(d) {
+        return d;
+    }).attr("value", function(d) {
+        return d;
+    });
+    return years[0];
+}
+
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"blWZ6":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
@@ -1077,12 +1098,16 @@ function circleClickHandler(callback) {
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"kHSI7":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "addLineGroup", ()=>addLineGroup);
 /**
  * Draws the line chart
  *
  * @param {object[]} data The data for the map
  * @param callback The callback to call on circle click
  */ parcelHelpers.export(exports, "drawLineChart", ()=>drawLineChart);
+function addLineGroup() {
+    d3.select("#map-svg").append("g").attr("id", "line-svg");
+}
 function addLabels(g, width, height, name, neighborhood) {
     // X label
     g.append("g").append("text").attr("class", "axis-label").text("Jours de l'ann\xe9e").attr("x", width / 2 + 30).attr("y", height);
@@ -1398,26 +1423,6 @@ function buildBarChart(data, g) {
     drawYAxis(yScale);
     createGroups(data, xScale);
     drawBars(yScale, xSubgroupScale, subGroupBars, graphSize.height);
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"47aYr":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-/**
- * Draws the dropdown menu to select the desired year
- *
- * @param {number} years The years to display
- * @param {number} width The width of the graph, used to place the button
- *
- * @returns Initial year in dropdown
- */ parcelHelpers.export(exports, "drawDropdown", ()=>drawDropdown);
-function drawDropdown(years) {
-    d3.select("#map-div").append("select").attr("id", "dropdown").attr("width", 130).attr("height", 25).selectAll("myOptions").data(years).enter().append("option").text(function(d) {
-        return d;
-    }).attr("value", function(d) {
-        return d;
-    });
-    return years[0];
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["ShInH","8lqZg"], "8lqZg", "parcelRequire5ccb")
