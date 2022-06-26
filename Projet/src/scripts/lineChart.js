@@ -1,3 +1,7 @@
+export function addLineGroup() {
+  d3.select('#map-svg').append('g').attr('id', 'line-svg');
+}
+
 function addLabels(g, width, height, name, neighborhood) {
   // X label
   g.append('g')

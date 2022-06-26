@@ -25,7 +25,7 @@ import {
   getPath,
   getBikePaths,
 } from './scripts/geography';
-import { drawLineChart } from './scripts/lineChart';
+import { addLineGroup, drawLineChart } from './scripts/lineChart';
 import { drawAreaChart } from './scripts/areaChart';
 import { buildBarChart } from './scripts/barChartViz.js';
 
@@ -56,6 +56,7 @@ import { buildBarChart } from './scripts/barChartViz.js';
 
   // Generate SVG groups
   generateMapGroups(mapsize.width, mapsize.height);
+  addLineGroup();
 
   // Render map
   const projection = getProjection();
