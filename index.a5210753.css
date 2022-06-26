@@ -11,6 +11,10 @@ body {
 
 main {
   height: 100%;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  display: flex;
 }
 
 h1 {
@@ -18,6 +22,31 @@ h1 {
   margin-top: 1.5rem;
   font-size: 30px;
   font-weight: normal;
+}
+
+#spinner {
+  width: 100px;
+  height: 100px;
+  border: 10px solid #d8dbe3;
+  border-top-color: #125199;
+  border-radius: 50%;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+#viz-container {
+  visibility: hidden;
+  position: absolute;
+  top: 70px;
 }
 
 h3 {
@@ -60,6 +89,14 @@ h3 {
   transform-box: fill-box;
   text-anchor: middle;
   font-size: 12px;
+}
+
+.empty-label {
+  fill: #505050;
+  transform-origin: center;
+  transform-box: fill-box;
+  text-anchor: middle;
+  font-size: 14px;
 }
 
 /*# sourceMappingURL=index.a5210753.css.map */

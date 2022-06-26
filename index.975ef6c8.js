@@ -541,6 +541,7 @@ var _lineChart = require("./scripts/lineChart");
 var _areaChart = require("./scripts/areaChart");
 var _barChartVizJs = require("./scripts/barChartViz.js");
 var _changeLocale = require("./scripts/changeLocale");
+var _spinner = require("./scripts/spinner");
 (async function() {
     (0, _changeLocale.changeLocale)();
     const mapsize = {
@@ -557,9 +558,19 @@ var _changeLocale = require("./scripts/changeLocale");
     };
     // Get all raw data
     const years = [
-        // 2009, 2010,
-        // 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020,
-        2019, 
+        2009,
+        2010,
+        2011,
+        2012,
+        2013,
+        2014,
+        2015,
+        2016,
+        2017,
+        2018,
+        2019,
+        2020,
+        2021, 
     ];
     const montreal = await (0, _geography.getMontrealData)();
     const bikePaths = await (0, _geography.getBikePaths)();
@@ -567,6 +578,7 @@ var _changeLocale = require("./scripts/changeLocale");
     const counterData = await (0, _preprocess.getCounterData)(years);
     // Generate SVG groups
     (0, _mapViz.generateMapGroups)(mapsize.width, mapsize.height);
+    (0, _areaChart.setupAreaSVG)(areaSize.width, areaSize.height);
     (0, _lineChart.addLineGroup)();
     // Render map
     const projection = (0, _geography.getProjection)();
@@ -581,25 +593,26 @@ var _changeLocale = require("./scripts/changeLocale");
     const barChartData = (0, _preprocess.createBarChartData)(dataset);
     // Interactivity and re-drawing
     function redrawVizForCounter(year, counter) {
-        // Add barchart, areachart and linechart here
-        // Called on counter click
-        (0, _areaChart.drawAreaChart)(areaSize.width, areaSize.height, areaChartData[year]["Average"], areaChartData[year][counter]);
         (0, _lineChart.drawLineChart)(lineSize.width, lineSize.height, lineChartData[year]["Average"], lineChartData[year][counter]);
+        if (year > 2018) (0, _areaChart.drawAreaChart)(areaSize.width, areaSize.height, areaChartData[year]["Average"], areaChartData[year][counter]);
+        else (0, _areaChart.hideAreaChart)();
     // buildBarChart(barChartData, '#bar-svg'); WITH COUNTER
     }
     function redrawVizForYear(year) {
         (0, _mapViz.drawCircles)(mapData[year], (0, _clickHandlers.circleClickHandler)(redrawVizForCounter));
-        (0, _areaChart.drawAreaChart)(areaSize.width, areaSize.height, areaChartData[year]["Average"]);
         (0, _lineChart.drawLineChart)(lineSize.width, lineSize.height, lineChartData[year]["Average"]);
+        if (year > 2018) (0, _areaChart.drawAreaChart)(areaSize.width, areaSize.height, areaChartData[year]["Average"]);
+        else (0, _areaChart.hideAreaChart)(areaSize.width);
     // buildBarChart(barChartData, '#bar-svg'); WITH NO COUNTER
     }
     const year1 = (0, _dropdownJs.drawDropdown)(years);
     (0, _clickHandlers.dropDownClickHandler)(redrawVizForYear);
-    // Call draw graphs
+    // Show viz, hide spinner, draw graphs for first time
+    (0, _spinner.showViz)();
     redrawVizForYear(year1);
 })(d3);
 
-},{"./scripts/preprocess":"ko2Fr","./scripts/mapViz":"cyjxE","./scripts/dropdown.js":"47aYr","./scripts/clickHandlers":"blWZ6","./scripts/geography":"iRz4J","./scripts/lineChart":"kHSI7","./scripts/areaChart":"apy0w","./scripts/barChartViz.js":"lsnFW","./scripts/changeLocale":"dVjTq"}],"ko2Fr":[function(require,module,exports) {
+},{"./scripts/preprocess":"ko2Fr","./scripts/mapViz":"cyjxE","./scripts/dropdown.js":"47aYr","./scripts/clickHandlers":"blWZ6","./scripts/geography":"iRz4J","./scripts/lineChart":"kHSI7","./scripts/areaChart":"apy0w","./scripts/barChartViz.js":"lsnFW","./scripts/changeLocale":"dVjTq","./scripts/spinner":"3IC6j"}],"ko2Fr":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 /** Load counter CSVs
@@ -745,7 +758,9 @@ function createLineChartData(dataset, montreal) {
             let newCounts = [];
             // Years 2019-2021 need to group the data by day
             if (counterData.counts.length > 366) newCounts = Object.values(groupSum(counterData.counts, "date", "count"));
-            else newCounts = counterData.counts.map((data)=>data.count);
+            else newCounts = counterData.counts.map((data)=>{
+                return isNaN(data.count) ? 0 : data.count;
+            });
             // Save this counter's data to averageDayCounts
             if (!averageDayCounts) averageDayCounts = newCounts;
             else newCounts.map((count, i)=>{
@@ -1044,7 +1059,7 @@ function radiusScale(data1) {
 function drawCircles(data, callback) {
     const scale = radiusScale(data);
     d3.select("#map-circles-g").selectAll("circle").remove();
-    d3.select("#map-circles-g").selectAll("circle").data(data).enter().append("circle").attr("class", "circle").attr("r", (d)=>scale(d.counts)).attr("cx", (d)=>d.x).attr("cy", (d)=>d.y).attr("fill", "#0461cc").attr("stroke", "#ffffff").attr("stroke-width", 1).on("click", callback);
+    d3.select("#map-circles-g").selectAll("circle").data(data).enter().append("circle").attr("class", "circle").attr("r", (d)=>scale(d.counts)).attr("cx", (d)=>d.x).attr("cy", (d)=>d.y).attr("fill", "rgb(18, 81, 153)").attr("stroke", "#ffffff").attr("stroke-width", 1).on("click", callback);
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"47aYr":[function(require,module,exports) {
@@ -1081,7 +1096,6 @@ parcelHelpers.defineInteropFlag(exports);
 function dropDownClickHandler(callback) {
     d3.select("#dropdown").on("change", ()=>{
         const year = d3.select("#dropdown").property("value");
-        console.log(year);
         callback(year);
     // Pass year to drawBarChart, drawMapCircles and drawAreaChart to redraw
     // Rerun drawLineChart with no name specified (default data)
@@ -1091,7 +1105,6 @@ function circleClickHandler(callback) {
     return (d)=>{
         const year = d3.select("#dropdown").property("value");
         const name = d.name;
-        console.log(name);
         callback(year, name);
     // Pass d.name, d.neighborhood and lineChartData[year][name] to drawLinechart
     };
@@ -1183,21 +1196,22 @@ function drawLineChart(width, height, averageData, counterData) {
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"apy0w":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "setupAreaSVG", ()=>setupAreaSVG);
 /**
  * Draws the area chart
  *
  * @param {object[]} data The data for the map
  * @param callback The callback to call on circle click
  */ parcelHelpers.export(exports, "drawAreaChart", ()=>drawAreaChart);
-function addLabels(g, width, height, name) {
+parcelHelpers.export(exports, "hideAreaChart", ()=>hideAreaChart);
+function addTitle(g, width) {
+    g.append("text").attr("class", "graph-title").attr("x", width / 2 + 30).attr("y", 15).text("Comptes pendant la journ\xe9e");
+}
+function addLabels(g, width, height) {
     // X label
     g.append("g").append("text").attr("class", "axis-label").text("Heures de la journ\xe9e").attr("x", width / 2 + 30).attr("y", height);
     // Y label
     g.append("g").append("text").attr("class", "axis-label").text("Comptes").attr("x", 10).attr("y", height / 2).attr("transform", "rotate(-90)");
-    // Title
-    const title = g.append("g").append("text").attr("class", "graph-title").attr("x", width / 2 + 30).attr("y", 15);
-    if (name) title.text("Comptes par heure pour " + name);
-    else title.text("Moyenne de tous les compteurs");
 }
 function generateXScale(width) {
     return d3.scaleLinear().domain([
@@ -1227,8 +1241,12 @@ function addAxes(g, width, height, yScale) {
     g.append("g").attr("class", "axis").attr("transform", "translate(59," + height + ")").call(xAxis);
     g.attr("class", "axis").append("g").attr("transform", "translate(59,0)").call(d3.axisLeft(yScale));
 }
-function drawAreaChart(width, height, averageData, counterData) {
+function setupAreaSVG(width, height) {
     const svg = d3.select("#area-svg").attr("width", width + 80).attr("height", height + 80);
+    addTitle(svg, width);
+}
+function drawAreaChart(width, height, averageData, counterData) {
+    const svg = d3.select("#area-svg");
     // Reset area chart svg
     svg.selectAll("g").remove();
     // Add labels
@@ -1240,7 +1258,7 @@ function drawAreaChart(width, height, averageData, counterData) {
         ...averageData.counts.map((v)=>v.value),
         ...counterData ? counterData.counts.map((v)=>v.value) : [], 
     ]);
-    // Add axes
+    // Add title and axes
     addAxes(outerG, width, height, yScale);
     const innerG = outerG.append("g").attr("width", width).attr("height", height).attr("transform", "translate(60, 0)");
     // Draw chart
@@ -1254,6 +1272,11 @@ function drawAreaChart(width, height, averageData, counterData) {
     }).y0(height).y1(function(d) {
         return yScale(d.value);
     }));
+}
+function hideAreaChart(width) {
+    const svg = d3.select("#area-svg");
+    svg.selectAll("g").remove();
+    svg.append("g").append("text").attr("class", "empty-label").text("Cette donn\xe9e n'est pas disponible pour l'ann\xe9e choisie.").attr("x", width / 2 + 30).attr("y", 80);
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lsnFW":[function(require,module,exports) {
@@ -1436,6 +1459,15 @@ async function changeLocale() {
     locale.shortMonths = locale.shortMonths.map((month)=>month.slice(0, 1).toUpperCase() + month.slice(1));
     locale.months = locale.months.map((month)=>month.slice(0, 1).toUpperCase() + month.slice(1));
     d3.timeFormatDefaultLocale(locale);
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"3IC6j":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "showViz", ()=>showViz);
+function showViz() {
+    d3.select("#viz-container").style("visibility", "visible");
+    d3.select("#spinner").style("display", "none");
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["ShInH","8lqZg"], "8lqZg", "parcelRequire5ccb")
