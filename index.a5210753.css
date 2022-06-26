@@ -1,0 +1,50 @@
+body {
+  color: #000;
+  height: 100vh;
+  background-color: #fff;
+  flex-direction: column;
+  margin: 0;
+  font-family: Helvetica, "sans-serif";
+  font-size: 16px;
+  display: flex;
+}
+
+header {
+  margin: 10px 50px;
+}
+
+main {
+  height: 100%;
+}
+
+h1 {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: xx-large;
+  font-weight: normal;
+}
+
+.graph {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.graph-title {
+  text-anchor: middle;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.axis {
+  stroke-width: 1px;
+}
+
+.axis-label {
+  transform-origin: center;
+  transform-box: fill-box;
+  text-anchor: middle;
+  font-size: 12px;
+}
+
+/*# sourceMappingURL=index.a5210753.css.map */
