@@ -9,10 +9,6 @@ body {
   flex-direction: column;
 }
 
-header {
-  margin: 10px 50px;
-}
-
 main {
   height: 100%;
 }

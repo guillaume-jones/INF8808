@@ -28,8 +28,11 @@ import {
 import { addLineGroup, drawLineChart } from './scripts/lineChart';
 import { drawAreaChart } from './scripts/areaChart';
 import { buildBarChart } from './scripts/barChartViz.js';
+import { changeLocale } from './scripts/changeLocale';
 
 (async function () {
+  changeLocale();
+
   const mapsize = {
     width: 800,
     height: 625,

@@ -50,12 +50,12 @@ function addAxes(g, width, height, yScale) {
     .axisBottom(
       d3
         .scaleTime()
-        .domain([new Date(2000, 0, 0), new Date(2000, 12, 31)])
+        .domain([new Date(2000, 1, 0), new Date(2000, 12, 1)])
         .range([0, width])
         .nice(),
     )
-    .ticks(6)
-    .tickFormat(d3.timeFormat('%B'));
+    .ticks(12)
+    .tickFormat(d3.timeFormat('%b'));
 
   // Add axes, pixel-perfect positioning
   g.append('g')
