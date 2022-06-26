@@ -1,14 +1,7 @@
 ## TODO
 
-### Preprocess
-
-#### Géographie
-- Transformation coords compteurs en pixels
-- Transformation coords reseau en pixels, par piste
-- Fonction qui donne l'arrondissement pour des coords et montreal.json
-
-#### Comptes
-- Joindre données de tous les CSV des années, changer IDs pour names, mettre longitude/latitude, filtrer compteurs avec trous
+### Preprocessing API
+- Dataset complet
 ```
 {
     '2009':
@@ -105,21 +98,10 @@
 }
 ```
 
-### Affichage
-- Dropdown dans index.html
-- Choix du compteur selon un on('click') passé aux points
-- Carte
-    - Arrondissement (GeoJSON)
-    - Pistes cyclables sans couleur pour l'instant (GeoJSON)
-    - Compteurs
-- Line chart
-- Area chart
-- Bar chart
-
 ### Left for final release
 - Fix bar chart
 - Use custom font
-- Add loading animation before showing data
-- Add animations between datasets
-- Add data to neighborhoods
 - Divide averages per hour by #days counter was active
+- Add absolute scale across years for circle size
+- Add data to neighborhoods
+- Add animations between datasets

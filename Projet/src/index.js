@@ -26,7 +26,11 @@ import {
   getBikePaths,
 } from './scripts/geography';
 import { addLineGroup, drawLineChart } from './scripts/lineChart';
-import { drawAreaChart } from './scripts/areaChart';
+import {
+  drawAreaChart,
+  hideAreaChart,
+  setupAreaSVG,
+} from './scripts/areaChart';
 import { buildBarChart } from './scripts/barChartViz.js';
 import { changeLocale } from './scripts/changeLocale';
 import { showViz } from './scripts/spinner';
@@ -49,9 +53,8 @@ import { showViz } from './scripts/spinner';
 
   // Get all raw data
   const years = [
-    // 2009, 2010,
-    // 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020,
-    2019,
+    2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020,
+    2021,
   ];
   const montreal = await getMontrealData();
   const bikePaths = await getBikePaths();
@@ -60,6 +63,7 @@ import { showViz } from './scripts/spinner';
 
   // Generate SVG groups
   generateMapGroups(mapsize.width, mapsize.height);
+  setupAreaSVG(areaSize.width, areaSize.height);
   addLineGroup();
 
   // Render map
@@ -77,41 +81,47 @@ import { showViz } from './scripts/spinner';
 
   // Interactivity and re-drawing
   function redrawVizForCounter(year, counter) {
-    // Add barchart, areachart and linechart here
-    // Called on counter click
-    drawAreaChart(
-      areaSize.width,
-      areaSize.height,
-      areaChartData[year]['Average'],
-      areaChartData[year][counter],
-    );
     drawLineChart(
       lineSize.width,
       lineSize.height,
       lineChartData[year]['Average'],
       lineChartData[year][counter],
     );
+    if (year > 2018) {
+      drawAreaChart(
+        areaSize.width,
+        areaSize.height,
+        areaChartData[year]['Average'],
+        areaChartData[year][counter],
+      );
+    } else {
+      hideAreaChart();
+    }
     // buildBarChart(barChartData, '#bar-svg'); WITH COUNTER
   }
   function redrawVizForYear(year) {
     drawCircles(mapData[year], circleClickHandler(redrawVizForCounter));
-    drawAreaChart(
-      areaSize.width,
-      areaSize.height,
-      areaChartData[year]['Average'],
-    );
     drawLineChart(
       lineSize.width,
       lineSize.height,
       lineChartData[year]['Average'],
     );
+    if (year > 2018) {
+      drawAreaChart(
+        areaSize.width,
+        areaSize.height,
+        areaChartData[year]['Average'],
+      );
+    } else {
+      hideAreaChart(areaSize.width);
+    }
     // buildBarChart(barChartData, '#bar-svg'); WITH NO COUNTER
   }
 
   const year = drawDropdown(years);
   dropDownClickHandler(redrawVizForYear);
 
-  // Un-hide viz, draw graphs for first time
+  // Show viz, hide spinner, draw graphs for first time
   showViz();
   redrawVizForYear(year);
 })(d3);

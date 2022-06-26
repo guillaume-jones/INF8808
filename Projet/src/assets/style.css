@@ -85,3 +85,11 @@ h3 {
   transform-box: fill-box;
   text-anchor: middle;
 }
+
+.empty-label {
+  font-size: 14px;
+  fill: #505050;
+  transform-origin: center;
+  transform-box: fill-box;
+  text-anchor: middle;
+}

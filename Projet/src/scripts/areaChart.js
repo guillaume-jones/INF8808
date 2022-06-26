@@ -1,4 +1,12 @@
-function addLabels(g, width, height, name) {
+function addTitle(g, width) {
+  g.append('text')
+    .attr('class', 'graph-title')
+    .attr('x', width / 2 + 30)
+    .attr('y', 15)
+    .text('Comptes pendant la journée');
+}
+
+function addLabels(g, width, height) {
   // X label
   g.append('g')
     .append('text')
@@ -14,18 +22,6 @@ function addLabels(g, width, height, name) {
     .attr('x', 10)
     .attr('y', height / 2)
     .attr('transform', 'rotate(-90)');
-  // Title
-  const title = g
-    .append('g')
-    .append('text')
-    .attr('class', 'graph-title')
-    .attr('x', width / 2 + 30)
-    .attr('y', 15);
-  if (name) {
-    title.text('Comptes par heure pour ' + name);
-  } else {
-    title.text('Moyenne de tous les compteurs');
-  }
 }
 
 function generateXScale(width) {
@@ -63,6 +59,15 @@ function addAxes(g, width, height, yScale) {
     .call(d3.axisLeft(yScale));
 }
 
+export function setupAreaSVG(width, height) {
+  const svg = d3
+    .select('#area-svg')
+    .attr('width', width + 80)
+    .attr('height', height + 80);
+
+  addTitle(svg, width);
+}
+
 /**
  * Draws the area chart
  *
@@ -70,10 +75,7 @@ function addAxes(g, width, height, yScale) {
  * @param callback The callback to call on circle click
  */
 export function drawAreaChart(width, height, averageData, counterData) {
-  const svg = d3
-    .select('#area-svg')
-    .attr('width', width + 80)
-    .attr('height', height + 80);
+  const svg = d3.select('#area-svg');
 
   // Reset area chart svg
   svg.selectAll('g').remove();
@@ -94,7 +96,8 @@ export function drawAreaChart(width, height, averageData, counterData) {
     ...(counterData ? counterData.counts.map((v) => v.value) : []),
   ]);
 
-  // Add axes
+  // Add title and axes
+
   addAxes(outerG, width, height, yScale);
 
   const innerG = outerG
@@ -143,4 +146,18 @@ export function drawAreaChart(width, height, averageData, counterData) {
           }),
       );
   }
+}
+
+export function hideAreaChart(width) {
+  const svg = d3.select('#area-svg');
+
+  svg.selectAll('g').remove();
+
+  svg
+    .append('g')
+    .append('text')
+    .attr('class', 'empty-label')
+    .text("Cette donnée n'est pas disponible pour l'année choisie.")
+    .attr('x', width / 2 + 30)
+    .attr('y', 80);
 }

@@ -174,7 +174,9 @@ export function createLineChartData(dataset, montreal) {
           groupSum(counterData.counts, 'date', 'count'),
         );
       } else {
-        newCounts = counterData.counts.map((data) => data.count);
+        newCounts = counterData.counts.map((data) => {
+          return isNaN(data.count) ? 0 : data.count;
+        });
       }
 
       // Save this counter's data to averageDayCounts
