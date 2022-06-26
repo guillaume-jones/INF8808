@@ -122,3 +122,4 @@
 - Add loading animation before showing data
 - Add animations between datasets
 - Add data to neighborhoods
+- Divide averages per hour by #days counter was active
