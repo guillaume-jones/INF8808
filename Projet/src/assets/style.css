@@ -15,7 +15,6 @@ header {
 
 main {
   height: 100%;
-  margin: 10px 50px;
 }
 
 h1 {
@@ -25,30 +24,25 @@ h1 {
   font-weight: normal;
 }
 
-.main-svg text {
-  pointer-events: none;
-}
-
-.viz-container {
-  height: 100%;
-}
-
 .graph {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.title, .axis-text {
+.graph-title {
+  font-weight: bold;
+  text-anchor: middle;
+  font-size: 15px;
+}
+
+.axis {
+  stroke-width: 1
+}
+
+.axis-label {
+  font-size: 12px;
   transform-origin: center;
   transform-box: fill-box;
   text-anchor: middle;
-}
-
-.axis-text {
-  font-size: 14px;
-}
-
-.title {
-  font-size: 17px;
 }

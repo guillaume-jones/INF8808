@@ -14,7 +14,7 @@ import {
   drawBikePaths,
   drawCircles,
 } from './scripts/mapViz';
-import { drawDropdown } from './scripts/yearButton.js';
+import { drawDropdown } from './scripts/dropdown.js';
 import {
   dropDownClickHandler,
   circleClickHandler,
@@ -103,7 +103,7 @@ import { buildBarChart } from './scripts/barChartViz.js';
     // buildBarChart(barChartData, '#bar-svg'); WITH NO COUNTER
   }
 
-  const year = drawDropdown(years, mapsize.width);
+  const year = drawDropdown(years);
   dropDownClickHandler(redrawVizForYear);
 
   // Call draw graphs

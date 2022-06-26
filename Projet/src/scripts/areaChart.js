@@ -1,46 +1,66 @@
-function generateXScale(width) {
-  return d3.scaleLinear().domain([0, 96]).range([0, width]);
+function addLabels(g, width, height, name) {
+  // X label
+  g.append('g')
+    .append('text')
+    .attr('class', 'axis-label')
+    .text('Heures de la journée')
+    .attr('x', width / 2 + 30)
+    .attr('y', height);
+  // Y label
+  g.append('g')
+    .append('text')
+    .attr('class', 'axis-label')
+    .text('Comptes')
+    .attr('x', 10)
+    .attr('y', height / 2)
+    .attr('transform', 'rotate(-90)');
+  // Title
+  const title = g
+    .append('g')
+    .append('text')
+    .attr('class', 'graph-title')
+    .attr('x', width / 2 + 30)
+    .attr('y', 15);
+  if (name) {
+    title.text('Comptes par heure pour ' + name);
+  } else {
+    title.text('Moyenne de tous les compteurs');
+  }
 }
 
-function generateXTimescale(width) {
-  return d3
-    .scaleTime()
-    .domain([new Date(2020, 1, 1, 0, 0), new Date(2020, 1, 2, 0, 0)])
-    .range([0, width])
-    .nice();
+function generateXScale(width) {
+  return d3.scaleLinear().domain([0, 96]).range([0, width]);
 }
 
 function generateYScale(height, counts) {
   return d3
     .scaleLinear()
     .domain([0, d3.max(counts)])
-    .range([height, 0]);
+    .range([height, 0])
+    .nice();
 }
 
-function addLabels(g, width, height, name, neighborhood) {
-  // X label
-  g.append('text')
-    .text("Heures de la journée")
-    .attr('x', width / 3)
-    .attr('y', height + 20);
-  // Y label
-  g.append('text')
-    .text('Comptes')
-    .attr('x', 10)
-    .attr('y', height / 2)
-    .attr('transform', 'rotate(-90)');
-  // Title
-  if (name) {
-    g.append('text')
-      .text(name + ' - ' + neighborhood)
-      .attr('x', width / 3)
-      .attr('y', 10);
-  } else {
-    g.append('text')
-      .text('Moyenne de tous les compteurs')
-      .attr('x', width / 3)
-      .attr('y', 10);
-  }
+function addAxes(g, width, height, yScale) {
+  // Create X axis with 24 hr time
+  const xAxis = d3
+    .axisBottom(
+      d3
+        .scaleTime()
+        .range([0, width - 7])
+        .nice(),
+    )
+    .ticks(20)
+    .tickFormat(d3.timeFormat('%H:%M'));
+
+  // Add axes, pixel-perfect positioning
+  g.append('g')
+    .attr('class', 'axis')
+    .attr('transform', 'translate(59,' + height + ')')
+    .call(xAxis);
+  g.attr('class', 'axis')
+    .append('g')
+    .attr('transform', 'translate(59,0)')
+    .call(d3.axisLeft(yScale));
 }
 
 /**
@@ -50,18 +70,22 @@ function addLabels(g, width, height, name, neighborhood) {
  * @param callback The callback to call on circle click
  */
 export function drawAreaChart(width, height, averageData, counterData) {
-  // Reset area chart svg
-  d3.select('#area-g').remove();
-
-  const group = d3
+  const svg = d3
     .select('#area-svg')
-    .attr('width', width + 40)
-    .attr('height', height + 20)
+    .attr('width', width + 80)
+    .attr('height', height + 80);
+
+  // Reset area chart svg
+  svg.selectAll('g').remove();
+
+  // Add labels
+  addLabels(svg, width + 80, height + 70, counterData && counterData.name);
+
+  const outerG = svg
     .append('g')
-    .attr('id', 'area-g')
-    .attr('width', width)
-    .attr('height', height)
-    .attr('transform', 'translate(40, 0)');
+    .attr('width', width + 30)
+    .attr('height', height + 20)
+    .attr('transform', 'translate(10, 30)');
 
   // Generate scales
   const xScale = generateXScale(width);
@@ -70,27 +94,22 @@ export function drawAreaChart(width, height, averageData, counterData) {
     ...(counterData ? counterData.counts.map((v) => v.value) : []),
   ]);
 
-  // Add axes, including special time axis on X
-  group
-    .append('g')
-    .attr('transform', 'translate(0,' + height + ')')
-    .call(d3.axisBottom(generateXTimescale(width)));
-  group.append('g').call(d3.axisLeft(yScale));
+  // Add axes
+  addAxes(outerG, width, height, yScale);
 
-  // Add labels
-  addLabels(
-    group,
-    width,
-    height,
-    counterData && counterData.name,
-    counterData && counterData.neighborhood,
-  );
-  group
+  const innerG = outerG
+    .append('g')
+    .attr('width', width)
+    .attr('height', height)
+    .attr('transform', 'translate(60, 0)');
+
+  // Draw chart
+  innerG
     .append('path')
     .datum(averageData.counts)
     .attr('fill', '#c9c9c9')
     .attr('stroke', '#9a9a9a')
-    .attr('stroke-width', 1.5)
+    .attr('stroke-width', 1)
     .attr(
       'd',
       d3
@@ -105,12 +124,12 @@ export function drawAreaChart(width, height, averageData, counterData) {
     );
 
   if (counterData) {
-    group
+    innerG
       .append('path')
       .datum(counterData.counts)
       .attr('fill', 'rgba(77, 149, 232, 0.5)')
       .attr('stroke', 'rgba(18, 81, 153, 0.5)')
-      .attr('stroke-width', 1.5)
+      .attr('stroke-width', 1)
       .attr(
         'd',
         d3

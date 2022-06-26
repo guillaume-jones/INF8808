@@ -6,9 +6,10 @@
  *
  * @returns Initial year in dropdown
  */
-export function drawDropdown(years, width) {
-  d3.select('#dropdown')
-    .attr('transform', 'translate(' + width + ', 140)')
+export function drawDropdown(years) {
+  d3.select('#map-div')
+    .append('select')
+    .attr('id', 'dropdown')
     .attr('width', 130)
     .attr('height', 25)
     .selectAll('myOptions')

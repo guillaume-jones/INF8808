@@ -117,7 +117,8 @@
 - Bar chart
 
 ### Left for final release
+- Fix bar chart
 - Deal with inactive counters properly
 - Add loading animation before showing data
-- Spruce up the map colors
-- Style dropdown
+- Add animations between datasets
+- Add data to neighborhoods
