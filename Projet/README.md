@@ -118,7 +118,7 @@
 
 ### Left for final release
 - Fix bar chart
-- Deal with inactive counters properly
+- Use custom font
 - Add loading animation before showing data
 - Add animations between datasets
 - Add data to neighborhoods

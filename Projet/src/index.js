@@ -29,6 +29,7 @@ import { addLineGroup, drawLineChart } from './scripts/lineChart';
 import { drawAreaChart } from './scripts/areaChart';
 import { buildBarChart } from './scripts/barChartViz.js';
 import { changeLocale } from './scripts/changeLocale';
+import { showViz } from './scripts/spinner';
 
 (async function () {
   changeLocale();
@@ -110,6 +111,7 @@ import { changeLocale } from './scripts/changeLocale';
   const year = drawDropdown(years);
   dropDownClickHandler(redrawVizForYear);
 
-  // Call draw graphs
+  // Un-hide viz, draw graphs for first time
+  showViz();
   redrawVizForYear(year);
 })(d3);

@@ -89,7 +89,7 @@ export function drawCircles(data, callback) {
     .attr('r', (d) => scale(d.counts))
     .attr('cx', (d) => d.x)
     .attr('cy', (d) => d.y)
-    .attr('fill', '#0461cc')
+    .attr('fill', 'rgb(18, 81, 153)')
     .attr('stroke', '#ffffff')
     .attr('stroke-width', 1)
     .on('click', callback);
