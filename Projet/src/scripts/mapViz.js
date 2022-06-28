@@ -96,7 +96,7 @@ export function drawBikePaths(data, path) {
 
 function radiusScale(data) {
   const maxCounts = d3.max(data.map((data) => data.counts));
-  return d3.scaleLinear().domain([0, maxCounts]).range([4, 10]);
+  return d3.scaleLinear().domain([0, maxCounts]).range([3, 9]);
 }
 
 /**
@@ -122,5 +122,17 @@ export function drawCircles(data, callback) {
     .attr('fill', 'rgb(18, 81, 153)')
     .attr('stroke', '#ffffff')
     .attr('stroke-width', 1)
-    .on('click', callback);
+    .on('click', callback)
+    .on('mouseover', function () {
+      d3.select(this)
+        .transition(500)
+        .ease(d3.easeCubicInOut)
+        .attr('r', (d) => scale(d.counts) * 1.5);
+    })
+    .on('mouseout', function () {
+      d3.select(this)
+        .transition(500)
+        .ease(d3.easeCubicInOut)
+        .attr('r', (d) => scale(d.counts));
+    });
 }
