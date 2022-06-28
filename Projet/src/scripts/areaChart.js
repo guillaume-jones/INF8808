@@ -177,7 +177,7 @@ export function drawAreaChart(width, height, averageData, counterData) {
 }
 
 export function hideAreaChart(width) {
-  const svg = d3.select('#area-svg').attr('height', 160);
+  const svg = d3.select('#area-svg').attr('height', 130);
 
   svg.selectAll('g').remove();
 
