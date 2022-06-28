@@ -10,6 +10,7 @@ import {
 } from './scripts/preprocess';
 import {
   generateMapGroups,
+  generateBlurMap,
   drawMapBackground,
   drawBikePaths,
   drawCircles,
@@ -25,11 +26,16 @@ import {
   getPath,
   getBikePaths,
 } from './scripts/geography';
-import { setupLineGroup, drawLineChart } from './scripts/lineChart';
+import {
+  setupLineGroup,
+  drawLineChart,
+  generateBlurLineChart,
+} from './scripts/lineChart';
 import {
   drawAreaChart,
   hideAreaChart,
   setupAreaSVG,
+  generateBlurAreaChart,
 } from './scripts/areaChart';
 import { setupBarSVG, drawBarChart } from './scripts/barChartViz.js';
 import { changeLocale } from './scripts/changeLocale';
@@ -74,6 +80,11 @@ import { showViz } from './scripts/spinner';
   const path = getPath(projection);
   drawMapBackground(montreal, path);
   drawBikePaths(bikePaths, path);
+
+  // Add Gaussian Blur
+  generateBlurMap();
+  generateBlurLineChart();
+  generateBlurAreaChart();
 
   // Get all processed data
   const dataset = createDataset(locationData, counterData, years);

@@ -68,6 +68,35 @@ function addAxes(g, width, height, yScale) {
 }
 
 /**
+ * Generates Gaussian Blur
+ */
+export function generateBlurAreaChart() {
+  const filter = d3
+    .select('#area-svg')
+    .append('defs')
+    .append('filter')
+    .attr('id', 'drop-shadow');
+
+  filter
+    .append('feGaussianBlur')
+    .attr('in', 'SourceAlpha')
+    .attr('stdDeviation', 1)
+    .attr('result', 'blur');
+
+  filter
+    .append('feOffset')
+    .attr('in', 'blur')
+    .attr('dx', 1)
+    .attr('dy', 1)
+    .attr('result', 'offsetBlur');
+
+  const feMerge = filter.append('feMerge');
+
+  feMerge.append('feMergeNode').attr('in', 'offsetBlur');
+  feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
+}
+
+/**
  * Draws the area chart
  *
  * @param {object[]} data The data for the map
@@ -111,6 +140,7 @@ export function drawAreaChart(width, height, averageData, counterData) {
     .attr('fill', '#c9c9c9')
     .attr('stroke', '#9a9a9a')
     .attr('stroke-width', 1)
+    .attr('filter', 'drop-shadow')
     .attr(
       'd',
       d3
