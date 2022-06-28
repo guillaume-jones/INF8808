@@ -57,6 +57,11 @@ h3 {
   align-items: center;
 }
 
+.main-svg {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
 #dropdown {
   flex: 0;
   margin-left: 8;

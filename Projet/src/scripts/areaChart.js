@@ -1,3 +1,12 @@
+export function setupAreaSVG(width, height) {
+  const svg = d3
+    .select('#area-svg')
+    .attr('width', width + 80)
+    .attr('height', height + 80);
+
+  addTitle(svg, width);
+}
+
 function addTitle(g, width) {
   g.append('text')
     .attr('class', 'graph-title')
@@ -48,7 +57,6 @@ function addAxes(g, width, height, yScale) {
     .ticks(20)
     .tickFormat(d3.timeFormat('%H:%M'));
 
-  // Add axes, pixel-perfect positioning
   g.append('g')
     .attr('class', 'axis')
     .attr('transform', 'translate(59,' + height + ')')
@@ -59,15 +67,6 @@ function addAxes(g, width, height, yScale) {
     .call(d3.axisLeft(yScale));
 }
 
-export function setupAreaSVG(width, height) {
-  const svg = d3
-    .select('#area-svg')
-    .attr('width', width + 80)
-    .attr('height', height + 80);
-
-  addTitle(svg, width);
-}
-
 /**
  * Draws the area chart
  *
@@ -75,7 +74,7 @@ export function setupAreaSVG(width, height) {
  * @param callback The callback to call on circle click
  */
 export function drawAreaChart(width, height, averageData, counterData) {
-  const svg = d3.select('#area-svg');
+  const svg = d3.select('#area-svg').attr('height', height + 80);
 
   // Reset area chart svg
   svg.selectAll('g').remove();
@@ -96,8 +95,7 @@ export function drawAreaChart(width, height, averageData, counterData) {
     ...(counterData ? counterData.counts.map((v) => v.value) : []),
   ]);
 
-  // Add title and axes
-
+  // Add axes
   addAxes(outerG, width, height, yScale);
 
   const innerG = outerG
@@ -149,7 +147,7 @@ export function drawAreaChart(width, height, averageData, counterData) {
 }
 
 export function hideAreaChart(width) {
-  const svg = d3.select('#area-svg');
+  const svg = d3.select('#area-svg').attr('height', 160);
 
   svg.selectAll('g').remove();
 

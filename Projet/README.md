@@ -99,9 +99,8 @@
 ```
 
 ### Left for final release
-- Fix bar chart
-- Use custom font
 - Divide averages per hour by #days counter was active
 - Add absolute scale across years for circle size
 - Add data to neighborhoods
+- Add colored bike lane data based on counter
 - Add animations between datasets

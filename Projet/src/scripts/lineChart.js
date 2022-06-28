@@ -1,5 +1,9 @@
-export function addLineGroup() {
-  d3.select('#map-svg').append('g').attr('id', 'line-svg');
+export function setupLineGroup(width, height) {
+  d3.select('#map-svg')
+    .append('g')
+    .attr('id', 'line-svg')
+    .attr('width', width + 80)
+    .attr('height', height + 80);
 }
 
 function addLabels(g, width, height, name, neighborhood) {
@@ -75,10 +79,7 @@ function addAxes(g, width, height, yScale) {
  * @param callback The callback to call on circle click
  */
 export function drawLineChart(width, height, averageData, counterData) {
-  const svg = d3
-    .select('#line-svg')
-    .attr('width', width + 80)
-    .attr('height', height + 80);
+  const svg = d3.select('#line-svg');
 
   // Reset line chart svg
   svg.selectAll('g').remove();

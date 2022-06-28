@@ -1,207 +1,144 @@
-/**
- * Appends SVG g elements which will contain the x and y axes.
- *
- * @param {*} g The d3 Selection of the graph's g SVG element
- */
- export function appendAxes (g) {
-    g.append('g')
-      .attr('class', 'x axis')
-  
-    g.append('g')
-      .attr('class', 'y axis')
-  }
-  
-/**
- * Appends the labels for the the y axis and the title of the graph.
- *
- * @param {*} g The d3 Selection of the graph's g SVG element
- */
- export function appendGraphLabels (g) {
-    g.append('text')
-      .text('Total counts for the year')
-      .attr('class', 'y axis-text')
-      .attr('transform', 'rotate(-90)')
-      .attr('fill', '#898989')
-      .attr('font-size', 12)
-  
-    g.append('text')
-      .text('Average counts per year')
-      .attr('class', 'title')
-      .attr('fill', '#898989')
-  }
+function addTitle(g, width) {
+  g.append('text')
+    .attr('class', 'graph-title')
+    .attr('x', width / 2 + 30)
+    .attr('y', 15)
+    .text("Comptes avant et après l'introduction de Bixis électriques");
+}
 
-/**
- * Sets the size of the SVG canvas containing the graph.
- *
- * @param {number} width The desired width
- * @param {number} height The desired height
- */
- export function setCanvasSize (width, height) {
-    d3.select('#bar-svg')
-      .attr('width', width)
-      .attr('height', height)
-  }
+function addLabels(g, width, height) {
+  // X label
+  g.append('g')
+    .append('text')
+    .attr('class', 'axis-label')
+    .text('Années')
+    .attr('x', width / 2 + 30)
+    .attr('y', height);
+  // Y label
+  g.append('g')
+    .append('text')
+    .attr('class', 'axis-label')
+    .text('Comptes')
+    .attr('x', 10)
+    .attr('y', height / 2)
+    .attr('transform', 'rotate(-90)');
+}
 
-/**
- * Positions the x axis label, y axis label and title label on the graph.
- *
- * @param {number} width The width of the graph
- * @param {number} height The height of the graph
- */
- export function positionLabels (width, height) {
-    d3.select('.y.axis-text')
-      .attr('x', -50)
-      .attr('y', height / 2)
-  
-    d3.select('.title')
-      .attr('x', width / 2)
-      .attr('y', -35)
-  }
+function generateXScale(width, years) {
+  return d3.scaleBand().padding(0.2).domain(years).range([0, width]);
+}
 
-/**
- * Updates the X scale to be used within each group of the grouped bar chart
- *
- * @param {*} scale The scale used for the subgroups
- * @param {string[]} subGroupBars The bars per subgroup (average on all counters and specific counter)
- * @param {*} xScale The graph's encompassing x scale
- */
- export function updateXSubgroupScale (scale, subGroupBars, xScale) {
-    scale
-      .domain(subGroupBars)
-      .range([0, xScale.bandwidth()])
-  }
+function generateXSubScale(xScale) {
+  return d3
+    .scaleBand()
+    .padding(0.02)
+    .domain(['Average', 'Counter'])
+    .range([0, xScale.bandwidth()]);
+}
 
-/**
- * Draws the x axis at the bottom of the plot.
- *
- * @param {*} xScale The scale to use for the x axis
- * @param {number} height The height of the graph
- */
-export function drawXAxis (xScale, height) {
-    d3.select('.x.axis')
-      .attr('transform', 'translate(0, ' + height + ')')
-      .call(d3.axisBottom(xScale)
-        .tickFormat(x => `year ${x}`))
-  }
+function generateYScale(height, counts) {
+  return d3
+    .scaleLinear()
+    .domain([0, d3.max(counts)])
+    .range([height, 0])
+    .nice();
+}
 
-/**
- * Draws the y axis at the left of the plot.
- *
- * @param {*} yScale The scale to use for the y axis
- */
-export function drawYAxis (yScale) {
-    d3.select('.y.axis').call(d3.axisLeft(yScale).ticks(5))
-  }
+function generateColorScale() {
+  return d3
+    .scaleOrdinal()
+    .domain([0, 1, 2, 3])
+    .range(['#c9c9c9', '#9a9a9a', 'rgba(77, 149, 232)', 'rgba(18, 81, 153)']);
+}
 
-/**
- * Sets the domain and range of the X scale.
- *
- * @param {*} scale The x scale
- * @param {object[]} data The data to be used
- * @param {number} width The width of the graph
- */
- export function updateGroupXScale (scale, data, width) {
-    scale.domain(data.Average.year).range([0, width])
-  }
-  
-  /**
-   * Sets the domain and range of the Y scale.
-   *
-   * @param {*} scale The Y scale
-   * @param {object[]} data The data to be used
-   * @param {number} height The height of the graph
-   */
-  export function updateYScale (scale, data, height) {
-    const max = d3.max(data.Average.counts, m => d3.max(m))
-    scale.domain([0, max]).range([height, 0])
-  }
-  
-  /**
-   * Creates the groups for the grouped bar chart and appends them to the graph.
-   * Each group corresponds to a pair of average/chosen counter values
-   *
-   * @param {object[]} data The data to be used
-   * @param {*} x The graph's x scale
-   */
-  export function createGroups (data, x) {
-    d3.select('#bar-svg')
-      .selectAll('.group')
-      .data(data)
-      .enter()
+function addAxes(g, height, xScale, yScale) {
+  g.append('g')
+    .attr('class', 'axis')
+    .attr('transform', 'translate(59,' + height + ')')
+    .call(d3.axisBottom(xScale));
+  g.attr('class', 'axis')
+    .append('g')
+    .attr('transform', 'translate(59,0)')
+    .call(d3.axisLeft(yScale));
+}
+
+export function setupBarSVG(width, height) {
+  const svg = d3
+    .select('#bar-svg')
+    .attr('width', width + 80)
+    .attr('height', height + 80);
+
+  addTitle(svg, width);
+}
+
+export function drawBarChart(
+  width,
+  height,
+  bixiYear,
+  averageData,
+  counterData,
+) {
+  const svg = d3.select('#bar-svg');
+
+  // Reset bar chart svg
+  svg.selectAll('g').remove();
+
+  // Add labels
+  addLabels(svg, width + 80, height + 70, counterData && counterData.name);
+
+  const outerG = svg
+    .append('g')
+    .attr('width', width + 30)
+    .attr('height', height + 20)
+    .attr('transform', 'translate(10, 30)');
+
+  // Generate scales
+  const xScale = generateXScale(
+    width,
+    averageData.map((d) => d.year),
+  );
+  const xSubScale = generateXSubScale(xScale);
+  const yScale = generateYScale(height, [
+    ...averageData.map((v) => v.counts),
+    ...(counterData ? counterData.map((v) => v.counts) : []),
+  ]);
+  const colorScale = generateColorScale();
+
+  // Add axes
+  addAxes(outerG, height, xScale, yScale);
+
+  const innerG = outerG
+    .append('g')
+    .attr('width', width)
+    .attr('height', height)
+    .attr('transform', 'translate(60, 0)');
+
+  // Draw chart
+  innerG
+    .append('g')
+    .attr('id', 'average-bars')
+    .selectAll('rect')
+    .data(averageData)
+    .enter()
+    .append('rect')
+    .attr('fill', (d) => (d.year < bixiYear ? colorScale(0) : colorScale(1)))
+    .attr('x', (d) => xScale(d.year) + xSubScale('Average'))
+    .attr('y', (d) => yScale(d.counts))
+    .attr('width', xSubScale.bandwidth())
+    .attr('height', (d) => height - yScale(d.counts));
+
+  if (counterData) {
+    innerG
       .append('g')
-      .attr('class', 'group')
-      .attr('transform', data => 'translate(' + x(data.Average.year + ',0)'))
-      .attr('x', (data) => x(data.Average.year))
-  }
-  /**
-   * Draws the bars inside the groups
-   *
-   * @param {*} y The graph's y scale
-   * @param {*} xSubgroup The x scale to use to position the rectangles in the groups
-   * @param {number} height The height of the graph
-   * @param {object[]} data The data to be used
-   */
-  export function drawBars (y, xSubgroup, height, data) {
-    d3.select('#bar-svg')
-      .selectAll('.group')
+      .attr('id', 'counter-bars')
       .selectAll('rect')
-      .data(data)
+      .data(counterData)
       .enter()
       .append('rect')
-      .attr('x', (data) => xSubgroup(data.Average.year))
-      .attr('y', (data) => y(data.Average.counts))
-      .attr('width', xSubgroup.bandwidth())
-      .attr('height', (data) => height - y(data.Average.counts))
+      .attr('fill', (d) => (d.year < bixiYear ? colorScale(2) : colorScale(3)))
+      .attr('x', (d) => xScale(d.year) + xSubScale('Counter'))
+      .attr('y', (d) => yScale(d.counts))
+      .attr('width', xSubScale.bandwidth())
+      .attr('height', (d) => height - yScale(d.counts));
   }
-
-const margin = { top: 80, right: 0, bottom: 80, left: 55 }
-
-let bounds
-let svgSize
-let graphSize
-
-const xScale = d3.scaleBand().padding(0.15)
-const xSubgroupScale = d3.scaleBand().padding([0.015])
-const yScale = d3.scaleLinear()
-
-/**
-     *   This function handles the graph's sizing.
-     */
- function setSizing () {
-    bounds = d3.select('#bar-svg').node().getBoundingClientRect()
-
-    svgSize = {
-      width: bounds.width,
-      height: 550
-    }
-
-    graphSize = {
-      width: svgSize.width - margin.right - margin.left,
-      height: svgSize.height - margin.bottom - margin.top
-    }
-
-    setCanvasSize(svgSize.width, svgSize.height)
-  }
-
-/**
-     *   This function builds the graph.
-     */
- export function buildBarChart (data, g) {
-    appendAxes(g)
-    appendGraphLabels(g)
-    setSizing()
-
-    var subGroupBars = ['Average', 'X'] // Update according to data input
-
-    positionLabels(graphSize.width, graphSize.height)
-
-    updateGroupXScale(xScale, data, graphSize.width)
-    updateXSubgroupScale(xSubgroupScale, subGroupBars, xScale)
-    updateYScale(yScale, data, graphSize.height)
-
-    drawXAxis(xScale, graphSize.height)
-    drawYAxis(yScale)
-
-    createGroups(data, xScale)
-    drawBars(yScale, xSubgroupScale, subGroupBars, graphSize.height)
-  }
+}
