@@ -4,7 +4,7 @@ body {
   background-color: #fff;
   flex-direction: column;
   margin: 0;
-  font-family: Helvetica, "sans-serif";
+  font-family: Poppins, "sans-serif";
   font-size: 16px;
   display: flex;
 }
@@ -71,7 +71,14 @@ h3 {
 .graph {
   justify-content: center;
   align-items: center;
+  margin-top: 30px;
+  margin-bottom: 30px;
   display: flex;
+  box-shadow: 2px 2px 8px 2px #020b2180;
+}
+
+.main-svg {
+  margin: 20px;
 }
 
 .graph-title {

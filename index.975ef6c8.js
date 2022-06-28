@@ -548,14 +548,15 @@ var _spinner = require("./scripts/spinner");
         width: 800,
         height: 625
     };
-    const areaSize = {
-        width: 800,
-        height: 350
-    };
     const lineSize = {
         width: 400,
         height: 250
     };
+    const areaSize = {
+        width: 800,
+        height: 350
+    };
+    const barSize = areaSize;
     // Get all raw data
     const years = [
         2009,
@@ -572,6 +573,7 @@ var _spinner = require("./scripts/spinner");
         2020,
         2021, 
     ];
+    const bixiYear = 2019;
     const montreal = await (0, _geography.getMontrealData)();
     const bikePaths = await (0, _geography.getBikePaths)();
     const locationData = await (0, _preprocess.getLocationData)();
@@ -579,31 +581,38 @@ var _spinner = require("./scripts/spinner");
     // Generate SVG groups
     (0, _mapViz.generateMapGroups)(mapsize.width, mapsize.height);
     (0, _areaChart.setupAreaSVG)(areaSize.width, areaSize.height);
-    (0, _lineChart.addLineGroup)();
+    (0, _lineChart.setupLineGroup)(lineSize.width, lineSize.height);
+    (0, _barChartVizJs.setupBarSVG)(barSize.width, barSize.height);
     // Render map
     const projection = (0, _geography.getProjection)();
     const path = (0, _geography.getPath)(projection);
     (0, _mapViz.drawMapBackground)(montreal, path);
     (0, _mapViz.drawBikePaths)(bikePaths, path);
+    // Add Gaussian Blur
+    (0, _mapViz.generateBlurMap)();
+    (0, _lineChart.generateBlurLineChart)();
+    (0, _areaChart.generateBlurAreaChart)();
     // Get all processed data
     const dataset = (0, _preprocess.createDataset)(locationData, counterData, years);
     const mapData = (0, _preprocess.createMapData)(dataset, montreal, projection);
     const lineChartData = (0, _preprocess.createLineChartData)(dataset, montreal);
     const areaChartData = (0, _preprocess.createAreaChartData)(dataset);
     const barChartData = (0, _preprocess.createBarChartData)(dataset);
-    // Interactivity and re-drawing
-    function redrawVizForCounter(year, counter) {
-        (0, _lineChart.drawLineChart)(lineSize.width, lineSize.height, lineChartData[year]["Average"], lineChartData[year][counter]);
-        if (year > 2018) (0, _areaChart.drawAreaChart)(areaSize.width, areaSize.height, areaChartData[year]["Average"], areaChartData[year][counter]);
-        else (0, _areaChart.hideAreaChart)();
-    // buildBarChart(barChartData, '#bar-svg'); WITH COUNTER
-    }
+    // Used to redraw all viz when year changes
+    // Reverts to default visualizations
     function redrawVizForYear(year) {
         (0, _mapViz.drawCircles)(mapData[year], (0, _clickHandlers.circleClickHandler)(redrawVizForCounter));
         (0, _lineChart.drawLineChart)(lineSize.width, lineSize.height, lineChartData[year]["Average"]);
         if (year > 2018) (0, _areaChart.drawAreaChart)(areaSize.width, areaSize.height, areaChartData[year]["Average"]);
         else (0, _areaChart.hideAreaChart)(areaSize.width);
-    // buildBarChart(barChartData, '#bar-svg'); WITH NO COUNTER
+        (0, _barChartVizJs.drawBarChart)(barSize.width, barSize.height, bixiYear, barChartData["Average"]);
+    }
+    // Used to redraw viz for each counter clicked
+    function redrawVizForCounter(year, counter) {
+        (0, _lineChart.drawLineChart)(lineSize.width, lineSize.height, lineChartData[year]["Average"], lineChartData[year][counter]);
+        if (year > 2018) (0, _areaChart.drawAreaChart)(areaSize.width, areaSize.height, areaChartData[year]["Average"], areaChartData[year][counter]);
+        else (0, _areaChart.hideAreaChart)(areaSize.width);
+        (0, _barChartVizJs.drawBarChart)(barSize.width, barSize.height, bixiYear, barChartData["Average"], barChartData[counter]);
     }
     const year1 = (0, _dropdownJs.drawDropdown)(years);
     (0, _clickHandlers.dropDownClickHandler)(redrawVizForYear);
@@ -612,7 +621,7 @@ var _spinner = require("./scripts/spinner");
     redrawVizForYear(year1);
 })(d3);
 
-},{"./scripts/preprocess":"ko2Fr","./scripts/mapViz":"cyjxE","./scripts/dropdown.js":"47aYr","./scripts/clickHandlers":"blWZ6","./scripts/geography":"iRz4J","./scripts/lineChart":"kHSI7","./scripts/areaChart":"apy0w","./scripts/barChartViz.js":"lsnFW","./scripts/changeLocale":"dVjTq","./scripts/spinner":"3IC6j"}],"ko2Fr":[function(require,module,exports) {
+},{"./scripts/preprocess":"ko2Fr","./scripts/mapViz":"cyjxE","./scripts/dropdown.js":"47aYr","./scripts/clickHandlers":"blWZ6","./scripts/geography":"iRz4J","./scripts/lineChart":"kHSI7","./scripts/areaChart":"apy0w","./scripts/changeLocale":"dVjTq","./scripts/spinner":"3IC6j","./scripts/barChartViz.js":"lsnFW"}],"ko2Fr":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 /** Load counter CSVs
@@ -1016,6 +1025,9 @@ parcelHelpers.defineInteropFlag(exports);
  * @param {number} height The height of the graph
  */ parcelHelpers.export(exports, "generateMapGroups", ()=>generateMapGroups);
 /**
+ * Generates Gaussian Blur
+ */ parcelHelpers.export(exports, "generateBlurMap", ()=>generateBlurMap);
+/**
  * Draws the map base of Montreal.
  *
  * @param {object[]} data The data for the map base
@@ -1040,11 +1052,19 @@ function generateMapGroups(width, height) {
         return this.parentNode;
     }).append("g").attr("id", "map-circles-g").attr("width", width).attr("height", height);
 }
+function generateBlurMap() {
+    const filter = d3.select("#map-base-g").append("defs").append("filter").attr("id", "drop-shadow");
+    filter.append("feGaussianBlur").attr("in", "SourceAlpha").attr("stdDeviation", 1).attr("result", "blur");
+    filter.append("feOffset").attr("in", "blur").attr("dx", 1).attr("dy", 1).attr("result", "offsetBlur");
+    const feMerge = filter.append("feMerge");
+    feMerge.append("feMergeNode").attr("in", "offsetBlur");
+    feMerge.append("feMergeNode").attr("in", "SourceGraphic");
+}
 function drawMapBackground(data, path) {
     d3.select("#map-base-g").selectAll("path").data(data).enter().append("path").attr("d", path).attr("fill", "#d8dbe3").attr("stroke", "#ffffff").attr("stroke-width", 1);
 }
 function drawBikePaths(data, path) {
-    d3.select("#map-lanes-g").selectAll("path").data(data).enter().append("path").attr("d", path).attr("fill", "rgba(0,0,0,0)").attr("stroke", "#0bb52d").attr("stroke-width", 1.5);
+    d3.select("#map-lanes-g").selectAll("path").data(data).enter().append("path").attr("d", path).attr("fill", "rgba(0,0,0,0)").attr("stroke", "#0bb52d").attr("stroke-width", 1.5).attr("filter", "drop-shadow");
 }
 function radiusScale(data1) {
     const maxCounts = d3.max(data1.map((data)=>data.counts));
@@ -1052,14 +1072,18 @@ function radiusScale(data1) {
         0,
         maxCounts
     ]).range([
-        4,
-        10
+        3,
+        9
     ]);
 }
 function drawCircles(data, callback) {
     const scale = radiusScale(data);
     d3.select("#map-circles-g").selectAll("circle").remove();
-    d3.select("#map-circles-g").selectAll("circle").data(data).enter().append("circle").attr("class", "circle").attr("r", (d)=>scale(d.counts)).attr("cx", (d)=>d.x).attr("cy", (d)=>d.y).attr("fill", "rgb(18, 81, 153)").attr("stroke", "#ffffff").attr("stroke-width", 1).on("click", callback);
+    d3.select("#map-circles-g").selectAll("circle").data(data).enter().append("circle").attr("class", "circle").attr("r", (d)=>scale(d.counts)).attr("cx", (d)=>d.x).attr("cy", (d)=>d.y).attr("fill", "rgb(18, 81, 153)").attr("stroke", "#ffffff").attr("stroke-width", 1).on("click", callback).on("mouseover", function() {
+        d3.select(this).transition(500).ease(d3.easeCubicInOut).attr("r", (d)=>scale(d.counts) * 1.5);
+    }).on("mouseout", function() {
+        d3.select(this).transition(500).ease(d3.easeCubicInOut).attr("r", (d)=>scale(d.counts));
+    });
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"47aYr":[function(require,module,exports) {
@@ -1113,15 +1137,26 @@ function circleClickHandler(callback) {
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"kHSI7":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "addLineGroup", ()=>addLineGroup);
+parcelHelpers.export(exports, "setupLineGroup", ()=>setupLineGroup);
+/**
+ * Generates Gaussian Blur
+ */ parcelHelpers.export(exports, "generateBlurLineChart", ()=>generateBlurLineChart);
 /**
  * Draws the line chart
  *
  * @param {object[]} data The data for the map
  * @param callback The callback to call on circle click
  */ parcelHelpers.export(exports, "drawLineChart", ()=>drawLineChart);
-function addLineGroup() {
-    d3.select("#map-svg").append("g").attr("id", "line-svg");
+function setupLineGroup(width, height) {
+    d3.select("#map-svg").append("g").attr("id", "line-svg").attr("width", width + 80).attr("height", height + 80);
+}
+function generateBlurLineChart() {
+    const filter = d3.select("#line-svg").append("defs").append("filter").attr("id", "drop-shadow");
+    filter.append("feGaussianBlur").attr("in", "SourceAlpha").attr("stdDeviation", 1).attr("result", "blur");
+    filter.append("feOffset").attr("in", "blur").attr("dx", 1).attr("dy", 1).attr("result", "offsetBlur");
+    const feMerge = filter.append("feMerge");
+    feMerge.append("feMergeNode").attr("in", "offsetBlur");
+    feMerge.append("feMergeNode").attr("in", "SourceGraphic");
 }
 function addLabels(g, width, height, name, neighborhood) {
     // X label
@@ -1165,7 +1200,7 @@ function addAxes(g, width, height, yScale) {
     g.attr("class", "axis").append("g").attr("transform", "translate(59,0)").call(d3.axisLeft(yScale));
 }
 function drawLineChart(width, height, averageData, counterData) {
-    const svg = d3.select("#line-svg").attr("width", width + 80).attr("height", height + 80);
+    const svg = d3.select("#line-svg");
     // Reset line chart svg
     svg.selectAll("g").remove();
     // Add labels
@@ -1181,7 +1216,7 @@ function drawLineChart(width, height, averageData, counterData) {
     addAxes(outerG, width, height, yScale);
     const innerG = outerG.append("g").attr("width", width).attr("height", height).attr("transform", "translate(60, 0)");
     // Draw chart
-    innerG.append("path").datum(averageData.counts).attr("fill", "rgba(0, 0, 0, 0)").attr("stroke", "#9a9a9a").attr("stroke-width", 1).attr("d", d3.line().x(function(d) {
+    innerG.append("path").datum(averageData.counts).attr("fill", "rgba(0, 0, 0, 0)").attr("stroke", "#9a9a9a").attr("stroke-width", 1).attr("filter", "drop-shadow").attr("d", d3.line().x(function(d) {
         return xScale(d.index);
     }).y(function(d) {
         return yScale(d.value);
@@ -1198,12 +1233,19 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "setupAreaSVG", ()=>setupAreaSVG);
 /**
+ * Generates Gaussian Blur
+ */ parcelHelpers.export(exports, "generateBlurAreaChart", ()=>generateBlurAreaChart);
+/**
  * Draws the area chart
  *
  * @param {object[]} data The data for the map
  * @param callback The callback to call on circle click
  */ parcelHelpers.export(exports, "drawAreaChart", ()=>drawAreaChart);
 parcelHelpers.export(exports, "hideAreaChart", ()=>hideAreaChart);
+function setupAreaSVG(width, height) {
+    const svg = d3.select("#area-svg").attr("width", width + 80).attr("height", height + 80);
+    addTitle(svg, width);
+}
 function addTitle(g, width) {
     g.append("text").attr("class", "graph-title").attr("x", width / 2 + 30).attr("y", 15).text("Comptes pendant la journ\xe9e");
 }
@@ -1237,16 +1279,19 @@ function addAxes(g, width, height, yScale) {
         0,
         width - 7
     ]).nice()).ticks(20).tickFormat(d3.timeFormat("%H:%M"));
-    // Add axes, pixel-perfect positioning
     g.append("g").attr("class", "axis").attr("transform", "translate(59," + height + ")").call(xAxis);
     g.attr("class", "axis").append("g").attr("transform", "translate(59,0)").call(d3.axisLeft(yScale));
 }
-function setupAreaSVG(width, height) {
-    const svg = d3.select("#area-svg").attr("width", width + 80).attr("height", height + 80);
-    addTitle(svg, width);
+function generateBlurAreaChart() {
+    const filter = d3.select("#area-svg").append("defs").append("filter").attr("id", "drop-shadow");
+    filter.append("feGaussianBlur").attr("in", "SourceAlpha").attr("stdDeviation", 1).attr("result", "blur");
+    filter.append("feOffset").attr("in", "blur").attr("dx", 1).attr("dy", 1).attr("result", "offsetBlur");
+    const feMerge = filter.append("feMerge");
+    feMerge.append("feMergeNode").attr("in", "offsetBlur");
+    feMerge.append("feMergeNode").attr("in", "SourceGraphic");
 }
 function drawAreaChart(width, height, averageData, counterData) {
-    const svg = d3.select("#area-svg");
+    const svg = d3.select("#area-svg").attr("height", height + 80);
     // Reset area chart svg
     svg.selectAll("g").remove();
     // Add labels
@@ -1258,11 +1303,11 @@ function drawAreaChart(width, height, averageData, counterData) {
         ...averageData.counts.map((v)=>v.value),
         ...counterData ? counterData.counts.map((v)=>v.value) : [], 
     ]);
-    // Add title and axes
+    // Add axes
     addAxes(outerG, width, height, yScale);
     const innerG = outerG.append("g").attr("width", width).attr("height", height).attr("transform", "translate(60, 0)");
     // Draw chart
-    innerG.append("path").datum(averageData.counts).attr("fill", "#c9c9c9").attr("stroke", "#9a9a9a").attr("stroke-width", 1).attr("d", d3.area().x(function(d) {
+    innerG.append("path").datum(averageData.counts).attr("fill", "#c9c9c9").attr("stroke", "#9a9a9a").attr("stroke-width", 1).attr("filter", "drop-shadow").attr("d", d3.area().x(function(d) {
         return xScale(d.index);
     }).y0(height).y1(function(d) {
         return yScale(d.value);
@@ -1274,180 +1319,9 @@ function drawAreaChart(width, height, averageData, counterData) {
     }));
 }
 function hideAreaChart(width) {
-    const svg = d3.select("#area-svg");
+    const svg = d3.select("#area-svg").attr("height", 130);
     svg.selectAll("g").remove();
     svg.append("g").append("text").attr("class", "empty-label").text("Cette donn\xe9e n'est pas disponible pour l'ann\xe9e choisie.").attr("x", width / 2 + 30).attr("y", 80);
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lsnFW":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-/**
- * Appends SVG g elements which will contain the x and y axes.
- *
- * @param {*} g The d3 Selection of the graph's g SVG element
- */ parcelHelpers.export(exports, "appendAxes", ()=>appendAxes);
-/**
- * Appends the labels for the the y axis and the title of the graph.
- *
- * @param {*} g The d3 Selection of the graph's g SVG element
- */ parcelHelpers.export(exports, "appendGraphLabels", ()=>appendGraphLabels);
-/**
- * Sets the size of the SVG canvas containing the graph.
- *
- * @param {number} width The desired width
- * @param {number} height The desired height
- */ parcelHelpers.export(exports, "setCanvasSize", ()=>setCanvasSize);
-/**
- * Positions the x axis label, y axis label and title label on the graph.
- *
- * @param {number} width The width of the graph
- * @param {number} height The height of the graph
- */ parcelHelpers.export(exports, "positionLabels", ()=>positionLabels);
-/**
- * Updates the X scale to be used within each group of the grouped bar chart
- *
- * @param {*} scale The scale used for the subgroups
- * @param {string[]} subGroupBars The bars per subgroup (average on all counters and specific counter)
- * @param {*} xScale The graph's encompassing x scale
- */ parcelHelpers.export(exports, "updateXSubgroupScale", ()=>updateXSubgroupScale);
-/**
- * Draws the x axis at the bottom of the plot.
- *
- * @param {*} xScale The scale to use for the x axis
- * @param {number} height The height of the graph
- */ parcelHelpers.export(exports, "drawXAxis", ()=>drawXAxis);
-/**
- * Draws the y axis at the left of the plot.
- *
- * @param {*} yScale The scale to use for the y axis
- */ parcelHelpers.export(exports, "drawYAxis", ()=>drawYAxis);
-/**
- * Sets the domain and range of the X scale.
- *
- * @param {*} scale The x scale
- * @param {object[]} data The data to be used
- * @param {number} width The width of the graph
- */ parcelHelpers.export(exports, "updateGroupXScale", ()=>updateGroupXScale);
-/**
-   * Sets the domain and range of the Y scale.
-   *
-   * @param {*} scale The Y scale
-   * @param {object[]} data The data to be used
-   * @param {number} height The height of the graph
-   */ parcelHelpers.export(exports, "updateYScale", ()=>updateYScale);
-/**
-   * Creates the groups for the grouped bar chart and appends them to the graph.
-   * Each group corresponds to a pair of average/chosen counter values
-   *
-   * @param {object[]} data The data to be used
-   * @param {*} x The graph's x scale
-   */ parcelHelpers.export(exports, "createGroups", ()=>createGroups);
-/**
-   * Draws the bars inside the groups
-   *
-   * @param {*} y The graph's y scale
-   * @param {*} xSubgroup The x scale to use to position the rectangles in the groups
-   * @param {number} height The height of the graph
-   * @param {object[]} data The data to be used
-   */ parcelHelpers.export(exports, "drawBars", ()=>drawBars);
-/**
-     *   This function builds the graph.
-     */ parcelHelpers.export(exports, "buildBarChart", ()=>buildBarChart);
-function appendAxes(g) {
-    g.append("g").attr("class", "x axis");
-    g.append("g").attr("class", "y axis");
-}
-function appendGraphLabels(g) {
-    g.append("text").text("Total counts for the year").attr("class", "y axis-text").attr("transform", "rotate(-90)").attr("fill", "#898989").attr("font-size", 12);
-    g.append("text").text("Average counts per year").attr("class", "title").attr("fill", "#898989");
-}
-function setCanvasSize(width, height) {
-    d3.select("#bar-svg").attr("width", width).attr("height", height);
-}
-function positionLabels(width, height) {
-    d3.select(".y.axis-text").attr("x", -50).attr("y", height / 2);
-    d3.select(".title").attr("x", width / 2).attr("y", -35);
-}
-function updateXSubgroupScale(scale, subGroupBars, xScale1) {
-    scale.domain(subGroupBars).range([
-        0,
-        xScale1.bandwidth()
-    ]);
-}
-function drawXAxis(xScale2, height) {
-    d3.select(".x.axis").attr("transform", "translate(0, " + height + ")").call(d3.axisBottom(xScale2).tickFormat((x)=>`year ${x}`));
-}
-function drawYAxis(yScale1) {
-    d3.select(".y.axis").call(d3.axisLeft(yScale1).ticks(5));
-}
-function updateGroupXScale(scale, data, width) {
-    scale.domain(data.Average.year).range([
-        0,
-        width
-    ]);
-}
-function updateYScale(scale, data, height) {
-    const max = d3.max(data.Average.counts, (m)=>d3.max(m));
-    scale.domain([
-        0,
-        max
-    ]).range([
-        height,
-        0
-    ]);
-}
-function createGroups(data1, x) {
-    d3.select("#bar-svg").selectAll(".group").data(data1).enter().append("g").attr("class", "group").attr("transform", (data)=>"translate(" + x(data.Average.year + ",0)")).attr("x", (data)=>x(data.Average.year));
-}
-function drawBars(y, xSubgroup, height, data2) {
-    d3.select("#bar-svg").selectAll(".group").selectAll("rect").data(data2).enter().append("rect").attr("x", (data)=>xSubgroup(data.Average.year)).attr("y", (data)=>y(data.Average.counts)).attr("width", xSubgroup.bandwidth()).attr("height", (data)=>height - y(data.Average.counts));
-}
-const margin = {
-    top: 80,
-    right: 0,
-    bottom: 80,
-    left: 55
-};
-let bounds;
-let svgSize;
-let graphSize;
-const xScale = d3.scaleBand().padding(0.15);
-const xSubgroupScale = d3.scaleBand().padding([
-    0.015
-]);
-const yScale = d3.scaleLinear();
-/**
-     *   This function handles the graph's sizing.
-     */ function setSizing() {
-    bounds = d3.select("#bar-svg").node().getBoundingClientRect();
-    svgSize = {
-        width: bounds.width,
-        height: 550
-    };
-    graphSize = {
-        width: svgSize.width - margin.right - margin.left,
-        height: svgSize.height - margin.bottom - margin.top
-    };
-    setCanvasSize(svgSize.width, svgSize.height);
-}
-function buildBarChart(data, g) {
-    appendAxes(g);
-    appendGraphLabels(g);
-    setSizing();
-    var subGroupBars = [
-        "Average",
-        "X"
-    ] // Update according to data input
-    ;
-    positionLabels(graphSize.width, graphSize.height);
-    updateGroupXScale(xScale, data, graphSize.width);
-    updateXSubgroupScale(xSubgroupScale, subGroupBars, xScale);
-    updateYScale(yScale, data, graphSize.height);
-    drawXAxis(xScale, graphSize.height);
-    drawYAxis(yScale);
-    createGroups(data, xScale);
-    drawBars(yScale, xSubgroupScale, subGroupBars, graphSize.height);
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dVjTq":[function(require,module,exports) {
@@ -1468,6 +1342,88 @@ parcelHelpers.export(exports, "showViz", ()=>showViz);
 function showViz() {
     d3.select("#viz-container").style("visibility", "visible");
     d3.select("#spinner").style("display", "none");
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lsnFW":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "setupBarSVG", ()=>setupBarSVG);
+parcelHelpers.export(exports, "drawBarChart", ()=>drawBarChart);
+function addTitle(g, width) {
+    g.append("text").attr("class", "graph-title").attr("x", width / 2 + 30).attr("y", 15).text("Comptes avant et apr\xe8s l'introduction de Bixis \xe9lectriques");
+}
+function addLabels(g, width, height) {
+    // X label
+    g.append("g").append("text").attr("class", "axis-label").text("Ann\xe9es").attr("x", width / 2 + 30).attr("y", height);
+    // Y label
+    g.append("g").append("text").attr("class", "axis-label").text("Comptes").attr("x", 10).attr("y", height / 2).attr("transform", "rotate(-90)");
+}
+function generateXScale(width, years) {
+    return d3.scaleBand().padding(0.2).domain(years).range([
+        0,
+        width
+    ]);
+}
+function generateXSubScale(xScale) {
+    return d3.scaleBand().padding(0.02).domain([
+        "Average",
+        "Counter"
+    ]).range([
+        0,
+        xScale.bandwidth()
+    ]);
+}
+function generateYScale(height, counts) {
+    return d3.scaleLinear().domain([
+        0,
+        d3.max(counts)
+    ]).range([
+        height,
+        0
+    ]).nice();
+}
+function generateColorScale() {
+    return d3.scaleOrdinal().domain([
+        0,
+        1,
+        2,
+        3
+    ]).range([
+        "#c9c9c9",
+        "#9a9a9a",
+        "rgba(77, 149, 232)",
+        "rgba(18, 81, 153)"
+    ]);
+}
+function addAxes(g, height, xScale, yScale) {
+    g.append("g").attr("class", "axis").attr("transform", "translate(59," + height + ")").call(d3.axisBottom(xScale));
+    g.attr("class", "axis").append("g").attr("transform", "translate(59,0)").call(d3.axisLeft(yScale));
+}
+function setupBarSVG(width, height) {
+    const svg = d3.select("#bar-svg").attr("width", width + 80).attr("height", height + 80);
+    addTitle(svg, width);
+}
+function drawBarChart(width, height, bixiYear, averageData, counterData) {
+    const svg = d3.select("#bar-svg");
+    // Reset bar chart svg
+    svg.selectAll("g").remove();
+    // Add labels
+    addLabels(svg, width + 80, height + 70, counterData && counterData.name);
+    const outerG = svg.append("g").attr("width", width + 30).attr("height", height + 20).attr("transform", "translate(10, 30)");
+    // Generate scales
+    const xScale = generateXScale(width, averageData.map((d)=>d.year));
+    const xSubScale = generateXSubScale(xScale);
+    const yScale = generateYScale(height, [
+        ...averageData.map((v)=>v.counts),
+        ...counterData ? counterData.map((v)=>v.counts) : [], 
+    ]);
+    const colorScale = generateColorScale();
+    // Add axes
+    addAxes(outerG, height, xScale, yScale);
+    const innerG = outerG.append("g").attr("width", width).attr("height", height).attr("transform", "translate(60, 0)");
+    // Draw chart
+    innerG.append("g").attr("id", "average-bars").selectAll("rect").data(averageData).enter().append("rect").attr("fill", (d)=>d.year < bixiYear ? colorScale(0) : colorScale(1)).attr("x", (d)=>xScale(d.year) + xSubScale("Average")).attr("y", (d)=>yScale(d.counts)).attr("width", xSubScale.bandwidth()).attr("height", (d)=>height - yScale(d.counts));
+    if (counterData) innerG.append("g").attr("id", "counter-bars").selectAll("rect").data(counterData).enter().append("rect").attr("fill", (d)=>d.year < bixiYear ? colorScale(2) : colorScale(3)).attr("x", (d)=>xScale(d.year) + xSubScale("Counter")).attr("y", (d)=>yScale(d.counts)).attr("width", xSubScale.bandwidth()).attr("height", (d)=>height - yScale(d.counts));
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["ShInH","8lqZg"], "8lqZg", "parcelRequire5ccb")
