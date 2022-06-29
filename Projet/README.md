@@ -101,7 +101,7 @@
 ### Left for final release
 - Add legends to all charts
 - Remove all counters with <10000 yearly counts in Excel
-- Add data for neighborhoods, divided by # counters in 'hood (0 if none)
-- Fill color neighborhoods based on data
+- Add neighborhood data to line and area charts
+- Show selected element (neighborhood/circle) permanently
 - Add absolute scale across years for circle size, line chart and area chart
 - Add animations between counter datasets in area, line and bar charts
