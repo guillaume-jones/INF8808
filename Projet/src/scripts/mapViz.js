@@ -136,6 +136,6 @@ export function drawCircles(data, callback) {
         .transition(500)
         .ease(d3.easeCubicInOut)
         .attr('r', (d) => scale(d.counts))
-        .attr('stroke-width', 2);
+        .attr('stroke-width', 1);
     });
 }
