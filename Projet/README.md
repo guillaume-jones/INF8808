@@ -100,8 +100,6 @@
 
 ### Left for final release
 - Add legends to all charts
-- Divide averages per hour by #days counter was active
-- Manually add an absolute scale for the bar chart
 - Add data for neighborhoods, divided by # counters in 'hood (0 if none)
 - Fill color neighborhoods based on data
 - Add absolute scale across years for circle size, line chart and area chart

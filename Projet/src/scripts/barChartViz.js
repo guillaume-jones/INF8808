@@ -36,10 +36,10 @@ function generateXSubScale(xScale) {
     .range([0, xScale.bandwidth()]);
 }
 
-function generateYScale(height, counts) {
+function generateYScale(height) {
   return d3
     .scaleLinear()
-    .domain([0, d3.max(counts)])
+    .domain([0, 1600000]) // Highest value observed in entire dataset
     .range([height, 0])
     .nice();
 }
