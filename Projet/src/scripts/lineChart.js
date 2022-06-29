@@ -6,35 +6,6 @@ export function setupLineGroup(width, height) {
     .attr('height', height + 80);
 }
 
-/**
- * Generates Gaussian Blur
- */
-export function generateBlurLineChart() {
-  const filter = d3
-    .select('#line-svg')
-    .append('defs')
-    .append('filter')
-    .attr('id', 'drop-shadow');
-
-  filter
-    .append('feGaussianBlur')
-    .attr('in', 'SourceAlpha')
-    .attr('stdDeviation', 1)
-    .attr('result', 'blur');
-
-  filter
-    .append('feOffset')
-    .attr('in', 'blur')
-    .attr('dx', 1)
-    .attr('dy', 1)
-    .attr('result', 'offsetBlur');
-
-  const feMerge = filter.append('feMerge');
-
-  feMerge.append('feMergeNode').attr('in', 'offsetBlur');
-  feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
-}
-
 function addLabels(g, width, height, name, neighborhood) {
   // X label
   g.append('g')
@@ -151,7 +122,6 @@ export function drawLineChart(width, height, averageData, counterData) {
     .attr('fill', 'rgba(0, 0, 0, 0)')
     .attr('stroke', '#9a9a9a')
     .attr('stroke-width', 1)
-    .attr('filter', 'drop-shadow')
     .attr(
       'd',
       d3

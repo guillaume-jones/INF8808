@@ -81,11 +81,6 @@ import { showViz } from './scripts/spinner';
   drawMapBackground(montreal, path);
   drawBikePaths(bikePaths, path);
 
-  // Add Gaussian Blur
-  generateBlurMap();
-  generateBlurLineChart();
-  generateBlurAreaChart();
-
   // Get all processed data
   const dataset = createDataset(locationData, counterData, years);
   const mapData = createMapData(dataset, montreal, projection);

@@ -29,35 +29,6 @@ export function generateMapGroups(width, height) {
 }
 
 /**
- * Generates Gaussian Blur
- */
-export function generateBlurMap() {
-  const filter = d3
-    .select('#map-base-g')
-    .append('defs')
-    .append('filter')
-    .attr('id', 'drop-shadow');
-
-  filter
-    .append('feGaussianBlur')
-    .attr('in', 'SourceAlpha')
-    .attr('stdDeviation', 1)
-    .attr('result', 'blur');
-
-  filter
-    .append('feOffset')
-    .attr('in', 'blur')
-    .attr('dx', 1)
-    .attr('dy', 1)
-    .attr('result', 'offsetBlur');
-
-  const feMerge = filter.append('feMerge');
-
-  feMerge.append('feMergeNode').attr('in', 'offsetBlur');
-  feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
-}
-
-/**
  * Draws the map base of Montreal.
  *
  * @param {object[]} data The data for the map base
@@ -90,8 +61,7 @@ export function drawBikePaths(data, path) {
     .attr('d', path)
     .attr('fill', 'rgba(0,0,0,0)')
     .attr('stroke', '#0bb52d')
-    .attr('stroke-width', 1.5)
-    .attr('filter', 'drop-shadow');
+    .attr('stroke-width', 1.5);
 }
 
 function radiusScale(data) {
