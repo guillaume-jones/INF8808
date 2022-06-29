@@ -1,3 +1,5 @@
+import d3Legend from 'd3-svg-legend';
+
 function addTitle(g, width) {
   g.append('text')
     .attr('class', 'graph-title')
@@ -47,7 +49,12 @@ function generateYScale(height) {
 function generateColorScale() {
   return d3
     .scaleOrdinal()
-    .domain([0, 1, 2, 3])
+    .domain([
+      'Moyenne avant BIXI',
+      'Moyenne après BIXI',
+      'Borne avant BIXI',
+      'Borne après BIXI',
+    ])
     .range(['#c9c9c9', '#9a9a9a', '#f7ad63', '#f58516']);
 }
 
@@ -102,10 +109,20 @@ export function drawBarChart(
     ...averageData.map((v) => v.counts),
     ...(counterData ? counterData.map((v) => v.counts) : []),
   ]);
+
   const colorScale = generateColorScale();
 
   // Add axes
   addAxes(outerG, height, xScale, yScale);
+
+  // Draw the legend
+  const legend = d3Legend
+    .legendColor()
+    .scale(colorScale)
+    .shape('rect')
+    .title('Légende');
+
+  outerG.append('g').attr('transform', 'translate(685, -17)').call(legend);
 
   const innerG = outerG
     .append('g')
@@ -121,7 +138,11 @@ export function drawBarChart(
     .data(averageData)
     .enter()
     .append('rect')
-    .attr('fill', (d) => (d.year < bixiYear ? colorScale(0) : colorScale(1)))
+    .attr('fill', (d) =>
+      d.year < bixiYear
+        ? colorScale('Moyenne avant BIXI')
+        : colorScale('Moyenne après BIXI'),
+    )
     .attr('x', (d) => xScale(d.year) + xSubScale('Average'))
     .attr('y', (d) => yScale(d.counts))
     .attr('width', xSubScale.bandwidth())
@@ -135,7 +156,11 @@ export function drawBarChart(
       .data(counterData)
       .enter()
       .append('rect')
-      .attr('fill', (d) => (d.year < bixiYear ? colorScale(2) : colorScale(3)))
+      .attr('fill', (d) =>
+        d.year < bixiYear
+          ? colorScale('Borne avant BIXI')
+          : colorScale('Borne après BIXI'),
+      )
       .attr('x', (d) => xScale(d.year) + xSubScale('Counter'))
       .attr('y', (d) => yScale(d.counts))
       .attr('width', xSubScale.bandwidth())
