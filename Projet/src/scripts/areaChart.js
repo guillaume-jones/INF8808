@@ -128,8 +128,8 @@ export function drawAreaChart(width, height, averageData, counterData) {
     innerG
       .append('path')
       .datum(counterData.counts)
-      .attr('fill', 'rgba(77, 149, 232, 0.5)')
-      .attr('stroke', 'rgba(18, 81, 153, 0.5)')
+      .attr('fill', 'rgba(252, 189, 126, 0.5)')
+      .attr('stroke', '#f58516')
       .attr('stroke-width', 1)
       .attr(
         'd',

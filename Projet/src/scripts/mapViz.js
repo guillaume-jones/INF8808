@@ -28,22 +28,52 @@ export function generateMapGroups(width, height) {
     .attr('height', height);
 }
 
+function generateColorScale(data) {
+  const maxCounts = d3.max(data.map((d) => d.averageCounts));
+  return d3
+    .scaleLinear()
+    .domain([0, maxCounts + 100000]) // + 100000 used for mouseover animation
+    .range(['rgba(0,0,0,0)', '#063fc4']);
+}
+
 /**
  * Draws the map base of Montreal.
  *
  * @param {object[]} data The data for the map base
  * @param {*} path The path associated with the current projection
  */
-export function drawMapBackground(data, path) {
-  d3.select('#map-base-g')
+export function drawMapBackground(mapData, cycleData, path) {
+  const mapBase = d3.select('#map-base-g');
+  const colorScale = generateColorScale(mapData);
+
+  mapBase.selectAll('path').remove();
+
+  mapBase
     .selectAll('path')
-    .data(data)
+    .data(mapData)
     .enter()
     .append('path')
     .attr('d', path)
-    .attr('fill', '#d8dbe3')
+    .attr('fill', (d) => colorScale(d.averageCounts))
     .attr('stroke', '#ffffff')
-    .attr('stroke-width', 1);
+    .attr('stroke-width', 1)
+    .on('mouseover', function () {
+      d3.select(this)
+        .transition(1000)
+        .ease(d3.easeCubicInOut)
+        .attr('fill', (d) => colorScale(d.averageCounts + 100000))
+        .attr('stroke-width', 3);
+    })
+    .on('mouseout', function () {
+      d3.select(this)
+        .transition(1000)
+        .ease(d3.easeCubicInOut)
+        .attr('fill', (d) => colorScale(d.averageCounts))
+
+        .attr('stroke-width', 1);
+    });
+
+  drawBikePaths(cycleData, path);
 }
 
 /**
@@ -52,7 +82,7 @@ export function drawMapBackground(data, path) {
  * @param {object[]} data The data for the cycle lanes
  * @param {*} path The path associated with the current projection
  */
-export function drawBikePaths(data, path) {
+function drawBikePaths(data, path) {
   d3.select('#map-lanes-g')
     .selectAll('path')
     .data(data)
@@ -61,10 +91,11 @@ export function drawBikePaths(data, path) {
     .attr('d', path)
     .attr('fill', 'rgba(0,0,0,0)')
     .attr('stroke', '#0bb52d')
-    .attr('stroke-width', 1.5);
+    .attr('stroke-width', 1)
+    .attr('pointer-events', 'none');
 }
 
-function radiusScale(data) {
+function generateRadiusScale(data) {
   const maxCounts = d3.max(data.map((data) => data.counts));
   return d3.scaleLinear().domain([0, maxCounts]).range([3, 9]);
 }
@@ -76,7 +107,7 @@ function radiusScale(data) {
  * @param callback The callback to call on circle click
  */
 export function drawCircles(data, callback) {
-  const scale = radiusScale(data);
+  const scale = generateRadiusScale(data);
 
   d3.select('#map-circles-g').selectAll('circle').remove();
 
@@ -89,7 +120,7 @@ export function drawCircles(data, callback) {
     .attr('r', (d) => scale(d.counts))
     .attr('cx', (d) => d.x)
     .attr('cy', (d) => d.y)
-    .attr('fill', 'rgb(18, 81, 153)')
+    .attr('fill', '#f58516')
     .attr('stroke', '#ffffff')
     .attr('stroke-width', 1)
     .on('click', callback)
@@ -97,12 +128,14 @@ export function drawCircles(data, callback) {
       d3.select(this)
         .transition(500)
         .ease(d3.easeCubicInOut)
-        .attr('r', (d) => scale(d.counts) * 1.5);
+        .attr('r', (d) => scale(d.counts) * 1.5)
+        .attr('stroke-width', 2);
     })
     .on('mouseout', function () {
       d3.select(this)
         .transition(500)
         .ease(d3.easeCubicInOut)
-        .attr('r', (d) => scale(d.counts));
+        .attr('r', (d) => scale(d.counts))
+        .attr('stroke-width', 2);
     });
 }

@@ -126,7 +126,7 @@ export function createDataset(locations, counters, years) {
  *
  * @returns {object} Data for Area chart
  */
-export function createMapData(dataset, montreal, projection) {
+export function createMapCircleData(dataset, montreal, projection) {
   const mapData = {};
 
   Object.entries(dataset).forEach(([year, yearData]) => {
@@ -149,6 +149,33 @@ export function createMapData(dataset, montreal, projection) {
   });
 
   return mapData;
+}
+
+export function createNeighborhoodData(montreal, mapData) {
+  const neighborhoodData = {};
+  Object.entries(mapData).forEach(([year, counterList]) => {
+    // Assemble counts by neighborhood
+    const counts = {};
+    const numCounters = {};
+    counterList.forEach((counter) => {
+      counts[counter.neighborhood] =
+        (counts[counter.neighborhood] ?? 0) + counter.counts;
+      numCounters[counter.neighborhood] =
+        (numCounters[counter.neighborhood] ?? 0) + 1;
+    });
+
+    // Place into new data object with GEOJSON data
+    neighborhoodData[year] = montreal.map((feature) => {
+      const name = feature.properties.NOM;
+      return {
+        type: 'Feature',
+        geometry: feature.geometry,
+        name: name,
+        averageCounts: Math.round(counts[name] / numCounters[name]) || 0,
+      };
+    });
+  });
+  return neighborhoodData;
 }
 
 /** Generates data in format for line chart

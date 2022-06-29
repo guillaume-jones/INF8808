@@ -1,30 +1,25 @@
 import 'regenerator-runtime/runtime.js';
 import {
+  getLocationData,
+  getCounterData,
   createBarChartData,
   createLineChartData,
   createDataset,
-  getLocationData,
-  getCounterData,
   createAreaChartData,
-  createMapData,
+  createMapCircleData,
+  createNeighborhoodData,
 } from './scripts/preprocess';
-import {
-  generateMapGroups,
-  drawMapBackground,
-  drawBikePaths,
-  drawCircles,
-} from './scripts/mapViz';
-import { drawDropdown } from './scripts/dropdown.js';
-import {
-  dropDownClickHandler,
-  circleClickHandler,
-} from './scripts/clickHandlers';
 import {
   getMontrealData,
   getProjection,
   getPath,
   getBikePaths,
 } from './scripts/geography';
+import {
+  generateMapGroups,
+  drawMapBackground,
+  drawCircles,
+} from './scripts/mapViz';
 import { setupLineGroup, drawLineChart } from './scripts/lineChart';
 import {
   drawAreaChart,
@@ -32,6 +27,11 @@ import {
   setupAreaSVG,
 } from './scripts/areaChart';
 import { setupBarSVG, drawBarChart } from './scripts/barChartViz.js';
+import { drawDropdown } from './scripts/dropdown.js';
+import {
+  dropDownClickHandler,
+  circleClickHandler,
+} from './scripts/clickHandlers';
 import { changeLocale } from './scripts/changeLocale';
 import { showViz } from './scripts/spinner';
 
@@ -54,7 +54,7 @@ import { showViz } from './scripts/spinner';
 
   // Get all raw data
   const years = [
-    2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020,
+    2009, // 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020,
     2021,
   ];
   const bixiYear = 2019;
@@ -72,12 +72,11 @@ import { showViz } from './scripts/spinner';
   // Render map
   const projection = getProjection();
   const path = getPath(projection);
-  drawMapBackground(montreal, path);
-  drawBikePaths(bikePaths, path);
 
   // Get all processed data
   const dataset = createDataset(locationData, counterData, years);
-  const mapData = createMapData(dataset, montreal, projection);
+  const mapData = createMapCircleData(dataset, montreal, projection);
+  const neighborhoodData = createNeighborhoodData(montreal, mapData);
   const lineChartData = createLineChartData(dataset, montreal);
   const areaChartData = createAreaChartData(dataset);
   const barChartData = createBarChartData(dataset);
@@ -85,6 +84,7 @@ import { showViz } from './scripts/spinner';
   // Used to redraw all viz when year changes
   // Reverts to default visualizations
   function redrawVizForYear(year) {
+    drawMapBackground(neighborhoodData[year], bikePaths, path);
     drawCircles(mapData[year], circleClickHandler(redrawVizForCounter));
     drawLineChart(
       lineSize.width,

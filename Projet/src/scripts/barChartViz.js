@@ -48,7 +48,7 @@ function generateColorScale() {
   return d3
     .scaleOrdinal()
     .domain([0, 1, 2, 3])
-    .range(['#c9c9c9', '#9a9a9a', 'rgba(77, 149, 232)', 'rgba(18, 81, 153)']);
+    .range(['#c9c9c9', '#9a9a9a', '#f7ad63', '#f58516']);
 }
 
 function addAxes(g, height, xScale, yScale) {

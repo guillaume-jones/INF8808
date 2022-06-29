@@ -139,7 +139,7 @@ export function drawLineChart(width, height, averageData, counterData) {
       .append('path')
       .datum(counterData.counts)
       .attr('fill', 'rgba(0, 0, 0, 0)')
-      .attr('stroke', 'rgba(18, 81, 153, 1)')
+      .attr('stroke', '#f58516')
       .attr('stroke-width', 1)
       .attr(
         'd',

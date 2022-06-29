@@ -100,6 +100,7 @@
 
 ### Left for final release
 - Add legends to all charts
+- Remove all counters with <10000 yearly counts in Excel
 - Add data for neighborhoods, divided by # counters in 'hood (0 if none)
 - Fill color neighborhoods based on data
 - Add absolute scale across years for circle size, line chart and area chart
