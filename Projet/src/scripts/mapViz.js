@@ -96,7 +96,7 @@ function drawBikePaths(data, path) {
     .append('path')
     .attr('d', path)
     .attr('fill', 'rgba(0,0,0,0)')
-    .attr('stroke', '#0bb52d')
+    .attr('stroke', '#1ac96c')
     .attr('stroke-width', 1)
     .attr('pointer-events', 'none');
 }
@@ -104,6 +104,18 @@ function drawBikePaths(data, path) {
 function generateRadiusScale(data) {
   const maxCounts = d3.max(data.map((data) => data.counts));
   return d3.scaleLinear().domain([0, maxCounts]).range([3, 9]);
+}
+
+function mouseout(scale) {
+  d3.select('#map-circles-g')
+    .selectAll('circle')
+    .filter(function () {
+      return !d3.select(this).attr('clicked');
+    })
+    .transition(500)
+    .ease(d3.easeCubicInOut)
+    .attr('r', (d) => scale(d.counts))
+    .attr('stroke-width', 1);
 }
 
 /**
@@ -129,7 +141,15 @@ export function drawCircles(data, callback) {
     .attr('fill', '#f58516')
     .attr('stroke', '#ffffff')
     .attr('stroke-width', 1)
-    .on('click', callback)
+    .on('click', function (d) {
+      console.log(d);
+      callback(d);
+
+      d3.select('#map-circles-g').selectAll('circle').attr('clicked', null);
+      d3.select(this).attr('clicked', true);
+
+      mouseout(scale);
+    })
     .on('mouseover', function () {
       d3.select(this)
         .transition(500)
@@ -138,10 +158,6 @@ export function drawCircles(data, callback) {
         .attr('stroke-width', 2);
     })
     .on('mouseout', function () {
-      d3.select(this)
-        .transition(500)
-        .ease(d3.easeCubicInOut)
-        .attr('r', (d) => scale(d.counts))
-        .attr('stroke-width', 1);
+      mouseout(scale);
     });
 }

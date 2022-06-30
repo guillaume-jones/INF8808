@@ -180,8 +180,6 @@ export function drawBarChart(
   // Add axes
   addAxes(outerG, height, xScale, yScale);
 
-  console.log(isNeighborhood);
-
   // Draw the legend
   const legend = d3Legend.legendColor().scale(colorScale).shape('rect');
 
