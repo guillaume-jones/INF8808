@@ -1,5 +1,11 @@
 import { convertCoordinatesToXY, determineNeighborhood } from './geography';
 
+/**
+ * 
+ * @param {*} a 
+ * @param {*} key 
+ * @returns 
+ */
 function sum(a, key = '') {
   if (key) {
     a = a.map((a) => a[key]);
@@ -7,6 +13,13 @@ function sum(a, key = '') {
   return a.reduce((b, c) => b + (isNaN(c) ? 0 : c), 0);
 }
 
+/**
+ * 
+ * @param {*} a 
+ * @param {*} key 
+ * @param {*} key2 
+ * @returns 
+ */
 function groupSum(a, key, key2) {
   return a.reduce((b, c) => {
     b[c[key]] = (b[c[key]] || 0) + (isNaN(c[key2]) ? 0 : c[key2]);
@@ -118,13 +131,13 @@ export function createDataset(locations, counters, years) {
   return dataset;
 }
 
-/** Generates data in format for map
+/** Generates data in format for the map
  *
  * @param {object} dataset Dataset created by createDataset
- * @param montreal Pre-loaded JSON of Montreal data
- * @param projection Projection used for the map
+ * @param {*} montreal Pre-loaded JSON of Montreal data
+ * @param {*} projection Projection used for the map
  *
- * @returns {object} Data for Area chart
+ * @returns {object} Data for map
  */
 export function createMapCircleData(dataset, montreal, projection) {
   const mapData = {};
@@ -151,6 +164,12 @@ export function createMapCircleData(dataset, montreal, projection) {
   return mapData;
 }
 
+/**
+ * Creates a dataset specific to neighborhoods
+ * @param {*} montreal Pre-loaded JSON of Montreal data
+ * @param {object[]} mapData The data created by createMapCircleData
+ * @returns {object} Neighborhodd data
+ */
 export function createNeighborhoodData(montreal, mapData) {
   const neighborhoodData = {};
   Object.entries(mapData).forEach(([year, counterList]) => {
@@ -182,6 +201,8 @@ export function createNeighborhoodData(montreal, mapData) {
  *
  * @param {object} dataset Dataset created by createDataset
  * @param montreal Pre-loaded JSON of Montreal data
+ * 
+ * @returns {object} Data for line chart
  */
 export function createLineChartData(dataset, montreal) {
   const lineChartData = {};
@@ -306,6 +327,8 @@ export function createAreaChartData(dataset) {
 /** Generates data in format for bar chart
  *
  * @param {object} dataset Dataset created by createDataset
+ * 
+ * @returns {object} Data for bar chart
  */
 export function createBarChartData(dataset) {
   const barChartData = {};
