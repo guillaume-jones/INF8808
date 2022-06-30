@@ -100,6 +100,4 @@
 ```
 
 ### Left for final release
-- Show selected element (neighborhood/circle) permanently
-- Add absolute scale across years for circle size, line chart and area chart
 - Add animations between counter datasets in area, line and bar charts

@@ -377,6 +377,29 @@ export function createBarChartData(dataset) {
       barChartData[counter]
         ? barChartData[counter].push(counterSum)
         : (barChartData[counter] = [counterSum]);
+
+      // Add counts per neighborhood as well
+      const neighborhood = counterData.neighborhood;
+
+      const neighborhoodDataForYear =
+        barChartData[neighborhood] &&
+        barChartData[neighborhood].find((d) => d.year === year);
+
+      if (neighborhoodDataForYear) {
+        neighborhoodDataForYear.counts *= neighborhoodDataForYear.total;
+        neighborhoodDataForYear.counts += counterSum.counts;
+        neighborhoodDataForYear.total += 1;
+        neighborhoodDataForYear.counts /= neighborhoodDataForYear.total;
+      } else {
+        const neighborhoodSum = {
+          year: year,
+          counts: counterSum.counts,
+          total: 1,
+        };
+        barChartData[neighborhood]
+          ? barChartData[neighborhood].push(neighborhoodSum)
+          : (barChartData[neighborhood] = [neighborhoodSum]);
+      }
     });
 
     // Adds average of all sensors for year for default view

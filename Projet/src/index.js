@@ -82,6 +82,7 @@ import { showViz } from './scripts/spinner';
   const areaChartData = createAreaChartData(dataset);
   const barChartData = createBarChartData(dataset);
 
+  console.log(barChartData);
   // Used to redraw all viz when year changes
   // Reverts to default visualizations
   function redrawVizForYear(year) {

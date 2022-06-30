@@ -86,7 +86,7 @@ function generateColorScale(counterData, isNeighborhood) {
       counterData === undefined
         ? averageDomain
         : isNeighborhood
-        ? [...averageDomain, 'Sélection avant BIXI', 'Sélection après BIXI']
+        ? [...averageDomain, 'Quartier avant BIXI', 'Quartier après BIXI']
         : [...averageDomain, 'Borne avant BIXI', 'Borne après BIXI'],
     )
     .range(
@@ -95,7 +95,7 @@ function generateColorScale(counterData, isNeighborhood) {
         : [
             '#c9c9c9',
             '#9a9a9a',
-            isNeighborhood ? '#507bde' : '#f59e47',
+            isNeighborhood ? '#6d91e3' : '#f0ab67',
             isNeighborhood ? '#265bd4' : '#f58516',
           ],
     );
@@ -219,8 +219,12 @@ export function drawBarChart(
       .append('rect')
       .attr('fill', (d) =>
         d.year < bixiYear
-          ? colorScale('Borne avant BIXI')
-          : colorScale('Borne après BIXI'),
+          ? colorScale(
+              isNeighborhood ? 'Quartier avant BIXI' : 'Borne avant BIXI',
+            )
+          : colorScale(
+              isNeighborhood ? 'Quartier après BIXI' : 'Borne après BIXI',
+            ),
       )
       .attr('x', (d) => xScale(d.year) + xSubScale('Counter'))
       .attr('y', (d) => yScale(d.counts))
