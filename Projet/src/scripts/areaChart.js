@@ -1,5 +1,10 @@
 import d3Legend from 'd3-svg-legend';
 
+/**
+ * Sets up the space where the area chart will be drawn
+ * @param {number} width The width of the graph
+ * @param {number} height The heigh of the graph
+ */
 export function setupAreaSVG(width, height) {
   const svg = d3
     .select('#area-svg')
@@ -9,6 +14,11 @@ export function setupAreaSVG(width, height) {
   addTitle(svg, width);
 }
 
+/**
+ * Adds a title to the area chart
+ * @param {*} g The d3 selection of the graph's g SVG element
+ * @param {number} width The width of the graph
+ */
 function addTitle(g, width) {
   g.append('text')
     .attr('class', 'graph-title')
@@ -17,6 +27,12 @@ function addTitle(g, width) {
     .text('Comptes pendant la journée');
 }
 
+/**
+ * Adds the labels to the X and Y axes
+ * @param {*} g The d3 selection of the graph's g SVG element
+ * @param {number} width The width of the graph
+ * @param {number} height The height of the graph
+ */
 function addLabels(g, width, height) {
   // X label
   g.append('g')
@@ -35,10 +51,21 @@ function addLabels(g, width, height) {
     .attr('transform', 'rotate(-90)');
 }
 
+/**
+ * Generates the X scale of the area chart based on the hours of the day
+ * @param {number} width The width of the graph
+ * @returns {*} The generated X scale
+ */
 function generateXScale(width) {
   return d3.scaleLinear().domain([0, 96]).range([0, width]);
 }
 
+/**
+ * Generated the Y scale of the area chart based on the maximum value
+ * @param {number} height The height of the graph
+ * @param {number[]} counts List of counts for the hours of the day
+ * @returns 
+ */
 function generateYScale(height, counts) {
   return d3
     .scaleLinear()
@@ -47,6 +74,11 @@ function generateYScale(height, counts) {
     .nice();
 }
 
+/**
+ * Generates a color scale to differenciate the average from the specific counter
+ * @param {object[]} counterData The data of the selected counter
+ * @returns {*} The generated color scale
+ */
 function generateColorScale(counterData) {
   return d3
     .scaleOrdinal()
@@ -54,6 +86,13 @@ function generateColorScale(counterData) {
     .range(['#9a9a9a', '#f7ad63']);
 }
 
+/**
+ * Adds the axes to the graph
+ * @param {*} g The d3 selection of the graph's g SVG element
+ * @param {number} width The width of the graph
+ * @param {number} height The height of the graph
+ * @param {*} yScale The Y scale to be used for the graph
+ */
 function addAxes(g, width, height, yScale) {
   // Create X axis with 24 hr time
   const xAxis = d3
@@ -79,8 +118,8 @@ function addAxes(g, width, height, yScale) {
 /**
  * Draws the area chart
  *
- * @param {object[]} data The data for the map
- * @param callback The callback to call on circle click
+ * @param {object[]} data The data for the area chart
+ * @param {*} callback The callback to call on circle click
  */
 export function drawAreaChart(width, height, averageData, counterData) {
   const svg = d3.select('#area-svg').attr('height', height + 80);
