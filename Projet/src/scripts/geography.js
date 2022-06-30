@@ -42,7 +42,7 @@ export function determineNeighborhood(lon, lat, montreal) {
  * @returns Projection function in Mercator for Montreal
  */
 export function getProjection() {
-  return d3.geoMercator().center([-73.708879, 45.579611]).scale(70000);
+  return d3.geoMercator().center([-73.69, 45.6]).scale(85000);
 }
 
 /** Gets the path function

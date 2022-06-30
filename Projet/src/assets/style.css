@@ -1,3 +1,5 @@
+
+
 body {
   font-family: 'Poppins', 'sans-serif';
   font-size: 16px;
@@ -7,6 +9,66 @@ body {
   height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+header {
+  position: sticky; top: 0;
+  background-color: #ffffff;
+  z-index: 10;
+  box-shadow: 0px 3px 10px 2px rgba(2, 11, 33,0.5);
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+#subtitle-dropdown-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: 'row';
+  width: 600;
+}
+
+
+h3 {
+  font-size: 18px;
+  font-weight: normal;
+}
+
+#subtitle-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#subtitle-container h3 {
+  display: flex;
+  flex-direction: column;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+h3:empty {
+  display: none;
+ }
+
+#dropdown-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+}
+
+#year-label {
+  width: 70
+}
+
+#dropdown {
+  flex: 0;
+  margin-left: 8;
+  font-size: 17px;
 }
 
 main {
@@ -21,6 +83,7 @@ h1 {
   font-size: 30px;
   text-align: center;
   margin-top: 1.5rem;
+  margin-bottom: 0;
   font-weight: normal;
 }
 
@@ -40,29 +103,8 @@ h1 {
 
 #viz-container {
   visibility: hidden;
-  top: 70;
+  top: 140;
   position: absolute;
-}
-
-h3 {
-  font-size: 18px;
-  text-align: center;
-  font-weight: normal;
-}
-
-#dropdown-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  position: sticky;
-  top: 5rem;
-}
-
-#dropdown {
-  flex: 0;
-  margin-left: 8;
-  font-size: 17px;
 }
 
 .graph {

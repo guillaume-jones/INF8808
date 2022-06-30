@@ -13,14 +13,20 @@
   <body>
     <header>
       <h1>Les vélos à Montréal - Une carte intéractive</h1>
+      <div id="subtitle-dropdown-container">
+        <div id="subtitle-container">
+          <h3 id="counter-name"></h3>
+          <h3 id="neighborhood"></h3>
+        </div>
+        <div id="dropdown-container">
+          <h3 id="year-label">Année :</h3>
+          <select id="dropdown"></select>
+        </div>
+      </div>
     </header>
     <main>
       <div id="spinner"></div>
       <div id="viz-container">
-        <div id="dropdown-container">
-          <h3>Année :</h3>
-          <select id="dropdown"></select>
-        </div>
         <div class="graph">
           <svg class="main-svg" id="map-svg"></svg>
         </div>
