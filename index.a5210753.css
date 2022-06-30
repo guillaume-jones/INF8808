@@ -9,6 +9,70 @@ body {
   display: flex;
 }
 
+header {
+  z-index: 10;
+  background-color: #fff;
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+  position: sticky;
+  top: 0;
+  box-shadow: 0 3px 10px 2px #020b2180;
+}
+
+#subtitle-dropdown-container {
+  flex-direction: "row";
+  width: 600px;
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+}
+
+h3 {
+  font-size: 17px;
+  font-weight: normal;
+}
+
+#subtitle-container {
+  flex-direction: column;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  display: flex;
+}
+
+#subtitle-container h3 {
+  flex-direction: column;
+  margin-top: 0;
+  margin-bottom: 0;
+  display: flex;
+}
+
+h3:empty {
+  display: none;
+}
+
+#counter-name {
+  font-weight: bold;
+}
+
+#dropdown-container {
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  display: flex;
+}
+
+#year-label {
+  width: 70px;
+}
+
+#dropdown {
+  flex: 0;
+  margin-left: 8px;
+  font-size: 17px;
+}
+
 main {
   height: 100%;
   flex: 1;
@@ -20,6 +84,7 @@ main {
 h1 {
   text-align: center;
   margin-top: 1.5rem;
+  margin-bottom: 0;
   font-size: 30px;
   font-weight: normal;
 }
@@ -28,7 +93,7 @@ h1 {
   width: 100px;
   height: 100px;
   border: 10px solid #d8dbe3;
-  border-top-color: #125199;
+  border-top-color: #f58516;
   border-radius: 50%;
   animation: spin 2s linear infinite;
 }
@@ -46,26 +111,7 @@ h1 {
 #viz-container {
   visibility: hidden;
   position: absolute;
-  top: 70px;
-}
-
-h3 {
-  text-align: center;
-  font-size: 18px;
-  font-weight: normal;
-}
-
-#dropdown-container {
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  display: flex;
-}
-
-#dropdown {
-  flex: 0;
-  margin-left: 8px;
-  font-size: 17px;
+  top: 140px;
 }
 
 .graph {
@@ -103,6 +149,30 @@ h3 {
   transform-origin: center;
   transform-box: fill-box;
   text-anchor: middle;
+  font-size: 14px;
+}
+
+.label {
+  font-size: 10px;
+}
+
+.tooltip {
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 1px 1px 6px 2px #020b2180;
+}
+
+.counter-tooltip {
+  background-color: #fff;
+  margin-bottom: 20px;
+}
+
+.neighborhood-tooltip {
+  background-color: #fff;
+}
+
+.tooltip-value {
+  margin: 1px;
   font-size: 14px;
 }
 
