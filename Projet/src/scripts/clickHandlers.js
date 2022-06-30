@@ -1,6 +1,6 @@
 /** Appends a callback to redraw graphs to the year dropdown
  *
- * @param callback Redraw function to call on click
+ * @param {*} callback Redraw function to call on click
  */
 export function dropDownClickHandler(callback) {
   d3.select('#dropdown').on('change', () => {
@@ -11,7 +11,7 @@ export function dropDownClickHandler(callback) {
 
 /** To be passed to circles to redraw charts on circle click
  *
- * @param callback Callback to call on click
+ * @param {*} callback Callback to call on click
  */
 export function circleClickHandler(callback) {
   return (d) => {

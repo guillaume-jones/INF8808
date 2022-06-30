@@ -28,6 +28,11 @@ export function generateMapGroups(width, height) {
     .attr('height', height);
 }
 
+/**
+ * Generates the color scale for the map
+ * @param {object[]} data The data used for the map
+ * @returns {*} The generated color scale
+ */
 function generateColorScale(data) {
   const maxCounts = d3.max(data.map((d) => d.averageCounts));
   return d3
@@ -105,7 +110,7 @@ function generateRadiusScale(data) {
  * Draws the counter
  *
  * @param {object[]} data The data for the map
- * @param callback The callback to call on circle click
+ * @param {*} callback The callback to call on circle click
  */
 export function drawCircles(data, callback) {
   const scale = generateRadiusScale(data);

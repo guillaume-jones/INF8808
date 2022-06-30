@@ -8,7 +8,7 @@ export async function getMontrealData() {
   return await d3.json('montreal.json');
 }
 
-/** Gets the Montreal geographical data
+/** Gets the Montreal's bicycle roads geographical data
  *
  * @returns {object[]} Montreal's bike path GEOJSON
  */
@@ -19,9 +19,9 @@ export async function getBikePaths() {
 /**
  * Determines the neighborhood based on coordinates
  *
- * @param lon Longitude of point (float)
- * @param lat Latitude of point (float)
- * @param montreal Pre-loaded JSON of Montreal data
+ * @param {number} lon Longitude of point
+ * @param {number} lat Latitude of point 
+ * @param {*} montreal Pre-loaded JSON of Montreal data
  *
  * @returns {string} Neighborhood of point or empty if not found
  */
@@ -39,7 +39,7 @@ export function determineNeighborhood(lon, lat, montreal) {
 
 /** Gets the map projection function
  *
- * @returns Projection function in Mercator for Montreal
+ * @returns {*} Projection function in Mercator for Montreal
  */
 export function getProjection() {
   return d3.geoMercator().center([-73.69, 45.6]).scale(85000);
@@ -47,18 +47,18 @@ export function getProjection() {
 
 /** Gets the path function
  *
- * @param projection Projection in Mercator for Montreal
+ * @param {*} projection Projection in Mercator for Montreal
  *
- * @returns Path function for Montreal
+ * @returns {*} Path function for Montreal
  */
 export function getPath(projection) {
   return d3.geoPath().projection(projection);
 }
 
-/** Gets the XY positions on the map viz for a given set of coordinates
+/** Gets the (X,Y) positions on the map viz for a given set of coordinates
  * @param {number} longitude Longitude to convert
  * @param {number} latitude Latitude to convert
- * @param projection Projection in Mercator for Montreal
+ * @param {*} projection Projection in Mercator for Montreal
  *
  * @returns {x: number, y: number}
  */
