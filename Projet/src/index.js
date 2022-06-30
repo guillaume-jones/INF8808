@@ -122,6 +122,7 @@ import { showViz } from './scripts/spinner';
       lineSize.height,
       lineChartData[year]['Average'],
       lineChartData[year][name],
+      neighborhood === undefined,
     );
     if (year > 2018) {
       drawAreaChart(
@@ -129,6 +130,7 @@ import { showViz } from './scripts/spinner';
         areaSize.height,
         areaChartData[year]['Average'],
         areaChartData[year][name],
+        neighborhood === undefined,
       );
     } else {
       hideAreaChart(areaSize.width);
@@ -139,6 +141,7 @@ import { showViz } from './scripts/spinner';
       bixiYear,
       barChartData['Average'],
       barChartData[name],
+      neighborhood === undefined,
     );
   }
 

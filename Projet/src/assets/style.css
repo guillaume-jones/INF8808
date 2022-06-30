@@ -29,7 +29,7 @@ header {
 
 
 h3 {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: normal;
 }
 
@@ -49,7 +49,11 @@ h3 {
 
 h3:empty {
   display: none;
- }
+}
+
+#counter-name {
+  font-weight: bold;
+}
 
 #dropdown-container {
   display: flex;

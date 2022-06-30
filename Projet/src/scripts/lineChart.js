@@ -38,7 +38,7 @@ function generateYScale(height, counts) {
     .nice();
 }
 
-function generateColorScale(counterData) {
+function generateColorScale(counterData, isNeighborhood) {
   return d3
     .scaleOrdinal()
     .domain(
@@ -46,7 +46,11 @@ function generateColorScale(counterData) {
         ? ['Moyenne du réseau', counterData.name]
         : ['Moyenne du réseau'],
     )
-    .range(counterData ? ['#9a9a9a', '#f7ad63'] : ['#9a9a9a']);
+    .range(
+      counterData
+        ? ['#9a9a9a', isNeighborhood ? '#507bde' : '#f59e47']
+        : ['#9a9a9a'],
+    );
 }
 
 function addAxes(g, width, height, yScale) {
@@ -79,7 +83,13 @@ function addAxes(g, width, height, yScale) {
  * @param {object[]} data The data for the map
  * @param callback The callback to call on circle click
  */
-export function drawLineChart(width, height, averageData, counterData) {
+export function drawLineChart(
+  width,
+  height,
+  averageData,
+  counterData,
+  isNeighborhood,
+) {
   const svg = d3.select('#line-svg');
 
   // Reset line chart svg
@@ -111,7 +121,7 @@ export function drawLineChart(width, height, averageData, counterData) {
   addAxes(outerG, width, height, yScale);
 
   // Draw the legend
-  const colorScale = generateColorScale(counterData);
+  const colorScale = generateColorScale(counterData, isNeighborhood);
   const legend = d3Legend.legendColor().scale(colorScale).shape('rect');
   outerG.append('g').attr('transform', 'translate(460, 30)').call(legend);
 
@@ -145,7 +155,7 @@ export function drawLineChart(width, height, averageData, counterData) {
       .append('path')
       .datum(counterData.counts)
       .attr('fill', 'rgba(0, 0, 0, 0)')
-      .attr('stroke', '#f58516')
+      .attr('stroke', isNeighborhood ? '#507bde' : '#f59e47')
       .attr('stroke-width', 1)
       .attr(
         'd',

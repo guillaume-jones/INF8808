@@ -61,7 +61,7 @@ function generateXSubScale(xScale) {
 
 /**
  * Generates the Y scale of the chart based on the max value of the dataset
- * @param {number} height 
+ * @param {number} height
  * @returns {*} The generated Y scale
  */
 function generateYScale(height) {
@@ -74,18 +74,31 @@ function generateYScale(height) {
 
 /**
  * Creates a color scale to identify the different bars
+ * @param {object} counterData Current data for orange part of chart
  * @returns {*} The colors for all four possible type of bars
  */
-function generateColorScale() {
+function generateColorScale(counterData, isNeighborhood) {
+  const averageDomain = ['Moyenne avant BIXI', 'Moyenne après BIXI'];
+  const averageRange = ['#c9c9c9', '#9a9a9a'];
   return d3
     .scaleOrdinal()
-    .domain([
-      'Moyenne avant BIXI',
-      'Moyenne après BIXI',
-      'Borne avant BIXI',
-      'Borne après BIXI',
-    ])
-    .range(['#c9c9c9', '#9a9a9a', '#f7ad63', '#f58516']);
+    .domain(
+      counterData === undefined
+        ? averageDomain
+        : isNeighborhood
+        ? [...averageDomain, 'Sélection avant BIXI', 'Sélection après BIXI']
+        : [...averageDomain, 'Borne avant BIXI', 'Borne après BIXI'],
+    )
+    .range(
+      counterData === undefined
+        ? averageRange
+        : [
+            '#c9c9c9',
+            '#9a9a9a',
+            isNeighborhood ? '#507bde' : '#f59e47',
+            isNeighborhood ? '#265bd4' : '#f58516',
+          ],
+    );
 }
 
 /**
@@ -127,6 +140,7 @@ export function setupBarSVG(width, height) {
  * @param {number} bixiYear The year of implementation of electrical Bixis
  * @param {object[]} averageData The data averaged on all counters
  * @param {object[]} counterData The data of the selected counter
+ * @param {boolean} isNeighborhood Is the counter actually a neighborhood
  */
 export function drawBarChart(
   width,
@@ -134,6 +148,7 @@ export function drawBarChart(
   bixiYear,
   averageData,
   counterData,
+  isNeighborhood,
 ) {
   const svg = d3.select('#bar-svg');
 
@@ -160,10 +175,12 @@ export function drawBarChart(
     ...(counterData ? counterData.map((v) => v.counts) : []),
   ]);
 
-  const colorScale = generateColorScale();
+  const colorScale = generateColorScale(counterData, isNeighborhood);
 
   // Add axes
   addAxes(outerG, height, xScale, yScale);
+
+  console.log(isNeighborhood);
 
   // Draw the legend
   const legend = d3Legend.legendColor().scale(colorScale).shape('rect');
