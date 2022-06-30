@@ -31,6 +31,7 @@ import { drawDropdown } from './scripts/dropdown.js';
 import {
   dropDownClickHandler,
   circleClickHandler,
+  setSubtitle,
 } from './scripts/clickHandlers';
 import { changeLocale } from './scripts/changeLocale';
 import { showViz } from './scripts/spinner';
@@ -40,7 +41,7 @@ import { showViz } from './scripts/spinner';
 
   const mapsize = {
     width: 800,
-    height: 625,
+    height: 700,
   };
   const lineSize = {
     width: 400,
@@ -84,6 +85,7 @@ import { showViz } from './scripts/spinner';
   // Used to redraw all viz when year changes
   // Reverts to default visualizations
   function redrawVizForYear(year) {
+    setSubtitle('Moyenne du réseau en ' + year.toString());
     drawMapBackground(neighborhoodData[year], bikePaths, path);
     drawCircles(mapData[year], circleClickHandler(redrawVizForCounter));
     drawLineChart(
@@ -108,7 +110,8 @@ import { showViz } from './scripts/spinner';
     );
   }
   // Used to redraw viz for each counter clicked
-  function redrawVizForCounter(year, counter) {
+  function redrawVizForCounter(year, counter, neighborhood) {
+    setSubtitle(counter, neighborhood);
     drawLineChart(
       lineSize.width,
       lineSize.height,

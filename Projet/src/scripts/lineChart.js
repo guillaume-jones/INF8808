@@ -25,17 +25,17 @@ function addLabels(g, width, height, name, neighborhood) {
     .attr('y', height / 2)
     .attr('transform', 'rotate(-90)');
   // Title
-  const title = g
-    .append('g')
-    .append('text')
-    .attr('class', 'graph-title')
-    .attr('x', width / 2 + 30)
-    .attr('y', 15);
-  if (name) {
-    title.text(name + ' - ' + neighborhood);
-  } else {
-    title.text('Moyenne de tous les compteurs');
-  }
+  // const title = g
+  //   .append('g')
+  //   .append('text')
+  //   .attr('class', 'graph-title')
+  //   .attr('x', width / 2 + 30)
+  //   .attr('y', 15);
+  // if (name) {
+  //   title.text(name + ' - ' + neighborhood);
+  // } else {
+  //   title.text('Moyenne de tous les compteurs');
+  // }
 }
 
 function generateXScale(width, days) {
