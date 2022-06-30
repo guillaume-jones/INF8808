@@ -1,3 +1,5 @@
+import d3Legend from 'd3-svg-legend';
+
 export function setupAreaSVG(width, height) {
   const svg = d3
     .select('#area-svg')
@@ -43,6 +45,13 @@ function generateYScale(height, counts) {
     .domain([0, d3.max(counts)])
     .range([height, 0])
     .nice();
+}
+
+function generateColorScale(counterData) {
+  return d3
+    .scaleOrdinal()
+    .domain(['Moyenne des bornes', 'Moyenne de ' + counterData.name])
+    .range(['#9a9a9a', '#f7ad63']);
 }
 
 function addAxes(g, width, height, yScale) {
@@ -97,6 +106,15 @@ export function drawAreaChart(width, height, averageData, counterData) {
 
   // Add axes
   addAxes(outerG, width, height, yScale);
+
+  // Draw the legend
+  const colorScale = generateColorScale(counterData);
+  const legend = d3Legend
+    .legendColor()
+    .scale(colorScale)
+    .shape('rect')
+    .title('Légende');
+  outerG.append('g').attr('transform', 'translate(70, -15)').call(legend);
 
   const innerG = outerG
     .append('g')
