@@ -1,5 +1,10 @@
 import d3Legend from 'd3-svg-legend';
 
+/**
+ * Adds a title to the bar chart
+ * @param {*} g The d3 selection of the graph's g SVG element
+ * @param {number} width The width of the graph
+ */
 function addTitle(g, width) {
   g.append('text')
     .attr('class', 'graph-title')
@@ -8,6 +13,12 @@ function addTitle(g, width) {
     .text("Comptes avant et après l'introduction de Bixis électriques");
 }
 
+/**
+ * Adds the labels of the X and Y axes
+ * @param {*} g The d3 selection of the graph's g SVG element
+ * @param {number} width The width of the graph
+ * @param {number} height The height of the graph
+ */
 function addLabels(g, width, height) {
   // X label
   g.append('g')
@@ -25,11 +36,21 @@ function addLabels(g, width, height) {
     .attr('y', height / 2)
     .attr('transform', 'rotate(-90)');
 }
-
+/**
+ * Generates the X scale of the chart based on the list of years
+ * @param {number} width The width of the grpah
+ * @param {number[]} years The list of all possible years
+ * @returns {*} The generated X scale
+ */
 function generateXScale(width, years) {
   return d3.scaleBand().padding(0.2).domain(years).range([0, width]);
 }
 
+/**
+ * Generates the subscales of X to form groups in the bar chart
+ * @param {*} xScale The graph's scale containing the subscales
+ * @returns {*} The sectionned X scale
+ */
 function generateXSubScale(xScale) {
   return d3
     .scaleBand()
@@ -38,6 +59,11 @@ function generateXSubScale(xScale) {
     .range([0, xScale.bandwidth()]);
 }
 
+/**
+ * Generates the Y scale of the chart based on the max value of the dataset
+ * @param {number} height 
+ * @returns {*} The generated Y scale
+ */
 function generateYScale(height) {
   return d3
     .scaleLinear()
@@ -46,6 +72,10 @@ function generateYScale(height) {
     .nice();
 }
 
+/**
+ * Creates a color scale to identify the different bars
+ * @returns {*} The colors for all four possible type of bars
+ */
 function generateColorScale() {
   return d3
     .scaleOrdinal()
@@ -58,6 +88,13 @@ function generateColorScale() {
     .range(['#c9c9c9', '#9a9a9a', '#f7ad63', '#f58516']);
 }
 
+/**
+ * Adds the axes to the graph
+ * @param {*} g The d3 selection of the graph's g SVG element
+ * @param {number} height The height of the graph
+ * @param {*} xScale The X scale to be used for the graph
+ * @param {*} yScale The Y scale to be used for the graph
+ */
 function addAxes(g, height, xScale, yScale) {
   g.append('g')
     .attr('class', 'axis')
@@ -69,6 +106,11 @@ function addAxes(g, height, xScale, yScale) {
     .call(d3.axisLeft(yScale));
 }
 
+/**
+ * Sets up the space where the bar chart will be drawn
+ * @param {number} width The width of the graph
+ * @param {number} height The height of the graph
+ */
 export function setupBarSVG(width, height) {
   const svg = d3
     .select('#bar-svg')
@@ -78,6 +120,14 @@ export function setupBarSVG(width, height) {
   addTitle(svg, width);
 }
 
+/**
+ * Draws the bar chart in the designated space
+ * @param {number} width The width of the graph
+ * @param {number} height The height of the graph
+ * @param {number} bixiYear The year of implementation of electrical Bixis
+ * @param {object[]} averageData The data averaged on all counters
+ * @param {object[]} counterData The data of the selected counter
+ */
 export function drawBarChart(
   width,
   height,
