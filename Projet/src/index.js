@@ -111,7 +111,7 @@ import { showViz } from './scripts/spinner';
   }
   // Used to redraw viz for each counter clicked
   function redrawVizForCounter(year, counter, neighborhood) {
-    setSubtitle('counter', neighborhood);
+    setSubtitle(counter, neighborhood);
     drawLineChart(
       lineSize.width,
       lineSize.height,
