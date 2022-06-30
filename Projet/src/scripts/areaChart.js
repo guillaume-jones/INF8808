@@ -64,7 +64,7 @@ function generateXScale(width) {
  * Generated the Y scale of the area chart based on the maximum value
  * @param {number} height The height of the graph
  * @param {number[]} counts List of counts for the hours of the day
- * @returns 
+ * @returns
  */
 function generateYScale(height, counts) {
   return d3
@@ -79,7 +79,7 @@ function generateYScale(height, counts) {
  * @param {object[]} counterData The data of the selected counter
  * @returns {*} The generated color scale
  */
-function generateColorScale(counterData) {
+function generateColorScale(counterData, isNeighborhood) {
   return d3
     .scaleOrdinal()
     .domain(
@@ -87,7 +87,11 @@ function generateColorScale(counterData) {
         ? ['Moyenne du réseau', counterData.name]
         : ['Moyenne du réseau'],
     )
-    .range(counterData ? ['#9a9a9a', '#f7ad63'] : ['#9a9a9a']);
+    .range(
+      counterData
+        ? ['#9a9a9a', isNeighborhood ? '#507bde' : '#f59e47']
+        : ['#9a9a9a'],
+    );
 }
 
 /**
@@ -125,7 +129,13 @@ function addAxes(g, width, height, yScale) {
  * @param {object[]} data The data for the area chart
  * @param {*} callback The callback to call on circle click
  */
-export function drawAreaChart(width, height, averageData, counterData) {
+export function drawAreaChart(
+  width,
+  height,
+  averageData,
+  counterData,
+  isNeighborhood,
+) {
   const svg = d3.select('#area-svg').attr('height', height + 80);
 
   // Reset area chart svg
@@ -151,7 +161,7 @@ export function drawAreaChart(width, height, averageData, counterData) {
   addAxes(outerG, width, height, yScale);
 
   // Draw the legend
-  const colorScale = generateColorScale(counterData);
+  const colorScale = generateColorScale(counterData, isNeighborhood);
   const legend = d3Legend.legendColor().scale(colorScale).shape('rect');
   outerG.append('g').attr('transform', 'translate(640, -30)').call(legend);
 
@@ -185,8 +195,11 @@ export function drawAreaChart(width, height, averageData, counterData) {
     innerG
       .append('path')
       .datum(counterData.counts)
-      .attr('fill', 'rgba(252, 189, 126, 0.5)')
-      .attr('stroke', '#f58516')
+      .attr(
+        'fill',
+        isNeighborhood ? 'rgba(80, 123, 222, 0.3)' : 'rgba(247, 173, 99, 0.3)',
+      )
+      .attr('stroke', isNeighborhood ? '#265bd4' : '#f58516')
       .attr('stroke-width', 1)
       .attr(
         'd',
