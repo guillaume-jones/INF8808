@@ -1,9 +1,9 @@
 import { convertCoordinatesToXY, determineNeighborhood } from './geography';
 
 /**
- * 
- * @param {*} a 
- * @param {*} key 
+ * Computes the sum of an input array
+ * @param {number[]} a The array 
+ * @param {*} key Empty values in the input array
  * @returns 
  */
 function sum(a, key = '') {
@@ -14,8 +14,8 @@ function sum(a, key = '') {
 }
 
 /**
- * 
- * @param {*} a 
+ * Computes the group Sum of an input array
+ * @param {number[]} a The array
  * @param {*} key 
  * @param {*} key2 
  * @returns 
