@@ -55,7 +55,7 @@ import { showViz } from './scripts/spinner';
 
   // Get all raw data
   const years = [
-    2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020,
+    2009, // 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020,
     2021,
   ];
   const bixiYear = 2019;
@@ -75,10 +75,10 @@ import { showViz } from './scripts/spinner';
   const path = getPath(projection);
 
   // Get all processed data
-  const dataset = createDataset(locationData, counterData, years);
-  const mapData = createMapCircleData(dataset, montreal, projection);
+  const dataset = createDataset(locationData, counterData, years, montreal);
+  const mapData = createMapCircleData(dataset, projection);
   const neighborhoodData = createNeighborhoodData(montreal, mapData);
-  const lineChartData = createLineChartData(dataset, montreal);
+  const lineChartData = createLineChartData(dataset);
   const areaChartData = createAreaChartData(dataset);
   const barChartData = createBarChartData(dataset);
 
@@ -86,7 +86,12 @@ import { showViz } from './scripts/spinner';
   // Reverts to default visualizations
   function redrawVizForYear(year) {
     setSubtitle('Moyenne du réseau en ' + year.toString());
-    drawMapBackground(neighborhoodData[year], bikePaths, path);
+    drawMapBackground(
+      neighborhoodData[year],
+      bikePaths,
+      path,
+      circleClickHandler(redrawVizForCounter),
+    );
     drawCircles(mapData[year], circleClickHandler(redrawVizForCounter));
     drawLineChart(
       lineSize.width,
@@ -110,20 +115,20 @@ import { showViz } from './scripts/spinner';
     );
   }
   // Used to redraw viz for each counter clicked
-  function redrawVizForCounter(year, counter, neighborhood) {
-    setSubtitle(counter, neighborhood);
+  function redrawVizForCounter(year, name, neighborhood) {
+    setSubtitle(name, neighborhood);
     drawLineChart(
       lineSize.width,
       lineSize.height,
       lineChartData[year]['Average'],
-      lineChartData[year][counter],
+      lineChartData[year][name],
     );
     if (year > 2018) {
       drawAreaChart(
         areaSize.width,
         areaSize.height,
         areaChartData[year]['Average'],
-        areaChartData[year][counter],
+        areaChartData[year][name],
       );
     } else {
       hideAreaChart(areaSize.width);
@@ -133,7 +138,7 @@ import { showViz } from './scripts/spinner';
       barSize.height,
       bixiYear,
       barChartData['Average'],
-      barChartData[counter],
+      barChartData[name],
     );
   }
 

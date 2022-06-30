@@ -11,6 +11,7 @@
             name: 
             longitude:
             latitude: 
+            neighborhood:
             counts: 
             [
                 1,
@@ -99,8 +100,6 @@
 ```
 
 ### Left for final release
-- Add legends to all charts
-- Add neighborhood data to line and area charts
 - Show selected element (neighborhood/circle) permanently
 - Add absolute scale across years for circle size, line chart and area chart
 - Add animations between counter datasets in area, line and bar charts

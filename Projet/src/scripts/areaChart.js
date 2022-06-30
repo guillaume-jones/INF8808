@@ -50,8 +50,12 @@ function generateYScale(height, counts) {
 function generateColorScale(counterData) {
   return d3
     .scaleOrdinal()
-    .domain(['Moyenne des bornes', 'Moyenne de ' + counterData.name])
-    .range(['#9a9a9a', '#f7ad63']);
+    .domain(
+      counterData
+        ? ['Moyenne du réseau', counterData.name]
+        : ['Moyenne du réseau'],
+    )
+    .range(counterData ? ['#9a9a9a', '#f7ad63'] : ['#9a9a9a']);
 }
 
 function addAxes(g, width, height, yScale) {

@@ -8,7 +8,7 @@ export function setupLineGroup(width, height) {
     .attr('height', height + 80);
 }
 
-function addLabels(g, width, height, name, neighborhood) {
+function addLabels(g, width, height) {
   // X label
   g.append('g')
     .append('text')
@@ -24,18 +24,6 @@ function addLabels(g, width, height, name, neighborhood) {
     .attr('x', 10)
     .attr('y', height / 2)
     .attr('transform', 'rotate(-90)');
-  // Title
-  // const title = g
-  //   .append('g')
-  //   .append('text')
-  //   .attr('class', 'graph-title')
-  //   .attr('x', width / 2 + 30)
-  //   .attr('y', 15);
-  // if (name) {
-  //   title.text(name + ' - ' + neighborhood);
-  // } else {
-  //   title.text('Moyenne de tous les compteurs');
-  // }
 }
 
 function generateXScale(width, days) {
@@ -50,11 +38,15 @@ function generateYScale(height, counts) {
     .nice();
 }
 
-function generateColorScale() {
+function generateColorScale(counterData) {
   return d3
     .scaleOrdinal()
-    .domain(['Moyenne des bornes', 'Borne'])
-    .range(['#9a9a9a', '#f7ad63']);
+    .domain(
+      counterData
+        ? ['Moyenne du réseau', counterData.name]
+        : ['Moyenne du réseau'],
+    )
+    .range(counterData ? ['#9a9a9a', '#f7ad63'] : ['#9a9a9a']);
 }
 
 function addAxes(g, width, height, yScale) {

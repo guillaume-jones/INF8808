@@ -42,7 +42,7 @@ function generateColorScale(data) {
  * @param {object[]} data The data for the map base
  * @param {*} path The path associated with the current projection
  */
-export function drawMapBackground(mapData, cycleData, path) {
+export function drawMapBackground(mapData, cycleData, path, callback) {
   const mapBase = d3.select('#map-base-g');
   const colorScale = generateColorScale(mapData);
 
@@ -57,6 +57,7 @@ export function drawMapBackground(mapData, cycleData, path) {
     .attr('fill', (d) => colorScale(d.averageCounts))
     .attr('stroke', '#ffffff')
     .attr('stroke-width', 1)
+    .on('click', callback)
     .on('mouseover', function () {
       d3.select(this)
         .transition(1000)

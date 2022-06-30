@@ -52,7 +52,7 @@ export async function getLocationData() {
  *
  * @returns {object[]} The filtered and combined dataset
  */
-export function createDataset(locations, counters, years) {
+export function createDataset(locations, counters, years, montreal) {
   const dataset = {};
 
   years.forEach((year) => {
@@ -80,6 +80,11 @@ export function createDataset(locations, counters, years) {
         name: counter.Nom,
         longitude: counter.Longitude,
         latitude: counter.Latitude,
+        neighborhood: determineNeighborhood(
+          counter.Longitude,
+          counter.Latitude,
+          montreal,
+        ),
         counts: [],
       };
     });
@@ -126,18 +131,14 @@ export function createDataset(locations, counters, years) {
  *
  * @returns {object} Data for Area chart
  */
-export function createMapCircleData(dataset, montreal, projection) {
+export function createMapCircleData(dataset, projection) {
   const mapData = {};
 
   Object.entries(dataset).forEach(([year, yearData]) => {
     mapData[year] = Object.entries(yearData).map(([counter, counterData]) => {
       return {
         name: counter,
-        neighborhood: determineNeighborhood(
-          counterData.longitude,
-          counterData.latitude,
-          montreal,
-        ),
+        neighborhood: counterData.neighborhood,
         counts: sum(counterData.counts, 'count'),
         ...convertCoordinatesToXY(
           counterData.longitude,
@@ -152,7 +153,7 @@ export function createMapCircleData(dataset, montreal, projection) {
 }
 
 export function createNeighborhoodData(montreal, mapData) {
-  const neighborhoodData = {};
+  const neighborhoodCounts = {};
   Object.entries(mapData).forEach(([year, counterList]) => {
     // Assemble counts by neighborhood
     const counts = {};
@@ -165,7 +166,7 @@ export function createNeighborhoodData(montreal, mapData) {
     });
 
     // Place into new data object with GEOJSON data
-    neighborhoodData[year] = montreal.map((feature) => {
+    neighborhoodCounts[year] = montreal.map((feature) => {
       const name = feature.properties.NOM;
       return {
         type: 'Feature',
@@ -175,7 +176,7 @@ export function createNeighborhoodData(montreal, mapData) {
       };
     });
   });
-  return neighborhoodData;
+  return neighborhoodCounts;
 }
 
 /** Generates data in format for line chart
@@ -183,7 +184,7 @@ export function createNeighborhoodData(montreal, mapData) {
  * @param {object} dataset Dataset created by createDataset
  * @param montreal Pre-loaded JSON of Montreal data
  */
-export function createLineChartData(dataset, montreal) {
+export function createLineChartData(dataset) {
   const lineChartData = {};
 
   Object.entries(dataset).forEach(([year, yearData]) => {
@@ -206,7 +207,7 @@ export function createLineChartData(dataset, montreal) {
         });
       }
 
-      // Save this counter's data to averageDayCounts
+      // Save this counter's data to averageDayCounts for average of year
       if (!averageDayCounts) {
         averageDayCounts = newCounts;
       } else {
@@ -215,13 +216,12 @@ export function createLineChartData(dataset, montreal) {
         });
       }
 
+      const neighborhood = counterData.neighborhood;
+
+      // Add counts to dataset under counter
       lineChartData[year][counter] = {
         name: counter,
-        neighborhood: determineNeighborhood(
-          counterData.longitude,
-          counterData.latitude,
-          montreal,
-        ),
+        neighborhood: neighborhood,
         counts: newCounts.map((v, i) => {
           return {
             index: i,
@@ -229,8 +229,22 @@ export function createLineChartData(dataset, montreal) {
           };
         }),
       };
+
+      // Add counts to corresponding neighborhood count
+      const neighborhoodCounts = lineChartData[year][neighborhood];
+      lineChartData[year][neighborhood] = {
+        name: neighborhood,
+        counts: newCounts.map((v, i) => {
+          return {
+            index: i,
+            value:
+              (neighborhoodCounts ? neighborhoodCounts.counts[i].value : 0) + v,
+          };
+        }),
+      };
     });
 
+    // Add average for year to dataset
     const totalCounters = Object.keys(yearData).length;
 
     lineChartData[year]['Average'] = {
@@ -285,6 +299,20 @@ export function createAreaChartData(dataset) {
           return {
             index: i,
             value: v,
+          };
+        }),
+      };
+
+      // Add counts to corresponding neighborhood count
+      const neighborhood = counterData.neighborhood;
+      const neighborhoodCounts = areaChartData[year][neighborhood];
+      areaChartData[year][neighborhood] = {
+        name: neighborhood,
+        counts: newCounts.map((v, i) => {
+          return {
+            index: i,
+            value:
+              (neighborhoodCounts ? neighborhoodCounts.counts[i].value : 0) + v,
           };
         }),
       };
