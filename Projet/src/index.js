@@ -1,4 +1,6 @@
 import 'regenerator-runtime/runtime.js';
+import d3Tip from 'd3-tip';
+
 import {
   getLocationData,
   getCounterData,
@@ -35,6 +37,7 @@ import {
 } from './scripts/clickHandlers';
 import { changeLocale } from './scripts/changeLocale';
 import { showViz } from './scripts/spinner';
+import { renderTooltip } from './scripts/tooltip';
 
 (async function () {
   changeLocale();
@@ -55,7 +58,7 @@ import { showViz } from './scripts/spinner';
 
   // Get all raw data
   const years = [
-    2009, // 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020,
+    2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020,
     2021,
   ];
   const bixiYear = 2019;
@@ -64,8 +67,13 @@ import { showViz } from './scripts/spinner';
   const locationData = await getLocationData();
   const counterData = await getCounterData(years);
 
-  // Generate SVG groups
-  generateMapGroups(mapsize.width, mapsize.height);
+  // Generate tooltip and SVG groups
+  const tip = d3Tip()
+    .attr('class', 'd3-tip')
+    .html(function (d) {
+      return renderTooltip(d);
+    });
+  generateMapGroups(mapsize.width, mapsize.height, tip);
   setupAreaSVG(areaSize.width, areaSize.height);
   setupLineGroup(lineSize.width, lineSize.height);
   setupBarSVG(barSize.width, barSize.height);
@@ -82,7 +90,6 @@ import { showViz } from './scripts/spinner';
   const areaChartData = createAreaChartData(dataset);
   const barChartData = createBarChartData(dataset);
 
-  console.log(barChartData);
   // Used to redraw all viz when year changes
   // Reverts to default visualizations
   function redrawVizForYear(year) {
@@ -92,8 +99,9 @@ import { showViz } from './scripts/spinner';
       bikePaths,
       path,
       circleClickHandler(redrawVizForCounter),
+      tip,
     );
-    drawCircles(mapData[year], circleClickHandler(redrawVizForCounter));
+    drawCircles(mapData[year], circleClickHandler(redrawVizForCounter), tip);
     drawLineChart(
       lineSize.width,
       lineSize.height,

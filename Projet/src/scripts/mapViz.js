@@ -3,9 +3,11 @@
  *
  * @param {number} width The width of the graph
  * @param {number} height The height of the graph
+ * @param {*} tooltip Tip to place in graph
  */
-export function generateMapGroups(width, height) {
+export function generateMapGroups(width, height, tooltip) {
   d3.select('#map-svg')
+    .call(tooltip)
     .attr('width', width)
     .attr('height', height)
     .append('g')
@@ -19,6 +21,7 @@ export function generateMapGroups(width, height) {
     .attr('id', 'map-lanes-g')
     .attr('width', width)
     .attr('height', height)
+
     .select(function () {
       return this.parentNode;
     })
@@ -47,7 +50,7 @@ function generateColorScale(data) {
  * @param {object[]} data The data for the map base
  * @param {*} path The path associated with the current projection
  */
-export function drawMapBackground(mapData, cycleData, path, callback) {
+export function drawMapBackground(mapData, cycleData, path, callback, tip) {
   const mapBase = d3.select('#map-base-g');
   const colorScale = generateColorScale(mapData);
 
@@ -65,6 +68,7 @@ export function drawMapBackground(mapData, cycleData, path, callback) {
     .on('click', callback)
     .on('mouseover', function () {
       d3.select(this)
+        .each(tip.show)
         .transition(1000)
         .ease(d3.easeCubicInOut)
         .attr('fill', (d) => colorScale(d.averageCounts + 100000))
@@ -72,6 +76,7 @@ export function drawMapBackground(mapData, cycleData, path, callback) {
     })
     .on('mouseout', function () {
       d3.select(this)
+        .each(tip.hide)
         .transition(1000)
         .ease(d3.easeCubicInOut)
         .attr('fill', (d) => colorScale(d.averageCounts))
@@ -106,12 +111,13 @@ function generateRadiusScale(data) {
   return d3.scaleLinear().domain([0, maxCounts]).range([3, 9]);
 }
 
-function mouseout(scale) {
+function mouseout(scale, tip) {
   d3.select('#map-circles-g')
     .selectAll('circle')
     .filter(function () {
       return !d3.select(this).attr('clicked');
     })
+    .each(tip.hide)
     .transition(500)
     .ease(d3.easeCubicInOut)
     .attr('r', (d) => scale(d.counts))
@@ -124,7 +130,7 @@ function mouseout(scale) {
  * @param {object[]} data The data for the map
  * @param {*} callback The callback to call on circle click
  */
-export function drawCircles(data, callback) {
+export function drawCircles(data, callback, tip) {
   const scale = generateRadiusScale(data);
 
   d3.select('#map-circles-g').selectAll('circle').remove();
@@ -142,22 +148,23 @@ export function drawCircles(data, callback) {
     .attr('stroke', '#ffffff')
     .attr('stroke-width', 1)
     .on('click', function (d) {
-      console.log(d);
       callback(d);
 
       d3.select('#map-circles-g').selectAll('circle').attr('clicked', null);
       d3.select(this).attr('clicked', true);
 
-      mouseout(scale);
+      mouseout(scale, tip);
     })
     .on('mouseover', function () {
       d3.select(this)
+        .each(tip.show)
+
         .transition(500)
         .ease(d3.easeCubicInOut)
         .attr('r', (d) => scale(d.counts) * 1.5)
         .attr('stroke-width', 2);
     })
     .on('mouseout', function () {
-      mouseout(scale);
+      mouseout(scale, tip);
     });
 }
