@@ -100,7 +100,6 @@
 
 ### Left for final release
 - Add legends to all charts
-- Remove all counters with <10000 yearly counts in Excel
 - Add neighborhood data to line and area charts
 - Show selected element (neighborhood/circle) permanently
 - Add absolute scale across years for circle size, line chart and area chart

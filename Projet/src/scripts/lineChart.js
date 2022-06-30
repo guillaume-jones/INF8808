@@ -1,3 +1,5 @@
+import d3Legend from 'd3-svg-legend';
+
 export function setupLineGroup(width, height) {
   d3.select('#map-svg')
     .append('g')
@@ -11,7 +13,7 @@ function addLabels(g, width, height, name, neighborhood) {
   g.append('g')
     .append('text')
     .attr('class', 'axis-label')
-    .text("Jours de l'année")
+    .text("Mois de l'année")
     .attr('x', width / 2 + 30)
     .attr('y', height);
   // Y label
@@ -23,17 +25,17 @@ function addLabels(g, width, height, name, neighborhood) {
     .attr('y', height / 2)
     .attr('transform', 'rotate(-90)');
   // Title
-  const title = g
-    .append('g')
-    .append('text')
-    .attr('class', 'graph-title')
-    .attr('x', width / 2 + 30)
-    .attr('y', 15);
-  if (name) {
-    title.text(name + ' - ' + neighborhood);
-  } else {
-    title.text('Moyenne de tous les compteurs');
-  }
+  // const title = g
+  //   .append('g')
+  //   .append('text')
+  //   .attr('class', 'graph-title')
+  //   .attr('x', width / 2 + 30)
+  //   .attr('y', 15);
+  // if (name) {
+  //   title.text(name + ' - ' + neighborhood);
+  // } else {
+  //   title.text('Moyenne de tous les compteurs');
+  // }
 }
 
 function generateXScale(width, days) {
@@ -46,6 +48,13 @@ function generateYScale(height, counts) {
     .domain([0, d3.max(counts)])
     .range([height, 0])
     .nice();
+}
+
+function generateColorScale() {
+  return d3
+    .scaleOrdinal()
+    .domain(['Moyenne des bornes', 'Borne'])
+    .range(['#9a9a9a', '#f7ad63']);
 }
 
 function addAxes(g, width, height, yScale) {
@@ -108,6 +117,11 @@ export function drawLineChart(width, height, averageData, counterData) {
 
   // Add axes
   addAxes(outerG, width, height, yScale);
+
+  // Draw the legend
+  const colorScale = generateColorScale(counterData);
+  const legend = d3Legend.legendColor().scale(colorScale).shape('rect');
+  outerG.append('g').attr('transform', 'translate(460, 30)').call(legend);
 
   const innerG = outerG
     .append('g')
