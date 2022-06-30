@@ -1,10 +1,10 @@
 import { convertCoordinatesToXY, determineNeighborhood } from './geography';
 
-/**
- * Computes the sum of an input array
- * @param {number[]} a The array 
+/** Computes the sum of an input array, using an optional key to get values
+ *
+ * @param {number[]} a The array
  * @param {*} key Empty values in the input array
- * @returns 
+ * @returns
  */
 function sum(a, key = '') {
   if (key) {
@@ -13,12 +13,13 @@ function sum(a, key = '') {
   return a.reduce((b, c) => b + (isNaN(c) ? 0 : c), 0);
 }
 
-/**
- * Computes the group Sum of an input array
+/** Sums an array by grouping according to the given key.
+ * Accepts a second key as the property that should be summed.
+ *
  * @param {number[]} a The array
- * @param {*} key 
- * @param {*} key2 
- * @returns 
+ * @param {*} key
+ * @param {*} key2
+ * @returns
  */
 function groupSum(a, key, key2) {
   return a.reduce((b, c) => {
@@ -202,7 +203,7 @@ export function createNeighborhoodData(montreal, mapData) {
  *
  * @param {object} dataset Dataset created by createDataset
  * @param montreal Pre-loaded JSON of Montreal data
- * 
+ *
  * @returns {object} Data for line chart
  */
 export function createLineChartData(dataset) {
@@ -355,7 +356,7 @@ export function createAreaChartData(dataset) {
 /** Generates data in format for bar chart
  *
  * @param {object} dataset Dataset created by createDataset
- * 
+ *
  * @returns {object} Data for bar chart
  */
 export function createBarChartData(dataset) {
