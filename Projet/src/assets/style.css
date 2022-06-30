@@ -103,3 +103,11 @@ h3 {
   transform-box: fill-box;
   text-anchor: middle;
 }
+
+.legendTitle {
+  font-size: 15px;
+}
+
+.label {
+  font-size: 10px;
+}

@@ -109,12 +109,8 @@ export function drawAreaChart(width, height, averageData, counterData) {
 
   // Draw the legend
   const colorScale = generateColorScale(counterData);
-  const legend = d3Legend
-    .legendColor()
-    .scale(colorScale)
-    .shape('rect')
-    .title('Légende');
-  outerG.append('g').attr('transform', 'translate(70, -15)').call(legend);
+  const legend = d3Legend.legendColor().scale(colorScale).shape('rect');
+  outerG.append('g').attr('transform', 'translate(640, -30)').call(legend);
 
   const innerG = outerG
     .append('g')

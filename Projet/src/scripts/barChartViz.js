@@ -116,13 +116,9 @@ export function drawBarChart(
   addAxes(outerG, height, xScale, yScale);
 
   // Draw the legend
-  const legend = d3Legend
-    .legendColor()
-    .scale(colorScale)
-    .shape('rect')
-    .title('Légende');
+  const legend = d3Legend.legendColor().scale(colorScale).shape('rect');
 
-  outerG.append('g').attr('transform', 'translate(685, -17)').call(legend);
+  outerG.append('g').attr('transform', 'translate(740, -30)').call(legend);
 
   const innerG = outerG
     .append('g')
